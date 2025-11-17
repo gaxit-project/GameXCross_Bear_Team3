@@ -1,53 +1,115 @@
 using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class BearMove : MonoBehaviour
 {
-    [Header("熊の速度")]
-    public float moveSpeed = 5.0f;
+    private NavMeshAgent agent;
 
-    [Header("出現設定")]
-    public float radius = 25.0f;
-    public Vector3 centerPoint = Vector3.zero;
+    private float radius;
+    private Vector3 centerPoint;
 
-    private Vector3 moveDirection;
+    private bool isInitialized = false;
+
+    void Awake()
+    {
+        agent = GetComponent<NavMeshAgent>();
+    }
 
     void Start()
     {
-        ReapawnAndSetDirection();
+        
+    }
+
+    public void Initialize(float speed, float rad, Vector3 center, Vector3 initDirection)
+    {
+        this.radius = rad;
+        this.centerPoint = center;
+
+        agent.speed = speed;
+        agent.updatePosition = true;
+
+        if (!agent.isOnNavMesh)
+        {
+            NavMeshHit hit;
+            if(NavMesh.SamplePosition(transform.position, out hit, 2.0f, NavMesh.AllAreas))
+            {
+                agent.Warp(hit.position);
+            }
+            else
+            {
+                Debug.LogError($"クマ({name})をNavMesh上に出現できませんでした。");
+                return;
+            }
+        }
+
+        this.isInitialized = true;
+        SetDestinationToOppositeSide();
+
     }
 
     void Update()
     {
-        transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        if (!isInitialized) return;
 
-        if(moveDirection != Vector3.zero)
+        if (agent.hasPath)
         {
-            transform.rotation = Quaternion.LookRotation(moveDirection);
+            Debug.DrawLine(transform.position, agent.destination, Color.red);
         }
+
+        //transform.position += moveDirection * moveSpeed * Time.deltaTime;
+
+        //if (moveDirection != Vector3.zero)
+        //{
+        //    transform.rotation = Quaternion.LookRotation(moveDirection);
+        //}
 
         Vector3 posOnPlane = new Vector3(transform.position.x, centerPoint.y, transform.position.z);
         float currentDistance = Vector3.Distance(posOnPlane, centerPoint);
 
-        if (currentDistance > radius + 0.1f) ReapawnAndSetDirection();
-
+        if (currentDistance > radius + 2.0f)
+        {
+            Debug.Log($"円の外に出たため再配置します。距離：{currentDistance}");
+            ReapawnAndMove();
+        }
     }
 
-    private void ReapawnAndSetDirection()
+    private void SetDestinationToOppositeSide()
     {
-        float randomAngle = Random.Range(0f, 2f * Mathf.PI);
+        Vector3 currentPos = transform.position;
+        Vector3 directionToCenter = (centerPoint - currentPos).normalized;
 
-        float x = centerPoint.x + radius * Mathf.Cos(randomAngle);
-        float z = centerPoint.z + radius * Mathf.Sin(randomAngle);
+        Vector3 targetPos = centerPoint + (directionToCenter * (radius * 1.5f));
 
-        float y = centerPoint.y;
+        // NavMeshAgentに目的地を設定
+        agent.SetDestination(targetPos);
+    }
 
-        Vector3 spawnPosition = new Vector3(x, y, z);
+    private void ReapawnAndMove()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            // ランダムな出現位置を計算
+            float randomAngle = Random.Range(0f, 2f * Mathf.PI);
+            float x = centerPoint.x + radius * Mathf.Cos(randomAngle);
+            float z = centerPoint.z + radius * Mathf.Sin(randomAngle);
+            float y = centerPoint.y;
 
-        transform.position = spawnPosition;
+            Vector3 spawnPosition = new Vector3(x, y, z);
 
-        Vector3 centerOnPlane = new Vector3(centerPoint.x, y, centerPoint.z);
-        Vector3 directionToCenter = (centerOnPlane - spawnPosition).normalized;
+            NavMeshHit hit;
 
-        moveDirection = directionToCenter;
+            if (NavMesh.SamplePosition(spawnPosition, out hit, 10.0f, NavMesh.AllAreas))
+            {
+                float dist = Vector3.Distance(new Vector3(hit.position.x, centerPoint.y, hit.position.z), centerPoint);
+                if (dist < radius + 4.0f)
+                {
+                    agent.Warp(hit.position);
+                    SetDestinationToOppositeSide();
+                    return;
+                }
+            }
+        }
+        Debug.LogWarning($"クマ({name})の再出現に失敗しました。" );
     }
 }
