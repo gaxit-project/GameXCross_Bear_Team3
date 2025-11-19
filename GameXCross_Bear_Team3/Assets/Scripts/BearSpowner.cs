@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
-public class BearSpowner : MonoBehaviour
+using System.Threading.Tasks;
+
+public class BearSpawner : MonoBehaviour
 {
     [Header("Addressablesアドレス")]
     [SerializeField] private string bearPrefabAddress = "Bear.prefab";
@@ -11,9 +13,11 @@ public class BearSpowner : MonoBehaviour
     [SerializeField] private float radius = 25.0f;
     [SerializeField] private Vector3 centerPoint = Vector3.zero; 
 
-    void Start()
+    private AsyncOperationHandle<GameObject> bearHandle;
+
+    async void Start()
     {
-        SpawnBear();
+        await SpawnBearAsync();
     }
 
     void Update()
@@ -21,8 +25,9 @@ public class BearSpowner : MonoBehaviour
         
     }
 
-    private void SpawnBear()
+    private async Task SpawnBearAsync()
     {
+        // 出現座標の計算
         float randomAngle = Random.Range(0f, 2f * Mathf.PI);
         float x = centerPoint.x + radius * Mathf.Cos(randomAngle);
         float z = centerPoint.z + radius * Mathf.Sin(randomAngle);
@@ -30,30 +35,42 @@ public class BearSpowner : MonoBehaviour
 
         Vector3 spownPoint = new Vector3(x, y, z);
 
+        // 向きの計算
         Vector3 centerOnPlane = new Vector3(centerPoint.x, y, centerPoint.z);
         Vector3 initialDirection = (centerOnPlane - spownPoint).normalized;
 
-        var handle = Addressables.InstantiateAsync(bearPrefabAddress, spownPoint, Quaternion.LookRotation(initialDirection));
+        // Addressablesで生成
+        var op = Addressables.InstantiateAsync(bearPrefabAddress, spownPoint, Quaternion.LookRotation(initialDirection));
 
-        handle.Completed += (op) =>
+        // ハンドルを保持
+        bearHandle = op;
+
+        // ロード完了を待機
+        GameObject bear = await op.Task;
+
+        if (op.Status == AsyncOperationStatus.Succeeded)
         {
-            if (op.Status == AsyncOperationStatus.Succeeded)
+            Debug.Log($"クマ({bear.name})の生成成功");
+
+            var bearMove = bear.GetComponent<BearMove>();
+            if (bearMove != null)
             {
-                GameObject bear = op.Result;
-
-                Debug.Log($"クマ({bear.name})の生成成功");
-
-                var bearMove = bear.GetComponent<BearMove>();
-                if (bearMove != null)
-                {
-                    bearMove.Initialize(moveSpeed, radius, centerPoint, initialDirection);
-                }
+                bearMove.Initialize(moveSpeed, radius, centerPoint, initialDirection);
             }
-            else
-            {
-                Debug.LogError($"クマの出現に失敗: {op.OperationException}");
-            }
+        }
+        else
+        {
+            Debug.LogError($"クマの出現に失敗: {op.OperationException}");
+        }
 
-        };
-    } 
+    }
+
+    private void OnDestroy()
+    {
+        // Addressablesの解放
+        if (bearHandle.IsValid())
+        {
+            Addressables.Release(bearHandle);
+        }
+    }
 }

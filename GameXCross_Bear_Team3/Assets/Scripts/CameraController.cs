@@ -5,6 +5,7 @@ public class CameraController : MonoBehaviour
 {
     [Header("カメラ移動設定")]
     [SerializeField] private float moveSpeed = 5.0f;
+    [SerializeField] private float verticalSpeed = 5.0f;
 
     [Header("カメラ回転設定")]
     [SerializeField] private float lookSensitivity = 100.0f;
@@ -22,6 +23,7 @@ public class CameraController : MonoBehaviour
     private CameraControls cameraControls;
     private Vector2 moveInput;
     private Vector2 lookInput;
+    private float elevateInput;
 
     private float yaw = 0.0f;
     private float pitch = 0.0f;
@@ -41,12 +43,14 @@ public class CameraController : MonoBehaviour
         cameraControls.Map.Look.performed += OnLookPerformed;
         cameraControls.Map.Look.canceled += OnLookCanceled;
 
+        cameraControls.Map.Elevate.performed += OnElevatePerformed;
+        cameraControls.Map.Elevate.canceled += OnElevateCanceled;
+
         cameraControls.Enable();
     }
 
     private void OnDisable()
     {
-        cameraControls.Disable();
 
         cameraControls.Map.Move.performed -= OnMovePerformed;
         cameraControls.Map.Move.canceled -= OnMoveCanceled;
@@ -54,6 +58,10 @@ public class CameraController : MonoBehaviour
         cameraControls.Map.Look.performed -= OnLookPerformed;
         cameraControls.Map.Look.canceled -= OnLookCanceled;
 
+        cameraControls.Map.Elevate.performed += OnElevatePerformed;
+        cameraControls.Map.Elevate.canceled += OnElevateCanceled;
+
+        cameraControls.Disable();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -78,6 +86,16 @@ public class CameraController : MonoBehaviour
         lookInput = Vector2.zero;
     }
 
+    private void OnElevatePerformed(InputAction.CallbackContext context)
+    {
+        elevateInput = context.ReadValue<float>();
+    }
+
+    private void OnElevateCanceled(InputAction.CallbackContext context)
+    {
+        elevateInput = 0.0f;
+    }
+
     void Start()
     {
         
@@ -98,13 +116,16 @@ public class CameraController : MonoBehaviour
             // 水平方向の入力
             yaw += lookX;
 
+            transform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
+
+            /*
             // 垂直方向の入力
             pitch -= lookY;
 
             // ピッチの制限
             pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
 
-            transform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
+            
 
             if (pivotTransform != null)
             {
@@ -115,12 +136,15 @@ public class CameraController : MonoBehaviour
                 Debug.LogWarning("Pivot Transform が設定されていません", this);
 
             }
+            */
         }
 
         // 視点移動の処理
         Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
-
         transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.Self);
+
+        float verticalMove = elevateInput * verticalSpeed * Time.deltaTime;
+        transform.Translate(Vector3.up * verticalMove, Space.World);
     }
 
     public void SetRotationEnabled(bool isEnable)
@@ -140,6 +164,14 @@ public class CameraController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+    }
+
+    private void OnValidate()
+    {
+        if(Application.isPlaying)
+        {
+            UpdateCursorState();
         }
     }
 }

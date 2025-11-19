@@ -11,6 +11,9 @@ public class BearMove : MonoBehaviour
 
     private bool isInitialized = false;
 
+    private const float RESPAWN_BUFFER = 2.0f;
+    private const float TARGET_MULTIPLIER = 1.5f;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -19,33 +22,6 @@ public class BearMove : MonoBehaviour
     void Start()
     {
         
-    }
-
-    public void Initialize(float speed, float rad, Vector3 center, Vector3 initDirection)
-    {
-        this.radius = rad;
-        this.centerPoint = center;
-
-        agent.speed = speed;
-        agent.updatePosition = true;
-
-        if (!agent.isOnNavMesh)
-        {
-            NavMeshHit hit;
-            if(NavMesh.SamplePosition(transform.position, out hit, 2.0f, NavMesh.AllAreas))
-            {
-                agent.Warp(hit.position);
-            }
-            else
-            {
-                Debug.LogError($"クマ({name})をNavMesh上に出現できませんでした。");
-                return;
-            }
-        }
-
-        this.isInitialized = true;
-        SetDestinationToOppositeSide();
-
     }
 
     void Update()
@@ -67,11 +43,38 @@ public class BearMove : MonoBehaviour
         Vector3 posOnPlane = new Vector3(transform.position.x, centerPoint.y, transform.position.z);
         float currentDistance = Vector3.Distance(posOnPlane, centerPoint);
 
-        if (currentDistance > radius + 2.0f)
+        if (currentDistance > radius + RESPAWN_BUFFER)
         {
-            Debug.Log($"円の外に出たため再配置します。距離：{currentDistance}");
-            ReapawnAndMove();
+            RespawnAndMove();
         }
+    }
+
+    public void Initialize(float speed, float rad, Vector3 center, Vector3 initDirection)
+    {
+        this.radius = rad;
+        this.centerPoint = center;
+
+        agent.speed = speed;
+        agent.updatePosition = true;
+        agent.updateRotation = true;
+
+        if (!agent.isOnNavMesh)
+        {
+            NavMeshHit hit;
+            if(NavMesh.SamplePosition(transform.position, out hit, 2.0f, NavMesh.AllAreas))
+            {
+                agent.Warp(hit.position);
+            }
+            else
+            {
+                Debug.LogError($"クマ({name})をNavMesh上に出現できませんでした。");
+                return;
+            }
+        }
+
+        this.isInitialized = true;
+        SetDestinationToOppositeSide();
+
     }
 
     private void SetDestinationToOppositeSide()
@@ -79,13 +82,13 @@ public class BearMove : MonoBehaviour
         Vector3 currentPos = transform.position;
         Vector3 directionToCenter = (centerPoint - currentPos).normalized;
 
-        Vector3 targetPos = centerPoint + (directionToCenter * (radius * 1.5f));
+        Vector3 targetPos = centerPoint + (directionToCenter * (radius * TARGET_MULTIPLIER));
 
         // NavMeshAgentに目的地を設定
         agent.SetDestination(targetPos);
     }
 
-    private void ReapawnAndMove()
+    private void RespawnAndMove()
     {
         for (int i = 0; i < 10; i++)
         {
