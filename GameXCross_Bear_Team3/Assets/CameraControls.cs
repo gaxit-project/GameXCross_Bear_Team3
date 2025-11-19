@@ -109,6 +109,15 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Elevate"",
+                    ""type"": ""Value"",
+                    ""id"": ""18d3f6c6-d2fb-43a2-9aa0-d79d8c88453f"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -199,6 +208,39 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""f66d7d04-6f32-48f7-8015-c3f2a2f01b44"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Elevate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""85438d17-1c5f-4e10-aa18-048c6ae30d47"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Elevate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""8af56593-1a2d-4e77-9e31-17f21fed8fab"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Elevate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -209,6 +251,7 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         m_Map = asset.FindActionMap("Map", throwIfNotFound: true);
         m_Map_Move = m_Map.FindAction("Move", throwIfNotFound: true);
         m_Map_Look = m_Map.FindAction("Look", throwIfNotFound: true);
+        m_Map_Elevate = m_Map.FindAction("Elevate", throwIfNotFound: true);
     }
 
     ~@CameraControls()
@@ -291,6 +334,7 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
     private List<IMapActions> m_MapActionsCallbackInterfaces = new List<IMapActions>();
     private readonly InputAction m_Map_Move;
     private readonly InputAction m_Map_Look;
+    private readonly InputAction m_Map_Elevate;
     /// <summary>
     /// Provides access to input actions defined in input action map "Map".
     /// </summary>
@@ -310,6 +354,10 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Map/Look".
         /// </summary>
         public InputAction @Look => m_Wrapper.m_Map_Look;
+        /// <summary>
+        /// Provides access to the underlying input action "Map/Elevate".
+        /// </summary>
+        public InputAction @Elevate => m_Wrapper.m_Map_Elevate;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -342,6 +390,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
+            @Elevate.started += instance.OnElevate;
+            @Elevate.performed += instance.OnElevate;
+            @Elevate.canceled += instance.OnElevate;
         }
 
         /// <summary>
@@ -359,6 +410,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
+            @Elevate.started -= instance.OnElevate;
+            @Elevate.performed -= instance.OnElevate;
+            @Elevate.canceled -= instance.OnElevate;
         }
 
         /// <summary>
@@ -413,5 +467,12 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLook(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Elevate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnElevate(InputAction.CallbackContext context);
     }
 }
