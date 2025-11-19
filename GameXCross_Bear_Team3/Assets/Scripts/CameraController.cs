@@ -51,7 +51,6 @@ public class CameraController : MonoBehaviour
 
     private void OnDisable()
     {
-
         cameraControls.Map.Move.performed -= OnMovePerformed;
         cameraControls.Map.Move.canceled -= OnMoveCanceled;
 
