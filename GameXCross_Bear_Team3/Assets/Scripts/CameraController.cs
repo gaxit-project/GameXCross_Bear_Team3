@@ -9,9 +9,9 @@ public class CameraController : MonoBehaviour
 
     [Header("カメラ回転設定")]
     [SerializeField] private float lookSensitivity = 100.0f;
-    [SerializeField] private float pitchMax = 85.0f;
-    [SerializeField] private float pitchMin = -85.0f;
-    [SerializeField] private bool invertY = false;
+    //[SerializeField] private float pitchMax = 85.0f;
+    //[SerializeField] private float pitchMin = -85.0f;
+    //[SerializeField] private bool invertY = false;
 
     [Header("コンポーネント")]
     [SerializeField] private Transform pivotTransform;
@@ -26,7 +26,7 @@ public class CameraController : MonoBehaviour
     private float elevateInput;
 
     private float yaw = 0.0f;
-    private float pitch = 0.0f;
+    //private float pitch = 0.0f;
 
     private void Awake()
     {
@@ -109,16 +109,16 @@ public class CameraController : MonoBehaviour
             float lookX = lookInput.x * lookSensitivity * Time.deltaTime;
             float lookY = lookInput.y * lookSensitivity * Time.deltaTime;
 
-            // 左右反転
-            if (invertY) lookY = -lookY;
-
             // 水平方向の入力
             yaw += lookX;
 
             transform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
 
             /*
-            // 垂直方向の入力
+            // 左右反転
+            if (invertY) lookY = -lookY;
+
+            //垂直方向の入力
             pitch -= lookY;
 
             // ピッチの制限
