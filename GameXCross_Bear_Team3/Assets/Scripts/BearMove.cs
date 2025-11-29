@@ -1,17 +1,19 @@
 using UnityEngine;
 using UnityEngine.AI;
+using DG.Tweening;  
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class BearMove : MonoBehaviour
 {
     private NavMeshAgent agent;
+    private  Collider targetCollider;
 
     private float radius;
     private Vector3 centerPoint;
 
     private bool isInitialized = false;
 
-    private const float RESPAWN_BUFFER = 2.0f;
+    //private const float RESPAWN_BUFFER = 2.0f;
     private const float TARGET_MULTIPLIER = 1.5f;
 
     void Awake()
@@ -28,36 +30,39 @@ public class BearMove : MonoBehaviour
     {
         if (!isInitialized) return;
 
-        if (agent.hasPath)
+        if(targetCollider == null)
         {
-            Debug.DrawLine(transform.position, agent.destination, Color.red);
+            if(!agent.isStopped) agent.isStopped = true;
+            return;
         }
 
-        //transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        Vector3 closestPoint = targetCollider.ClosestPoint(transform.position);
 
-        //if (moveDirection != Vector3.zero)
-        //{
-        //    transform.rotation = Quaternion.LookRotation(moveDirection);
-        //}
-
-        Vector3 posOnPlane = new Vector3(transform.position.x, centerPoint.y, transform.position.z);
-        float currentDistance = Vector3.Distance(posOnPlane, centerPoint);
-
-        if (currentDistance > radius + RESPAWN_BUFFER)
+        if(Vector3.SqrMagnitude(agent.destination - closestPoint) > 1.0f)
         {
-            RespawnAndMove();
+            agent.SetDestination(closestPoint);
+        }
+
+        if(!agent.hasPath || agent.remainingDistance <= agent.stoppingDistance)
+        {
+            if (!agent.pathPending || agent.velocity.sqrMagnitude == 0f)
+            {
+                RespawnAndMove();
+            }
         }
     }
 
-    public void Initialize(float speed, float rad, Vector3 center, Vector3 initDirection)
+    public void Initialize(float speed, float rad, Vector3 center, Collider target)
     {
         this.radius = rad;
         this.centerPoint = center;
+        this.targetCollider = target;
 
         agent.speed = speed;
         agent.updatePosition = true;
         agent.updateRotation = true;
 
+        // NavMesh上に配置
         if (!agent.isOnNavMesh)
         {
             NavMeshHit hit;
@@ -73,19 +78,15 @@ public class BearMove : MonoBehaviour
         }
 
         this.isInitialized = true;
-        SetDestinationToOppositeSide();
 
-    }
+        transform.localScale = Vector3.zero;
+        transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
 
-    private void SetDestinationToOppositeSide()
-    {
-        Vector3 currentPos = transform.position;
-        Vector3 directionToCenter = (centerPoint - currentPos).normalized;
+        if(targetCollider != null)
+        {
+            agent.SetDestination(targetCollider.ClosestPoint(transform.position));
+        }
 
-        Vector3 targetPos = centerPoint + (directionToCenter * (radius * TARGET_MULTIPLIER));
-
-        // NavMeshAgentに目的地を設定
-        agent.SetDestination(targetPos);
     }
 
     private void RespawnAndMove()
@@ -104,13 +105,16 @@ public class BearMove : MonoBehaviour
 
             if (NavMesh.SamplePosition(spawnPosition, out hit, 10.0f, NavMesh.AllAreas))
             {
-                float dist = Vector3.Distance(new Vector3(hit.position.x, centerPoint.y, hit.position.z), centerPoint);
-                if (dist < radius + 4.0f)
+                agent.Warp(hit.position);
+
+                transform.localScale = Vector3.zero;
+                transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+
+                if(targetCollider != null)
                 {
-                    agent.Warp(hit.position);
-                    SetDestinationToOppositeSide();
-                    return;
+                    agent.SetDestination(targetCollider.ClosestPoint(transform.position));
                 }
+                return;
             }
         }
         Debug.LogWarning($"クマ({name})の再出現に失敗しました。" );

@@ -2,11 +2,15 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Threading.Tasks;
+using System.Linq;
 
 public class BearSpawner : MonoBehaviour
 {
     [Header("Addressablesアドレス")]
     [SerializeField] private string bearPrefabAddress = "Bear.prefab";
+
+    [Header("ターゲット設定")]
+    [SerializeField] private string houseTag = "House";
 
     [Header("クマの共通設定")]
     [SerializeField] private float moveSpeed = 5.0f;
@@ -35,27 +39,33 @@ public class BearSpawner : MonoBehaviour
 
         Vector3 spownPoint = new Vector3(x, y, z);
 
+        Collider nearestHouseCollider = GetNearestHouseCollider(spownPoint);
+
+        if (nearestHouseCollider == null)
+        {
+            Debug.LogWarning("ターゲットとなる家(Tag: House)が見つかりません。出現を中止します。");
+            return;
+        }
+
         // 向きの計算
-        Vector3 centerOnPlane = new Vector3(centerPoint.x, y, centerPoint.z);
-        Vector3 initialDirection = (centerOnPlane - spownPoint).normalized;
+        Vector3 targetPoint = nearestHouseCollider.ClosestPoint(spownPoint);
+        Vector3 directionToHouse = (targetPoint - spownPoint).normalized;
+        directionToHouse.y = 0; // 水平方向のみ
+
 
         // Addressablesで生成
-        var op = Addressables.InstantiateAsync(bearPrefabAddress, spownPoint, Quaternion.LookRotation(initialDirection));
-
+        var op = Addressables.InstantiateAsync(bearPrefabAddress, spownPoint, Quaternion.LookRotation(directionToHouse));
         // ハンドルを保持
         bearHandle = op;
-
         // ロード完了を待機
         GameObject bear = await op.Task;
 
         if (op.Status == AsyncOperationStatus.Succeeded)
         {
-            Debug.Log($"クマ({bear.name})の生成成功");
-
             var bearMove = bear.GetComponent<BearMove>();
             if (bearMove != null)
             {
-                bearMove.Initialize(moveSpeed, radius, centerPoint, initialDirection);
+                bearMove.Initialize(moveSpeed, radius, centerPoint, nearestHouseCollider);
             }
         }
         else
@@ -63,6 +73,25 @@ public class BearSpawner : MonoBehaviour
             Debug.LogError($"クマの出現に失敗: {op.OperationException}");
         }
 
+    }
+
+    private Collider GetNearestHouseCollider(Vector3 referencePos)
+    {
+        GameObject[] houses = GameObject.FindGameObjectsWithTag(houseTag);
+
+        if (houses.Length == 0) return null;
+
+        var houseColliders = houses
+            .Select(h => h.GetComponent<Collider>())
+            .Where(c => c != null);
+
+        if (!houseColliders.Any()) return null;
+
+        Collider nearest = houseColliders
+            .OrderBy(col => Vector3.SqrMagnitude(col.ClosestPoint(referencePos) - referencePos))
+            .First();
+
+        return nearest;
     }
 
     private void OnDestroy()
