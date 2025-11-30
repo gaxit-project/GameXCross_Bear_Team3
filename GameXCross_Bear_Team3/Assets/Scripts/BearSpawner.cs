@@ -1,76 +1,39 @@
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 using System.Threading.Tasks;
 
 public class BearSpawner : MonoBehaviour
 {
-    [Header("Addressablesアドレス")]
     [SerializeField] private string bearPrefabAddress = "Bear.prefab";
 
-    [Header("クマの共通設定")]
-    [SerializeField] private float moveSpeed = 5.0f;
-    [SerializeField] private float radius = 25.0f;
-    [SerializeField] private Vector3 centerPoint = Vector3.zero; 
-
-    private AsyncOperationHandle<GameObject> bearHandle;
+    [SerializeField] private float spawnDistance = 40.0f;
+    [SerializeField] private float moveSpeed = 5.0f; // 移動速度
 
     async void Start()
     {
-        await SpawnBearAsync();
+        await SpawnBear();
     }
 
-    void Update()
+    private async Task SpawnBear()
     {
-        
-    }
+        // 出現位置の計算
+        Vector2 randomCircle = Random.insideUnitCircle.normalized * spawnDistance;
+        Vector3 spawnPos = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
 
-    private async Task SpawnBearAsync()
-    {
-        // 出現座標の計算
-        float randomAngle = Random.Range(0f, 2f * Mathf.PI);
-        float x = centerPoint.x + radius * Mathf.Cos(randomAngle);
-        float z = centerPoint.z + radius * Mathf.Sin(randomAngle);
-        float y = centerPoint.y;
-
-        Vector3 spownPoint = new Vector3(x, y, z);
-
-        // 向きの計算
-        Vector3 centerOnPlane = new Vector3(centerPoint.x, y, centerPoint.z);
-        Vector3 initialDirection = (centerOnPlane - spownPoint).normalized;
-
-        // Addressablesで生成
-        var op = Addressables.InstantiateAsync(bearPrefabAddress, spownPoint, Quaternion.LookRotation(initialDirection));
-
-        // ハンドルを保持
-        bearHandle = op;
-
-        // ロード完了を待機
-        GameObject bear = await op.Task;
-
-        if (op.Status == AsyncOperationStatus.Succeeded)
+        UnityEngine.AI.NavMeshHit hit;
+        if(UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out hit, 10.0f, UnityEngine.AI.NavMesh.AllAreas))
         {
-            Debug.Log($"クマ({bear.name})の生成成功");
-
-            var bearMove = bear.GetComponent<BearMove>();
-            if (bearMove != null)
-            {
-                bearMove.Initialize(moveSpeed, radius, centerPoint, initialDirection);
-            }
-        }
-        else
-        {
-            Debug.LogError($"クマの出現に失敗: {op.OperationException}");
+            spawnPos = hit.position;
         }
 
-    }
+        // 生成
+        var op = Addressables.InstantiateAsync(bearPrefabAddress, spawnPos, Quaternion.identity);
+        var bearObj = await op.Task;
 
-    private void OnDestroy()
-    {
-        // Addressablesの解放
-        if (bearHandle.IsValid())
+        if(bearObj != null)
         {
-            Addressables.Release(bearHandle);
+            var controller = bearObj.GetComponent<BearController>();
+            if (controller) controller.Initialize(moveSpeed);
         }
     }
 }
