@@ -37,9 +37,13 @@ public class@HouseHealth : MonoBehaviour
 
     private void Collapse()
     {
+        transform.DOKill();
+
+        transform.SetParent(null);
+
         var seq = DOTween.Sequence();
         seq.Append(transform.DOShakePosition(1.0f, 0.5f));
-        seq.Append(transform.DOMoveY(-5.0f, 2.0f).SetEase(Ease.InBack));
+        seq.Append(transform.DOMoveY(-5.0f, 2.0f).SetRelative(true).SetEase(Ease.InBack));
         seq.Join(transform.DOScale(Vector3.zero, 2.0f));
         seq.OnComplete(() =>
         {

@@ -17,6 +17,7 @@ public class BearController : MonoBehaviour
 
     // 状態管理
     private IDisposable _attackStream;
+    private bool _isTrapped = false;
 
     private void Awake()
     {
@@ -26,20 +27,42 @@ public class BearController : MonoBehaviour
     public void Initialize(float speed)
     {
         _agent.speed = speed;
+        _isTrapped = false;
+
+        Vector3 targetScale = transform.localScale;
 
         // 出現アニメーション
         transform.localScale = Vector3.zero;
-        transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+        transform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack);
 
         FindNextTarget();
         ObserveState();
+    }
+
+    /// <summary>
+    /// 罠にかかった時の処理
+    /// </summary>
+    public void OnTrapped(Vector3 trapCenterPosition)
+    {
+        if (_isTrapped) return;
+
+        _isTrapped = true;
+
+        _agent.Warp(trapCenterPosition);
+
+        _agent.isStopped = true;
+        StopAttacking();
+
+        Debug.Log($"{name}が罠にかかった。");
+
+        transform.DOShakeScale(0.5f, 0.5f);
     }
 
     private void ObserveState()
     {
         // 移動中の制御
         this.UpdateAsObservable()
-            .Where(_ => _targetHouse != null && !_targetHouse.IsDestroyed)
+            .Where(_ => _targetHouse != null && !_targetHouse.IsDestroyed && !_isTrapped)
             .Subscribe(_ =>
             {
                 Vector3 destination = _targetHouse.HouseCollider.ClosestPoint(transform.position);
@@ -64,7 +87,7 @@ public class BearController : MonoBehaviour
 
         // 家が破壊された場合
         this.UpdateAsObservable()
-            .Where(_ => _targetHouse == null || _targetHouse.IsDestroyed)
+            .Where(_ => _targetHouse == null || _targetHouse.IsDestroyed && !_isTrapped)
             .ThrottleFirst(TimeSpan.FromSeconds(1.0f)) // 連続実行を防ぐ(1秒間隔を開ける)
             .Subscribe(_ =>
             {
@@ -151,4 +174,6 @@ public class BearController : MonoBehaviour
             _attackStream = null;
         }
     }
+
+    
 }
