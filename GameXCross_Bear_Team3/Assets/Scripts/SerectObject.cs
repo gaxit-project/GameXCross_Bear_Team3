@@ -2,15 +2,19 @@ using UnityEngine;
 
 public class SerectObject : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] public GameObject ScrollUI;
+    [SerializeField] public GameObject pointer;
+    [SerializeField,Header("設定する設置物")]
+    public GameObject obj;
+    [SerializeField, Header("ポインター")]
+    public PointerContoroller p;
 
-    // Update is called once per frame
-    void Update()
+
+
+    public void Onclick()
     {
-        
+        ScrollUI.SetActive(false);
+        pointer.SetActive(true);
+        p.obj = obj;
     }
 }

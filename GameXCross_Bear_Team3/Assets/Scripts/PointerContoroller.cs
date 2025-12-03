@@ -5,12 +5,16 @@ using UnityEngine.InputSystem;
 public class PointerContoroller : MonoBehaviour
 {
     [Header("à⁄ìÆë¨ìx")]
-    [SerializeField]private float Speed = 1;
+    [SerializeField] private float Speed = 1;
     private Vector2 input;
+    [SerializeField] public GameObject ScrollUI;
+    [SerializeField] public GameObject pointer;
+    [Header("åªç›ëIëÇµÇƒÇ¢ÇÈê›íuï®")]
+    [SerializeField] public GameObject obj;
 
     void Start()
     {
-        
+        pointer.SetActive(false);
     }
 
     // Update is called once per frame
@@ -23,5 +27,22 @@ public class PointerContoroller : MonoBehaviour
     public void OnPerformed(InputAction.CallbackContext context)
     {
         input = context.ReadValue<Vector2>();
+    }
+
+    public void OnCansel(InputAction.CallbackContext context)
+    {
+        if(context.performed)
+        {
+            ScrollUI.SetActive(true);
+            pointer.SetActive(false);
+        }
+    }
+
+    public void OnPut(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Instantiate(obj, pointer.transform.position, pointer.transform.rotation);
+        }
     }
 }

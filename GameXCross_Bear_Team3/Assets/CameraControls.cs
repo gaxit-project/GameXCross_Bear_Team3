@@ -118,6 +118,24 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""cansel"",
+                    ""type"": ""Button"",
+                    ""id"": ""b5d28ddb-16e5-4135-a7f7-c76913918f6e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""put"",
+                    ""type"": ""Button"",
+                    ""id"": ""ae324e41-6ff6-4a6b-8b3c-2ededa327811"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -241,6 +259,39 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""action"": ""Elevate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""85814608-da1d-4698-86b1-5ace45b67aae"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""cansel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a468930-55ab-4c06-a169-001ee9064dab"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""cansel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""90347381-b607-4ed7-b401-833ee034c35b"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""put"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -280,6 +331,8 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         m_Map_Move = m_Map.FindAction("Move", throwIfNotFound: true);
         m_Map_Look = m_Map.FindAction("Look", throwIfNotFound: true);
         m_Map_Elevate = m_Map.FindAction("Elevate", throwIfNotFound: true);
+        m_Map_cansel = m_Map.FindAction("cansel", throwIfNotFound: true);
+        m_Map_put = m_Map.FindAction("put", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
@@ -367,6 +420,8 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Map_Move;
     private readonly InputAction m_Map_Look;
     private readonly InputAction m_Map_Elevate;
+    private readonly InputAction m_Map_cansel;
+    private readonly InputAction m_Map_put;
     /// <summary>
     /// Provides access to input actions defined in input action map "Map".
     /// </summary>
@@ -390,6 +445,14 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Map/Elevate".
         /// </summary>
         public InputAction @Elevate => m_Wrapper.m_Map_Elevate;
+        /// <summary>
+        /// Provides access to the underlying input action "Map/cansel".
+        /// </summary>
+        public InputAction @cansel => m_Wrapper.m_Map_cansel;
+        /// <summary>
+        /// Provides access to the underlying input action "Map/put".
+        /// </summary>
+        public InputAction @put => m_Wrapper.m_Map_put;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -425,6 +488,12 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @Elevate.started += instance.OnElevate;
             @Elevate.performed += instance.OnElevate;
             @Elevate.canceled += instance.OnElevate;
+            @cansel.started += instance.OnCansel;
+            @cansel.performed += instance.OnCansel;
+            @cansel.canceled += instance.OnCansel;
+            @put.started += instance.OnPut;
+            @put.performed += instance.OnPut;
+            @put.canceled += instance.OnPut;
         }
 
         /// <summary>
@@ -445,6 +514,12 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @Elevate.started -= instance.OnElevate;
             @Elevate.performed -= instance.OnElevate;
             @Elevate.canceled -= instance.OnElevate;
+            @cansel.started -= instance.OnCansel;
+            @cansel.performed -= instance.OnCansel;
+            @cansel.canceled -= instance.OnCansel;
+            @put.started -= instance.OnPut;
+            @put.performed -= instance.OnPut;
+            @put.canceled -= instance.OnPut;
         }
 
         /// <summary>
@@ -602,6 +677,20 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnElevate(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "cansel" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCansel(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "put" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPut(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Game" which allows adding and removing callbacks.
