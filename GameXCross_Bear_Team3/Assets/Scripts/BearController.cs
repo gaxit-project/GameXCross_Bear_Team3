@@ -12,6 +12,13 @@ public class BearController : MonoBehaviour
     [SerializeField] private float attackDamage = 20f;
     [SerializeField] private float attackInterval = 1.0f;
 
+    // 判定基準点
+    [SerializeField] private Transform detectionPoint;
+
+    [SerializeField] private bool enableAnimation = true;
+
+    [SerializeField] private Animator animator;
+
     private NavMeshAgent _agent;
     private HouseHealth _targetHouse; // 狙っている家
 
@@ -22,17 +29,23 @@ public class BearController : MonoBehaviour
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
+
+        if (detectionPoint == null) detectionPoint = transform;
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+
+        if (!enableAnimation && animator != null) animator.enabled = false;
     }
 
     public void Initialize(float speed)
     {
+        _agent.enabled = true;
         _agent.speed = speed;
         _isTrapped = false;
 
         Vector3 targetScale = transform.localScale;
 
         // 出現アニメーション
-        transform.localScale = Vector3.zero;
+        transform.localScale = Vector3.one * 0.1f;
         transform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack);
 
         FindNextTarget();
@@ -47,15 +60,37 @@ public class BearController : MonoBehaviour
         if (_isTrapped) return;
 
         _isTrapped = true;
-
-        _agent.Warp(trapCenterPosition);
-
-        _agent.isStopped = true;
+        _agent.enabled = false;
         StopAttacking();
+
+        if (animator && enableAnimation) animator.speed = 0;
+
+        Vector3 finalPosition = new Vector3(
+            trapCenterPosition.x,
+            trapCenterPosition.y,
+            trapCenterPosition.z
+        );
+
+        transform.position = trapCenterPosition;
+        transform.rotation = Quaternion.identity;
 
         Debug.Log($"{name}が罠にかかった。");
 
         transform.DOShakeScale(0.5f, 0.5f);
+    }
+
+    public void OnAttackHit()
+    {
+        if (_targetHouse == null || _targetHouse.IsDestroyed) return;
+
+        Vector3 hitPoint = _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position);
+        if (Vector3.Distance(detectionPoint.position, hitPoint) > 7.0f) return;
+
+        Debug.Log("攻撃ヒット");
+
+        _targetHouse.TakeDamage(attackDamage);
+
+        //transform.DOPunchScale(Vector3.one * 0.1f, 0.1f);
     }
 
     private void ObserveState()
@@ -68,19 +103,26 @@ public class BearController : MonoBehaviour
                 Vector3 destination = _targetHouse.HouseCollider.ClosestPoint(transform.position);
 
                 // ターゲットへの距離をチェック
-                float dist = Vector3.Distance(transform.position, destination);
+                float dist = Vector3.Distance(detectionPoint.position, _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position)); ;
+
+                if (animator && enableAnimation) animator.SetBool("IsMoving", dist > 5.0f);
 
                 // 攻撃範囲内なら停止、遠ければ移動
-                if (dist <= 2.0f) // 少し余裕を持たせる
+                if (dist <= 5.0f) // 少し余裕を持たせる
                 {
                     if (!_agent.isStopped) _agent.isStopped = true;
                     StartAttacking();
                 }
                 else
                 {
-                    if (_agent.isStopped) _agent.isStopped = false;
-                    _agent.SetDestination(destination);
                     StopAttacking();
+                    if (_agent.isStopped) _agent.isStopped = false;
+
+                    if(Vector3.Distance(_agent.destination, destination) > 1.0f)
+                    {
+                        _agent.SetDestination(destination);
+                    }
+                    
                 }
             })
             .AddTo(this);
@@ -92,6 +134,7 @@ public class BearController : MonoBehaviour
             .Subscribe(_ =>
             {
                 StopAttacking();
+                if (animator && enableAnimation) animator.SetBool("IsMoving", false);
                 FindNextTarget();
             })
             .AddTo(this);
@@ -127,14 +170,15 @@ public class BearController : MonoBehaviour
 
         // 一番近い破壊されていない家を探す
         _targetHouse = validTargets
-            .OrderBy(h => Vector3.Distance(transform.position, h.transform.position))
+            .OrderBy(h => Vector3.Distance(detectionPoint.position, h.HouseCollider.ClosestPoint(detectionPoint.position)))
             .FirstOrDefault();
 
         if (_targetHouse != null)
         {
             Debug.Log($"ターゲット決定: {_targetHouse.name} への移動を開始します。");
             _agent.isStopped = false;
-            _agent.SetDestination(_targetHouse.transform.position);
+            Vector3 targetPos = _targetHouse.HouseCollider.ClosestPoint(transform.position);
+            _agent.SetDestination(targetPos);
         }
     }
 
@@ -152,10 +196,12 @@ public class BearController : MonoBehaviour
                     return;
                 }
 
-                Vector3 hitPosint = _targetHouse.HouseCollider.ClosestPoint(transform.position);
-                float dist = Vector3.Distance(transform.position, hitPosint);
+                Vector3 hitPosint = _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position);
+                float dist = Vector3.Distance(detectionPoint.position, hitPosint);
 
-                if (dist > 3.0) return;
+                if (dist > 6.0f) return;
+
+                if (animator != null && enableAnimation) animator.SetTrigger("Attack");
 
                 Debug.Log($"攻撃実行中: 対象={_targetHouse.name}, 距離={dist:F2}m (許容範囲:3.0m)");
 

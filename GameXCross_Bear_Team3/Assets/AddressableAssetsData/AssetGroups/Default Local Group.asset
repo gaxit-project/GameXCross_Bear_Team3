@@ -20,6 +20,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 732cf69aa6748d5499f528a9887dad59
+    m_Address: Assets/Prefabs/kuma.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: e45bb6ec19f0b134394d62a4eee661ac, type: 2}
   m_SchemaSet:

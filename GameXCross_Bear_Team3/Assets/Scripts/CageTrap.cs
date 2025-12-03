@@ -25,8 +25,6 @@ public class CageTrap : MonoBehaviour
 
         bear.OnTrapped(transform.position);
 
-        bear.transform.position = transform.position;
-
         GetComponent<Collider>().enabled = false;
     }
 }
