@@ -8,16 +8,16 @@ using System.Linq;
 using Unity.Cinemachine;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Rigidbody))]
 public class BearController : MonoBehaviour
 {
     [SerializeField] private float attackDamage = 20f;
     [SerializeField] private float attackInterval = 1.0f;
+    [SerializeField] private float attackRange = 5.0f;
 
     // ”»’èŠî€“_
     [SerializeField] private Transform detectionPoint;
-
     [SerializeField] private bool enableAnimation = true;
-
     [SerializeField] private Animator animator;
 
     private NavMeshAgent _agent;
@@ -46,6 +46,7 @@ public class BearController : MonoBehaviour
     {
         _agent.enabled = true;
         _agent.speed = speed;
+        _agent.updateRotation = true;
         _isTrapped = false;
 
         Vector3 targetScale = transform.localScale;
@@ -91,13 +92,13 @@ public class BearController : MonoBehaviour
         if (_targetHouse == null || _targetHouse.IsDestroyed) return;
 
         Vector3 hitPoint = _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position);
-        if (Vector3.Distance(detectionPoint.position, hitPoint) > 7.0f) return;
+        float dist = Vector3.Distance(detectionPoint.position, hitPoint);
+
+        if (dist < attackRange + 3.0f) return;
 
         Debug.Log("UŒ‚ƒqƒbƒg");
 
         _targetHouse.TakeDamage(attackDamage);
-
-        //transform.DOPunchScale(Vector3.one * 0.1f, 0.1f);
     }
 
     private void ObserveCollision()
@@ -130,21 +131,40 @@ public class BearController : MonoBehaviour
 
                 if (animator && enableAnimation) animator.SetBool("IsMoving", dist > 5.0f);
 
+                float stopThreshold = attackRange - 1.5f;
+                if (stopThreshold < 1.0f) stopThreshold = 1.0f;
+
                 // UŒ‚”ÍˆÍ“à‚È‚ç’âŽ~A‰“‚¯‚ê‚ÎˆÚ“®
-                if (dist <= 5.0f) // ­‚µ—]—T‚ðŽ‚½‚¹‚é
+                if (dist <= stopThreshold) // ­‚µ—]—T‚ðŽ‚½‚¹‚é
                 {
-                    if (!_agent.isStopped) _agent.isStopped = true;
+                    if (!_agent.isStopped)
+                    {
+                        _agent.isStopped = true;
+                        _agent.velocity = Vector3.zero;
+                    }
+
+                    _agent.updateRotation = false;
+
+                    Vector3 lookTarget = destination;
+                    lookTarget.y = transform.position.y;
+                    transform.LookAt(lookTarget);
+
                     StartAttacking();
                 }
                 else
                 {
-                    StopAttacking();
-                    if (_agent.isStopped) _agent.isStopped = false;
-
-                    if(Vector3.Distance(_agent.destination, destination) > 1.0f)
+                    bool isAttackingAndInRange = (_attackStream != null && dist <= attackRange);
+                    if (isAttackingAndInRange)
                     {
-                        _agent.SetDestination(destination);
+                        StopAttacking();
+                        if (_agent.isStopped) _agent.isStopped = false;
+
+                        if (Vector3.Distance(_agent.destination, destination) > 1.0f)
+                        {
+                            _agent.SetDestination(destination);
+                        }
                     }
+
                     
                 }
             })
@@ -158,6 +178,7 @@ public class BearController : MonoBehaviour
             {
                 StopAttacking();
                 if (animator && enableAnimation) animator.SetBool("IsMoving", false);
+                _agent.updateRotation = true;
                 FindNextTarget();
             })
             .AddTo(this);
@@ -220,9 +241,10 @@ public class BearController : MonoBehaviour
                 }
 
                 Vector3 hitPosint = _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position);
-                float dist = Vector3.Distance(detectionPoint.position, hitPosint);
 
-                if (dist > 6.0f) return;
+                float dist = Vector3.Distance(detectionPoint.position, _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position));
+
+                if (dist > attackRange + 2.0f) return;
 
                 if (animator != null && enableAnimation) animator.SetTrigger("Attack");
 

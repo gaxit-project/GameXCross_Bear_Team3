@@ -9,9 +9,9 @@ public class CameraController : MonoBehaviour
 
     [Header("カメラ回転設定")]
     [SerializeField] private float lookSensitivity = 100.0f;
-    //[SerializeField] private float pitchMax = 85.0f;
-    //[SerializeField] private float pitchMin = -85.0f;
-    //[SerializeField] private bool invertY = false;
+    [SerializeField] private float pitchMax = 85.0f;
+    [SerializeField] private float pitchMin = -85.0f;
+    [SerializeField] private bool invertY = false;
 
     [Header("コンポーネント")]
     [SerializeField] private Transform pivotTransform;
@@ -26,7 +26,7 @@ public class CameraController : MonoBehaviour
     private float elevateInput;
 
     private float yaw = 0.0f;
-    //private float pitch = 0.0f;
+    private float pitch = 0.0f;
 
     private void Awake()
     {
@@ -57,8 +57,8 @@ public class CameraController : MonoBehaviour
         cameraControls.Map.Look.performed -= OnLookPerformed;
         cameraControls.Map.Look.canceled -= OnLookCanceled;
 
-        cameraControls.Map.Elevate.performed += OnElevatePerformed;
-        cameraControls.Map.Elevate.canceled += OnElevateCanceled;
+        cameraControls.Map.Elevate.performed -= OnElevatePerformed;
+        cameraControls.Map.Elevate.canceled -= OnElevateCanceled;
 
         cameraControls.Disable();
         Cursor.lockState = CursorLockMode.None;
@@ -97,7 +97,15 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        
+        yaw = transform.eulerAngles.y;
+
+        if(pivotTransform != null)
+        {
+            float currentPitch = pivotTransform.localEulerAngles.x;
+
+            if (currentPitch > 180) currentPitch -= 360;
+            pitch = currentPitch;
+        }
     }
 
     void Update()
@@ -114,28 +122,20 @@ public class CameraController : MonoBehaviour
 
             transform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
 
-            /*
-            // 左右反転
             if (invertY) lookY = -lookY;
 
-            //垂直方向の入力
             pitch -= lookY;
 
-            // ピッチの制限
             pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
 
-            
-
-            if (pivotTransform != null)
+            if(pivotTransform != null)
             {
-                //pivotTransform.localRotation = Quaternion.Euler(pitch, 0.0f, 0.0f);
+                pivotTransform.localRotation = Quaternion.Euler(pitch, 0.0f, 0.0f);
             }
             else
             {
-                Debug.LogWarning("Pivot Transform が設定されていません", this);
-
+                Debug.LogWarning("Pivot Transform が設定されていません。Inspectorでカメラまたはピボットを割り当ててください。", this);
             }
-            */
         }
 
         // 視点移動の処理
