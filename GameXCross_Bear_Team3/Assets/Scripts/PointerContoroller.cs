@@ -9,8 +9,11 @@ public class PointerContoroller : MonoBehaviour
     private Vector2 input;
     [SerializeField] public GameObject ScrollUI;
     [SerializeField] public GameObject pointer;
+    [SerializeField] public money money;
     [Header("現在選択している設置物")]
     [SerializeField] public GameObject obj;
+    [Header("その設置物の設置コスト")]
+    [SerializeField] public int cost;
 
     void Start()
     {
@@ -42,7 +45,11 @@ public class PointerContoroller : MonoBehaviour
     {
         if (context.performed)
         {
-            Instantiate(obj, pointer.transform.position, pointer.transform.rotation);
+            if (money.moneycount > cost)
+            {
+                Instantiate(obj, pointer.transform.position, pointer.transform.rotation);
+                money.moneycount -= cost;
+            }
         }
     }
 }

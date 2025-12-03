@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class SerectObject : MonoBehaviour
@@ -6,9 +7,17 @@ public class SerectObject : MonoBehaviour
     [SerializeField] public GameObject pointer;
     [SerializeField,Header("設定する設置物")]
     public GameObject obj;
+    [SerializeField, Header("そのコスト")]
+    public int cost;
     [SerializeField, Header("ポインター")]
     public PointerContoroller p;
 
+    [SerializeField] TextMeshProUGUI Text;
+
+    private void Start()
+    {
+        Text.text = cost.ToString("N0");
+    }
 
 
     public void Onclick()
@@ -16,5 +25,6 @@ public class SerectObject : MonoBehaviour
         ScrollUI.SetActive(false);
         pointer.SetActive(true);
         p.obj = obj;
+        p.cost = cost;
     }
 }
