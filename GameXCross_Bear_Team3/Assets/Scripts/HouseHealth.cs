@@ -5,7 +5,7 @@ using System;
 using NUnit.Framework.Constraints;
 
 [RequireComponent(typeof(Collider))]
-public classÅ@HouseHealth : MonoBehaviour
+public class HouseHealth : MonoBehaviour
 {
     [SerializeField] private float maxHp = 100f;
     public FloatReactiveProperty CurrentHp { get; private set; }

@@ -5,6 +5,7 @@ using UniRx;
 using UniRx.Triggers;
 using System;
 using System.Linq;
+using Unity.Cinemachine;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class BearController : MonoBehaviour
@@ -22,6 +23,8 @@ public class BearController : MonoBehaviour
     private NavMeshAgent _agent;
     private HouseHealth _targetHouse; // ë_Ç¡ÇƒÇ¢ÇÈâ∆
 
+    private Rigidbody _rb;
+
     // èÛë‘ä«óù
     private IDisposable _attackStream;
     private bool _isTrapped = false;
@@ -29,6 +32,9 @@ public class BearController : MonoBehaviour
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _rb = GetComponent<Rigidbody>();
+
+        _agent.stoppingDistance = 0f;
 
         if (detectionPoint == null) detectionPoint = transform;
         if (animator == null) animator = GetComponentInChildren<Animator>();
@@ -50,6 +56,7 @@ public class BearController : MonoBehaviour
 
         FindNextTarget();
         ObserveState();
+        ObserveCollision();
     }
 
     /// <summary>
@@ -91,6 +98,22 @@ public class BearController : MonoBehaviour
         _targetHouse.TakeDamage(attackDamage);
 
         //transform.DOPunchScale(Vector3.one * 0.1f, 0.1f);
+    }
+
+    private void ObserveCollision()
+    {
+        this.OnTriggerEnterAsObservable()
+            .Subscribe(other =>
+            {
+                if (other.TryGetComponent<Fence>(out var fence))
+                {
+                    Debug.Log("ÉtÉFÉìÉXÇîjâÛÇµÇ‹ÇµÇΩ");
+                    fence.FenceBreak();
+
+                    transform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+                }
+            })
+            .AddTo(this);
     }
 
     private void ObserveState()

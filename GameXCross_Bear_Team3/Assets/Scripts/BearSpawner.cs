@@ -6,7 +6,7 @@ public class BearSpawner : MonoBehaviour
 {
     [SerializeField] private string bearPrefabAddress = "Bear.prefab";
 
-    [SerializeField] private float spawnDistance = 40.0f;
+    [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private float moveSpeed = 5.0f; // 移動速度
 
     async void Start()
@@ -16,12 +16,18 @@ public class BearSpawner : MonoBehaviour
 
     private async Task SpawnBear()
     {
+        if(spawnPoints == null || spawnPoints.Length == 0)
+        {
+            Debug.LogError("BearSpawner: スポーン地点 (Spawn Points) が設定されていません！Inspectorで登録してください。");
+            return;
+        }
         // 出現位置の計算
-        Vector2 randomCircle = Random.insideUnitCircle.normalized * spawnDistance;
-        Vector3 spawnPos = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+        int randomIndex = Random.Range(0, spawnPoints.Length);
+        Transform targetPoint = spawnPoints[randomIndex];
+        Vector3 spawnPos = targetPoint.position;
 
         UnityEngine.AI.NavMeshHit hit;
-        if(UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out hit, 10.0f, UnityEngine.AI.NavMesh.AllAreas))
+        if(UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out hit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
         {
             spawnPos = hit.position;
         }
