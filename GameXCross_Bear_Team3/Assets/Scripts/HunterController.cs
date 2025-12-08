@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
 using UniRx;
@@ -28,6 +28,9 @@ public class HunterController : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem muzzleFlash;
 
+    [Header("デバッグ")]
+    [SerializeField] private bool isDebugMode = false; // アニメーションなしのデバッグモード
+
     private NavMeshAgent _agent;
     private Vector3 _spawnPosition;
     private BearController _targetBear;
@@ -44,7 +47,7 @@ public class HunterController : MonoBehaviour
         _currentHealth = maxHealth;
         _spawnPosition = transform.position;
 
-        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (!isDebugMode && animator == null) animator = GetComponentInChildren<Animator>();
     }
 
     private void Start()
@@ -84,7 +87,7 @@ public class HunterController : MonoBehaviour
                     if (!_agent.isStopped) _agent.isStopped = true;
                     transform.LookAt(_targetBear.transform);
 
-                    if (animator) animator.SetBool("IsMoving", false);
+                    if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
 
                     if (_attackStream == null) StartShooting();
                 }
@@ -94,7 +97,7 @@ public class HunterController : MonoBehaviour
                     if (_agent.isStopped) _agent.isStopped = false;
                     _agent.SetDestination(_targetBear.transform.position);
 
-                    if (animator) animator.SetBool("IsMoving", true);
+                    if (!isDebugMode && animator) animator.SetBool("IsMoving", true);
 
                     StopShooting(); // 射撃停止
                 }
@@ -136,7 +139,7 @@ public class HunterController : MonoBehaviour
 
     private void Shoot()
     {
-        if (animator) animator.SetTrigger("Attack");
+        if (!isDebugMode && animator) animator.SetTrigger("Attack");
         if (muzzleFlash) muzzleFlash.Play();
 
         // クマにダメージを与える（attackerとして自分を渡す）
@@ -163,7 +166,7 @@ public class HunterController : MonoBehaviour
             .Where(_ => !_isDead && _targetBear == null)
             .Subscribe(_ =>
             {
-                if (animator) animator.SetBool("IsMoving", _agent.velocity.magnitude > 0.1f);
+                if (!isDebugMode && animator) animator.SetBool("IsMoving", _agent.velocity.magnitude > 0.1f);
 
                 if (!_agent.pathPending && _agent.remainingDistance < 0.5f)
                 {
@@ -222,7 +225,7 @@ public class HunterController : MonoBehaviour
         StopShooting();
         StopPatrol();
 
-        if (animator) animator.SetTrigger("Die");
+        if (!isDebugMode && animator) animator.SetTrigger("Die");
 
         Debug.Log("ハンター: 死亡しました。");
 
