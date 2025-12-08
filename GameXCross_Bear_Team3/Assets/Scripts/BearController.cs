@@ -1,33 +1,39 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
 using UniRx;
 using UniRx.Triggers;
 using System;
 using System.Linq;
-using Unity.Cinemachine;
+// using UnityEditor; // ãƒ“ãƒ«ãƒ‰æ™‚ã«ã‚¨ãƒ©ãƒ¼ã«ãªã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ãŸã‚ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Rigidbody))]
 public class BearController : MonoBehaviour
 {
+    [Header("ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹")]
+    [SerializeField] private float maxHealth = 100f; // HPåˆæœŸå€¤
     [SerializeField] private float attackDamage = 20f;
     [SerializeField] private float attackInterval = 1.0f;
     [SerializeField] private float attackRange = 5.0f;
 
-    // ”»’èŠî€“_
+    [Header("å‚ç…§")]
     [SerializeField] private Transform detectionPoint;
     [SerializeField] private bool enableAnimation = true;
     [SerializeField] private Animator animator;
 
     private NavMeshAgent _agent;
-    private HouseHealth _targetHouse; // ‘_‚Á‚Ä‚¢‚é‰Æ
-
     private Rigidbody _rb;
 
-    // ó‘ÔŠÇ—
+    // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
+    private HouseHealth _targetHouse; // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®å®¶
+    private HunterController _targetHunter; // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ãƒãƒ³ã‚¿ãƒ¼
+    private float _currentHealth;
+
+    // çŠ¶æ…‹ç®¡ç†
     private IDisposable _attackStream;
     private bool _isTrapped = false;
+    private bool _isDead = false;
 
     private void Awake()
     {
@@ -35,6 +41,7 @@ public class BearController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
 
         _agent.stoppingDistance = 0f;
+        _currentHealth = maxHealth; // åˆæœŸåŒ–
 
         if (detectionPoint == null) detectionPoint = transform;
         if (animator == null) animator = GetComponentInChildren<Animator>();
@@ -48,10 +55,12 @@ public class BearController : MonoBehaviour
         _agent.speed = speed;
         _agent.updateRotation = true;
         _isTrapped = false;
+        _isDead = false; // åˆæœŸåŒ–
+        _currentHealth = maxHealth; // åˆæœŸåŒ–
 
         Vector3 targetScale = transform.localScale;
 
-        // oŒ»ƒAƒjƒ[ƒVƒ‡ƒ“
+        // å‡ºç¾ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
         transform.localScale = Vector3.one * 0.1f;
         transform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack);
 
@@ -61,11 +70,49 @@ public class BearController : MonoBehaviour
     }
 
     /// <summary>
-    /// ã©‚É‚©‚©‚Á‚½‚Ìˆ—
+    /// ãƒãƒ³ã‚¿ãƒ¼ã‹ã‚‰ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ãŸéš›ã®å‡¦ç†
     /// </summary>
+    public void TakeDamage(float damage, HunterController attacker)
+    {
+        if (_isDead) return;
+
+        _currentHealth -= damage;
+        transform.DOPunchScale(Vector3.one * -0.1f, 0.2f); // ãƒ€ãƒ¡ãƒ¼ã‚¸æ¼”å‡º
+
+        if (_currentHealth <= 0)
+        {
+            Die();
+            return;
+        }
+
+        // ç½ ã«ã‹ã‹ã£ã¦ãŠã‚‰ãšã€ã‹ã¤ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒç¾åœ¨ã®ãƒãƒ³ã‚¿ãƒ¼ã§ãªã„å ´åˆ
+        if (!_isTrapped && attacker != null && _targetHunter != attacker)
+        {
+            Debug.Log("ç†Š: æ”»æ’ƒã‚’å—ã‘ãŸï¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’ãƒãƒ³ã‚¿ãƒ¼ã«å¤‰æ›´ã—ã¾ã™ã€‚");
+
+            _targetHunter = attacker; // ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’ãƒãƒ³ã‚¿ãƒ¼ã«å¤‰æ›´
+            _targetHouse = null;      // å®¶ã¸ã®ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’è§£é™¤
+
+            StopAttacking();
+            if (_agent.isActiveAndEnabled) _agent.isStopped = false;
+        }
+    }
+
+    private void Die()
+    {
+        _isDead = true;
+        _agent.enabled = false;
+        StopAttacking();
+        if (animator && enableAnimation) animator.SetTrigger("Die");
+        Debug.Log("ç†Š: æ­»äº¡ã—ã¾ã—ãŸã€‚");
+
+        GetComponent<Collider>().enabled = false;
+        Destroy(gameObject, 3.0f);
+    }
+
     public void OnTrapped(Vector3 trapCenterPosition)
     {
-        if (_isTrapped) return;
+        if (_isTrapped || _isDead) return;
 
         _isTrapped = true;
         _agent.enabled = false;
@@ -73,44 +120,53 @@ public class BearController : MonoBehaviour
 
         if (animator && enableAnimation) animator.speed = 0;
 
-        Vector3 finalPosition = new Vector3(
-            trapCenterPosition.x,
-            trapCenterPosition.y,
-            trapCenterPosition.z
-        );
-
         transform.position = trapCenterPosition;
         transform.rotation = Quaternion.identity;
 
-        Debug.Log($"{name}‚ªã©‚É‚©‚©‚Á‚½B");
-
+        Debug.Log($"{name}ãŒç½ ã«ã‹ã‹ã‚Šã¾ã—ãŸã€‚");
         transform.DOShakeScale(0.5f, 0.5f);
     }
 
+    // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆã‹ã‚‰å‘¼ã°ã‚Œã‚‹æ”»æ’ƒå‡¦ç†
     public void OnAttackHit()
     {
-        if (_targetHouse == null || _targetHouse.IsDestroyed) return;
+        // ãƒãƒ³ã‚¿ãƒ¼ã¸ã®æ”»æ’ƒ
+        if (_targetHunter != null)
+        {
+            float dist = Vector3.Distance(detectionPoint.position, _targetHunter.transform.position);
+            // è·é›¢ã®èª¤å·®è¨±å®¹
+            if (dist < attackRange + 2.0f)
+            {
+                Debug.Log("ç†Š: ãƒãƒ³ã‚¿ãƒ¼ã¸æ”»æ’ƒãƒ’ãƒƒãƒˆ");
+                _targetHunter.TakeDamage(attackDamage);
+            }
+            return; // ãƒãƒ³ã‚¿ãƒ¼å„ªå…ˆ
+        }
 
-        Vector3 hitPoint = _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position);
-        float dist = Vector3.Distance(detectionPoint.position, hitPoint);
+        // å®¶ã¸ã®æ”»æ’ƒ
+        if (_targetHouse != null && !_targetHouse.IsDestroyed)
+        {
+            Vector3 hitPoint = _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position);
+            float dist = Vector3.Distance(detectionPoint.position, hitPoint);
 
-        if (dist < attackRange + 3.0f) return;
-
-        Debug.Log("UŒ‚ƒqƒbƒg");
-
-        _targetHouse.TakeDamage(attackDamage);
+            if (dist < attackRange + 3.0f)
+            {
+                Debug.Log("ç†Š: å®¶ã¸æ”»æ’ƒãƒ’ãƒƒãƒˆ");
+                _targetHouse.TakeDamage(attackDamage);
+            }
+        }
     }
 
     private void ObserveCollision()
     {
         this.OnTriggerEnterAsObservable()
+            .Where(_ => !_isDead) // æ­»ã‚“ã§ã„ãªã„å ´åˆã®ã¿
             .Subscribe(other =>
             {
                 if (other.TryGetComponent<Fence>(out var fence))
                 {
-                    Debug.Log("ƒtƒFƒ“ƒX‚ğ”j‰ó‚µ‚Ü‚µ‚½");
+                    Debug.Log("ãƒ•ã‚§ãƒ³ã‚¹ã‚’ç ´å£Šã—ã¾ã—ãŸ");
                     fence.FenceBreak();
-
                     transform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
                 }
             })
@@ -119,107 +175,134 @@ public class BearController : MonoBehaviour
 
     private void ObserveState()
     {
-        // ˆÚ“®’†‚Ì§Œä
         this.UpdateAsObservable()
-            .Where(_ => _targetHouse != null && !_targetHouse.IsDestroyed && !_isTrapped)
+            .Where(_ => !_isTrapped && !_isDead)
             .Subscribe(_ =>
             {
-                Vector3 destination = _targetHouse.HouseCollider.ClosestPoint(transform.position);
-
-                // ƒ^[ƒQƒbƒg‚Ö‚Ì‹——£‚ğƒ`ƒFƒbƒN
-                float dist = Vector3.Distance(detectionPoint.position, _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position)); ;
-
-                if (animator && enableAnimation) animator.SetBool("IsMoving", dist > 5.0f);
-
-                float stopThreshold = attackRange - 1.5f;
-                if (stopThreshold < 1.0f) stopThreshold = 1.0f;
-
-                // UŒ‚”ÍˆÍ“à‚È‚ç’â~A‰“‚¯‚ê‚ÎˆÚ“®
-                if (dist <= stopThreshold) // ­‚µ—]—T‚ğ‚½‚¹‚é
+                // å„ªå…ˆåº¦1: ãƒãƒ³ã‚¿ãƒ¼ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã—ã¦ã„ã‚‹å ´åˆ
+                if (_targetHunter != null)
                 {
-                    if (!_agent.isStopped)
+                    // ãƒãƒ³ã‚¿ãƒ¼ãŒæ­»ã‚“ã ã€ã¾ãŸã¯ç„¡åŠ¹ã«ãªã£ãŸã‚‰ã‚¿ãƒ¼ã‚²ãƒƒãƒˆè§£é™¤ã—ã¦æ¬¡ã‚’æ¢ã™
+                    if (_targetHunter == null || !_targetHunter.gameObject.activeSelf)
                     {
-                        _agent.isStopped = true;
-                        _agent.velocity = Vector3.zero;
+                        _targetHunter = null;
+                        FindNextTarget();
+                        return;
                     }
 
-                    _agent.updateRotation = false;
-
-                    Vector3 lookTarget = destination;
-                    lookTarget.y = transform.position.y;
-                    transform.LookAt(lookTarget);
-
-                    StartAttacking();
+                    HandleHunterTarget();
                 }
+                // å„ªå…ˆåº¦2: å®¶ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã—ã¦ã„ã‚‹å ´åˆ
+                else if (_targetHouse != null && !_targetHouse.IsDestroyed)
+                {
+                    HandleHouseTarget();
+                }
+                // å„ªå…ˆåº¦3: ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãŒãªã„å ´åˆ
                 else
                 {
-                    bool isAttackingAndInRange = (_attackStream != null && dist <= attackRange);
-                    if (isAttackingAndInRange)
-                    {
-                        StopAttacking();
-                        if (_agent.isStopped) _agent.isStopped = false;
-
-                        if (Vector3.Distance(_agent.destination, destination) > 1.0f)
-                        {
-                            _agent.SetDestination(destination);
-                        }
-                    }
-
-                    
+                    FindNextTarget();
                 }
-            })
-            .AddTo(this);
-
-        // ‰Æ‚ª”j‰ó‚³‚ê‚½ê‡
-        this.UpdateAsObservable()
-            .Where(_ => _targetHouse == null || _targetHouse.IsDestroyed && !_isTrapped)
-            .ThrottleFirst(TimeSpan.FromSeconds(1.0f)) // ˜A‘±Às‚ğ–h‚®(1•bŠÔŠu‚ğŠJ‚¯‚é)
-            .Subscribe(_ =>
-            {
-                StopAttacking();
-                if (animator && enableAnimation) animator.SetBool("IsMoving", false);
-                _agent.updateRotation = true;
-                FindNextTarget();
             })
             .AddTo(this);
     }
 
-    /// <summary>
-    /// Ÿ‚Ìƒ^[ƒQƒbƒg‚ğ’T‚·
-    /// </summary>
+    // ãƒãƒ³ã‚¿ãƒ¼ã«å¯¾ã™ã‚‹æŒ™å‹•
+    private void HandleHunterTarget()
+    {
+        float dist = Vector3.Distance(detectionPoint.position, _targetHunter.transform.position);
+
+        if (animator && enableAnimation) animator.SetBool("IsMoving", dist > attackRange - 1.0f);
+
+        // æ”»æ’ƒç¯„å›²å†…
+        if (dist <= attackRange)
+        {
+            if (!_agent.isStopped)
+            {
+                _agent.isStopped = true;
+                _agent.velocity = Vector3.zero;
+            }
+            _agent.updateRotation = false;
+
+            // ãƒãƒ³ã‚¿ãƒ¼ã®æ–¹ã‚’å‘ã
+            Vector3 lookTarget = _targetHunter.transform.position;
+            lookTarget.y = transform.position.y;
+            transform.LookAt(lookTarget);
+
+            StartAttacking();
+        }
+        else
+        {
+            // è¿½è·¡
+            StopAttacking();
+            if (_agent.isStopped) _agent.isStopped = false;
+            _agent.updateRotation = true;
+            _agent.SetDestination(_targetHunter.transform.position);
+        }
+    }
+
+    // å®¶ã«å¯¾ã™ã‚‹æŒ™å‹•
+    private void HandleHouseTarget()
+    {
+        Vector3 destination = _targetHouse.HouseCollider.ClosestPoint(transform.position);
+        float dist = Vector3.Distance(detectionPoint.position, destination);
+
+        if (animator && enableAnimation) animator.SetBool("IsMoving", dist > 5.0f);
+
+        float stopThreshold = attackRange - 1.5f;
+        if (stopThreshold < 1.0f) stopThreshold = 1.0f;
+
+        if (dist <= stopThreshold)
+        {
+            if (!_agent.isStopped)
+            {
+                _agent.isStopped = true;
+                _agent.velocity = Vector3.zero;
+            }
+            _agent.updateRotation = false;
+
+            Vector3 lookTarget = destination;
+            lookTarget.y = transform.position.y;
+            transform.LookAt(lookTarget);
+
+            StartAttacking();
+        }
+        else
+        {
+            bool isAttackingAndInRange = (_attackStream != null && dist <= attackRange);
+            if (isAttackingAndInRange)
+            {
+                StopAttacking();
+                if (_agent.isStopped) _agent.isStopped = false;
+                if (Vector3.Distance(_agent.destination, destination) > 1.0f)
+                {
+                    _agent.SetDestination(destination);
+                }
+            }
+        }
+    }
+
     private void FindNextTarget()
     {
         StopAttacking();
+        _targetHunter = null; // ãƒãƒ³ã‚¿ãƒ¼ã‚²ãƒƒãƒˆè§£é™¤
 
         var houses = GameObject.FindGameObjectsWithTag("House");
-        Debug.Log($"ƒ^ƒO'House'‚ª‚Â‚¢‚½ƒIƒuƒWƒFƒNƒg”F{houses.Length}");
-
-        if (houses.Length == 0)
-        {
-            Debug.LogError("‰Æ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñI‰Æ‚É'House'ƒ^ƒO‚ª‚Â‚¢‚Ä‚¢‚é‚©Šm”F‚µ‚Ä‚­‚¾‚³‚¢B");
-            return;
-        }
+        if (houses.Length == 0) return;
 
         var validTargets = houses
             .Select(h => h.GetComponent<HouseHealth>())
             .Where(h => h != null && !h.IsDestroyed)
             .ToList();
-        Debug.Log($"HouseHealth ƒXƒNƒŠƒvƒg‚ª‚Â‚¢‚Ä‚¢‚é¶‘¶’†‚Ì‰Æ: {validTargets.Count}Œ¬");
 
-        if (validTargets.Count == 0)
-        {
-            Debug.LogError("ƒ^ƒO‚Í‚ ‚è‚Ü‚·‚ª 'HouseHealth' ƒXƒNƒŠƒvƒg‚ª‚Â‚¢‚Ä‚¢‚é‰Æ‚ª0Œ¬‚Å‚·B");
-            return;
-        }
+        if (validTargets.Count == 0) return;
 
-        // ˆê”Ô‹ß‚¢”j‰ó‚³‚ê‚Ä‚¢‚È‚¢‰Æ‚ğ’T‚·
+        // ä¸€ç•ªè¿‘ã„å£Šã‚Œã¦ã„ãªã„å®¶ã‚’æ¢ã™
         _targetHouse = validTargets
             .OrderBy(h => Vector3.Distance(detectionPoint.position, h.HouseCollider.ClosestPoint(detectionPoint.position)))
             .FirstOrDefault();
 
         if (_targetHouse != null)
         {
-            Debug.Log($"ƒ^[ƒQƒbƒgŒˆ’è: {_targetHouse.name} ‚Ö‚ÌˆÚ“®‚ğŠJn‚µ‚Ü‚·B");
             _agent.isStopped = false;
             Vector3 targetPos = _targetHouse.HouseCollider.ClosestPoint(transform.position);
             _agent.SetDestination(targetPos);
@@ -228,43 +311,30 @@ public class BearController : MonoBehaviour
 
     private void StartAttacking()
     {
-        if (_attackStream != null) return; // UŒ‚’†‚Ìê‡‚Í‰½‚à‚µ‚È‚¢
+        if (_attackStream != null) return;
 
-        // ˆê’èŠÔŠu‚ÅUŒ‚‚·‚é
         _attackStream = Observable.Interval(TimeSpan.FromSeconds(attackInterval))
             .Subscribe(_ =>
             {
-                if(_targetHouse == null || _targetHouse.IsDestroyed)
-                {
-                    StopAttacking();
-                    return;
-                }
-
-                Vector3 hitPosint = _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position);
-
-                float dist = Vector3.Distance(detectionPoint.position, _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position));
-
-                if (dist > attackRange + 2.0f) return;
-
+                // ãƒãƒ³ã‚¿ãƒ¼ãƒ»å®¶ã€ã©ã¡ã‚‰ã‚’ç‹™ã£ã¦ã„ã‚‹å ´åˆã§ã‚‚ã€OnAttackHitã§åˆ¤å®šã—ã¦ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’ä¸ãˆã‚‹
+                // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹å ´åˆã¯Triggerã‚»ãƒƒãƒˆ
                 if (animator != null && enableAnimation) animator.SetTrigger("Attack");
 
-                Debug.Log($"UŒ‚Às’†: ‘ÎÛ={_targetHouse.name}, ‹——£={dist:F2}m (‹–—e”ÍˆÍ:3.0m)");
-
-                // UŒ‚ƒAƒNƒVƒ‡ƒ“
+                // æ”»æ’ƒæ¼”å‡º
                 transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
-                _targetHouse.TakeDamage(attackDamage);
+
+                // ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆã‚’ä½¿ã‚ãªã„å ´åˆã¯ã“ã“ã§ç›´æ¥å‘¼ã¶
+                OnAttackHit();
             })
             .AddTo(this);
     }
 
     private void StopAttacking()
     {
-        if(_attackStream != null)
+        if (_attackStream != null)
         {
             _attackStream.Dispose();
             _attackStream = null;
         }
     }
-
-    
 }
