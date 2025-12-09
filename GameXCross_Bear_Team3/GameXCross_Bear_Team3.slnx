@@ -3,4 +3,5 @@
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="UniRx.Examples.csproj" />
   <Project Path="DOTween.Modules.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
 </Solution>
