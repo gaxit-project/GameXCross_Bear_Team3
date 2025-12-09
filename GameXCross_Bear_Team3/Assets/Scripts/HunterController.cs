@@ -168,6 +168,8 @@ public class HunterController : MonoBehaviour
             {
                 if (!isDebugMode && animator) animator.SetBool("IsMoving", _agent.velocity.magnitude > 0.1f);
 
+                if (!_agent.isOnNavMesh || !_agent.isActiveAndEnabled) return;
+                
                 if (!_agent.pathPending && _agent.remainingDistance < 0.5f)
                 {
                     // 一定確率でランダムな地点へ移動
@@ -230,6 +232,19 @@ public class HunterController : MonoBehaviour
         Debug.Log("ハンター: 死亡しました。");
 
         GetComponent<Collider>().enabled = false;
-        Destroy(gameObject, 3.0f);
+
+        // 横に倒れて消えるアニメーション
+        Vector3 currentRotation = transform.eulerAngles;
+        Vector3 fallRotation = new Vector3(currentRotation.x + 90f, currentRotation.y, currentRotation.z);
+        
+        Sequence deathSequence = DOTween.Sequence();
+        // 横に倒れる（0.5秒）
+        deathSequence.Append(transform.DORotate(fallRotation, 0.5f).SetEase(Ease.OutQuad));
+        // 少し沈む（0.3秒）
+        deathSequence.Join(transform.DOMoveY(transform.position.y - 0.5f, 0.5f).SetEase(Ease.InQuad));
+        // スケールを0にして消える（0.3秒）
+        deathSequence.Append(transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InQuad));
+        // アニメーション完了後に削除
+        deathSequence.OnComplete(() => Destroy(gameObject));
     }
 }
