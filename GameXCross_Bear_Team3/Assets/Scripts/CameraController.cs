@@ -1,22 +1,22 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    [Header("ƒJƒƒ‰ˆÚ“®İ’è")]
+    [Header("ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ú“ï¿½ï¿½İ’ï¿½")]
     [SerializeField] private float moveSpeed = 5.0f;
     [SerializeField] private float verticalSpeed = 5.0f;
 
-    [Header("ƒJƒƒ‰‰ñ“]İ’è")]
+    [Header("ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]ï¿½İ’ï¿½")]
     [SerializeField] private float lookSensitivity = 100.0f;
     [SerializeField] private float pitchMax = 85.0f;
     [SerializeField] private float pitchMin = -85.0f;
     [SerializeField] private bool invertY = false;
 
-    [Header("ƒRƒ“ƒ|[ƒlƒ“ƒg")]
+    [Header("ï¿½Rï¿½ï¿½ï¿½|ï¿½[ï¿½lï¿½ï¿½ï¿½g")]
     [SerializeField] private Transform pivotTransform;
 
-    [Header("‘€ìİ’è")]
+    [Header("ï¿½ï¿½ï¿½ï¿½İ’ï¿½")]
     public bool enableRotation = true;
 
     [Header("Input Actions")]
@@ -113,11 +113,11 @@ public class CameraController : MonoBehaviour
         if (enableRotation)
         {
 
-            // ‹“_‰ñ“]‚Ìˆ—
+            // ï¿½ï¿½ï¿½_ï¿½ï¿½]ï¿½Ìï¿½ï¿½ï¿½
             float lookX = lookInput.x * lookSensitivity * Time.deltaTime;
             float lookY = lookInput.y * lookSensitivity * Time.deltaTime;
 
-            // …•½•ûŒü‚Ì“ü—Í
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì“ï¿½ï¿½ï¿½
             yaw += lookX;
 
             transform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
@@ -134,11 +134,11 @@ public class CameraController : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Pivot Transform ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñBInspector‚ÅƒJƒƒ‰‚Ü‚½‚Íƒsƒ{ƒbƒg‚ğŠ„‚è“–‚Ä‚Ä‚­‚¾‚³‚¢B", this);
+                Debug.LogWarning("Pivot Transform ï¿½ï¿½ï¿½İ’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½BInspectorï¿½ÅƒJï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½Íƒsï¿½{ï¿½bï¿½gï¿½ï¿½ï¿½ï¿½è“–ï¿½Ä‚Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B", this);
             }
         }
 
-        // ‹“_ˆÚ“®‚Ìˆ—
+        // ï¿½ï¿½ï¿½_ï¿½Ú“ï¿½ï¿½Ìï¿½ï¿½ï¿½
         Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
         transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.Self);
 

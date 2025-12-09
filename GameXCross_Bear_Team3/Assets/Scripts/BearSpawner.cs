@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.AddressableAssets;
 using System.Threading.Tasks;
 
@@ -7,7 +7,7 @@ public class BearSpawner : MonoBehaviour
     [SerializeField] private string bearPrefabAddress = "Bear.prefab";
 
     [SerializeField] private Transform[] spawnPoints;
-    [SerializeField] private float moveSpeed = 5.0f; // ˆÚ“®‘¬“x
+    [SerializeField] private float moveSpeed = 5.0f; // ç§»å‹•é€Ÿåº¦
 
     async void Start()
     {
@@ -18,10 +18,10 @@ public class BearSpawner : MonoBehaviour
     {
         if(spawnPoints == null || spawnPoints.Length == 0)
         {
-            Debug.LogError("BearSpawner: ƒXƒ|[ƒ“’n“_ (Spawn Points) ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñIInspector‚Å“o˜^‚µ‚Ä‚­‚¾‚³‚¢B");
+            Debug.LogError("BearSpawner: ã‚¹ãƒãƒ¼ãƒ³åœ°ç‚¹ (Spawn Points) ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼Inspectorã§è¨­å®šã—ã¦ãã ã•ã„ã€‚");
             return;
         }
-        // oŒ»ˆÊ’u‚ÌŒvZ
+        // å‡ºç¾ä½ç½®ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«æ±ºå®š
         int randomIndex = Random.Range(0, spawnPoints.Length);
         Transform targetPoint = spawnPoints[randomIndex];
         Vector3 spawnPos = targetPoint.position;
@@ -32,7 +32,7 @@ public class BearSpawner : MonoBehaviour
             spawnPos = hit.position;
         }
 
-        // ¶¬
+        // ç”Ÿæˆ
         var op = Addressables.InstantiateAsync(bearPrefabAddress, spawnPos, Quaternion.identity);
         var bearObj = await op.Task;
 

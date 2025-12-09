@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UniRx;
 using UniRx.Triggers;
 
@@ -21,7 +21,7 @@ public class CageTrap : MonoBehaviour
 
     private void ActivateTrap(BearController bear)
     {
-        Debug.Log("ŸB‚ÉŒF‚ª“ü‚è‚Ü‚µ‚½B");
+        Debug.Log("ï¿½Bï¿½ÉŒFï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½B");
 
         bear.OnTrapped(transform.position);
 
