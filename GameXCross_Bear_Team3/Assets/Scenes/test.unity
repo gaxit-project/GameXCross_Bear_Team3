@@ -5259,7 +5259,15 @@ PrefabInstance:
       value: field2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -1167211755199916249, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
+    - {fileID: 7092904800978632233, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
+    - {fileID: 1526804730944999481, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
+    - {fileID: -754004860353497160, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
+    - {fileID: -3630694712068333584, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
+    - {fileID: 4775428508133318212, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
+    - {fileID: 2386043029326212765, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
+    - {fileID: 5411013136161227429, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dbd53d74f9c77104ba20bccfa0112157, type: 3}
