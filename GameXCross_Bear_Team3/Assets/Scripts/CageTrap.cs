@@ -21,7 +21,7 @@ public class CageTrap : MonoBehaviour
 
     private void ActivateTrap(BearController bear)
     {
-        Debug.Log("�B�ɌF������܂����B");
+        Debug.Log("クマが罠にかかりました。");
 
         bear.OnTrapped(transform.position);
 

@@ -77,7 +77,14 @@ public class CameraController : MonoBehaviour
 
     private void OnLookPerformed(InputAction.CallbackContext context)
     {
-        lookInput = context.ReadValue<Vector2>();
+        if (enableRotation)
+        {
+            lookInput = context.ReadValue<Vector2>();
+        }
+        else
+        {
+            lookInput = Vector2.zero;
+        }
     }
 
     private void OnLookCanceled(InputAction.CallbackContext context)
@@ -110,9 +117,14 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        // enableRotationがfalseの場合は、入力もリセットしておく
+        if (!enableRotation)
+        {
+            lookInput = Vector2.zero;
+        }
+
         if (enableRotation)
         {
-
             // カメラ回転処理
             float lookX = lookInput.x * lookSensitivity * Time.deltaTime;
             float lookY = lookInput.y * lookSensitivity * Time.deltaTime;
@@ -149,6 +161,11 @@ public class CameraController : MonoBehaviour
     public void SetRotationEnabled(bool isEnable)
     {
         enableRotation = isEnable;
+        // 回転を無効化する場合は、現在の入力をリセット
+        if (!isEnable)
+        {
+            lookInput = Vector2.zero;
+        }
         UpdateCursorState();
     }
 
