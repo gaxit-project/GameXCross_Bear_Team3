@@ -4,136 +4,123 @@ using System.Collections.Generic;
 public class TreeGenerator : MonoBehaviour
 {
     [Header("必須設定")]
-    [Tooltip("木のプレハブ")]
+    [Tooltip("手順1で作った『CorrectTree』プレハブをセット")]
     public GameObject treePrefab;
 
-    [Tooltip("山も地面も含むフィールドのオブジェクト（Cube）")]
-    public GameObject fieldObject; 
+    [Tooltip("木を生やす地面のオブジェクト")]
+    public GameObject fieldObject;
 
-    [Header("高さフィルター（重要）")]
-    [Tooltip("これより低い場所（砂地）には木を生やしません。シーンビューの赤い板を目安に調整してください。")]
-    public float minSpawnHeight = -1.5f;
-
-    [Header("配置設定")]
-    [Tooltip("生成する木の最大数")]
+    [Header("配置ルール")]
+    [Tooltip("生成する本数")]
     public int maxTreeCount = 50;
 
-    [Tooltip("木同士の最低間隔（重なり防止）")]
+    [Tooltip("木同士の間隔")]
     public float minDistance = 1.5f;
 
-    [Tooltip("縦方向（Y）のスケール倍率の範囲")]
-    public Vector2 scaleYRange = new Vector2(0.8f, 1.5f);
+    [Tooltip("地面より少し低い値にしておく（例: -100）")]
+    public float minSpawnHeight = -100f;
 
-    // 生成した木を管理するリスト
-    [HideInInspector] 
+    [Header("サイズ調整（倍率）")]
+    [Tooltip("高さ（Y）を元の何倍にするか（例：0.8倍 ～ 1.5倍）")]
+    public Vector2 scaleYMultiplier = new Vector2(0.8f, 1.5f);
+
+    [HideInInspector]
     public List<GameObject> spawnedTrees = new List<GameObject>();
 
     public void GenerateTrees()
     {
         if (treePrefab == null || fieldObject == null)
         {
-            Debug.LogError("【エラー】Tree Prefab または Field Object が未設定です！");
+            Debug.LogError("Tree Prefab または Field Object が設定されていません！");
             return;
         }
 
-        Collider fieldCollider = fieldObject.GetComponent<Collider>();
-        if (fieldCollider == null)
+        Collider col = fieldObject.GetComponent<Collider>();
+        if (col == null)
         {
-            Debug.LogError("【エラー】フィールドにColliderがついていません！");
+            Debug.LogError("地面（Field Object）にColliderがありません！");
             return;
         }
 
-        ClearTrees(); // リセット
+        ClearTrees();
 
-        Bounds bounds = fieldCollider.bounds;
-        int placedCount = 0;
+        Bounds bounds = col.bounds;
+        int count = 0;
         int attempts = 0;
 
-        // 指定数配置できるまでループ
-        while (placedCount < maxTreeCount && attempts < maxTreeCount * 20)
+        // 指定数配置できるまでループ（無限ループ防止付き）
+        while (count < maxTreeCount && attempts < maxTreeCount * 20)
         {
             attempts++;
 
-            // 1. 範囲内のランダムな座標(X, Z)を決定
-            float randomX = Random.Range(bounds.min.x, bounds.max.x);
-            float randomZ = Random.Range(bounds.min.z, bounds.max.z);
-            Vector3 rayOrigin = new Vector3(randomX, bounds.max.y + 10f, randomZ);
+            // 範囲内からランダムに選ぶ
+            float x = Random.Range(bounds.min.x, bounds.max.x);
+            float z = Random.Range(bounds.min.z, bounds.max.z);
+            Vector3 startPos = new Vector3(x, bounds.max.y + 10f, z);
 
-            // 2. 上空から真下にレイキャスト
-            RaycastHit hit;
-            if (Physics.Raycast(rayOrigin, Vector3.down, out hit, 100f))
+            if (Physics.Raycast(startPos, Vector3.down, out RaycastHit hit, 200f))
             {
-                // 3. 当たったのがフィールドで、かつ「高さが砂地より上」か確認
+                // 指定した地面に当たったか、かつ高さ制限をクリアしているか
                 if (hit.collider.gameObject == fieldObject && hit.point.y >= minSpawnHeight)
                 {
-                    Vector3 spawnPos = hit.point;
-
-                    // 4. 重なりチェック
-                    if (CanPlace(spawnPos))
+                    if (CanPlace(hit.point))
                     {
-                        PlaceTree(spawnPos);
-                        placedCount++;
+                        PlaceTree(hit.point);
+                        count++;
                     }
                 }
             }
         }
-        Debug.Log($"生成完了: {placedCount} 本の木を配置しました。");
+        Debug.Log($"生成完了: {count} 本の木を配置しました。");
     }
 
-    bool CanPlace(Vector3 position)
+    bool CanPlace(Vector3 pos)
     {
-        foreach (var tree in spawnedTrees)
+        foreach (var t in spawnedTrees)
         {
-            if (tree == null) continue;
-            if (Vector3.Distance(tree.transform.position, position) < minDistance)
-            {
-                return false; 
-            }
+            if (t == null) continue;
+            // 木同士が近すぎないかチェック
+            if (Vector3.Distance(t.transform.position, pos) < minDistance) return false;
         }
         return true;
     }
 
-    void PlaceTree(Vector3 position)
+    void PlaceTree(Vector3 pos)
     {
-        // 【修正ポイント】プレハブ自体の回転（Z=180など）をそのまま使用する
-        GameObject newTree = Instantiate(treePrefab, position, treePrefab.transform.rotation);
+        // 1. プレハブを生成（回転はプレハブのものを維持）
+        GameObject obj = Instantiate(treePrefab, pos, treePrefab.transform.rotation);
         
-        newTree.transform.parent = this.transform;
+        // 管理しやすいように、一旦このManagerの子にする
+        obj.transform.parent = transform;
 
-        // スケール変更（Y軸のみランダム、XZはプレハブのまま維持）
-        float originalX = newTree.transform.localScale.x;
-        float originalZ = newTree.transform.localScale.z;
-        float randomY = Random.Range(scaleYRange.x, scaleYRange.y);
-        
-        newTree.transform.localScale = new Vector3(originalX, randomY, originalZ);
+        // 2. 【ここが修正ポイント】
+        // 元のプレハブのスケール（大きさ）を取得
+        Vector3 originalScale = obj.transform.localScale;
 
-        spawnedTrees.Add(newTree);
+        // Y軸（高さ）にかけるランダムな倍率を決める
+        float randomMultiplier = Random.Range(scaleYMultiplier.x, scaleYMultiplier.y);
+
+        // 元のXとZはそのまま使い、Yだけ倍率をかけて設定し直す
+        obj.transform.localScale = new Vector3(
+            originalScale.x, 
+            originalScale.y * randomMultiplier, 
+            originalScale.z
+        );
+
+        spawnedTrees.Add(obj);
     }
 
     public void ClearTrees()
     {
-        foreach (var tree in spawnedTrees)
+        foreach (var t in spawnedTrees)
         {
-            if (tree != null) DestroyImmediate(tree);
+            if (t != null) DestroyImmediate(t);
         }
         spawnedTrees.Clear();
-        
-        var children = new List<GameObject>();
-        foreach (Transform child in transform) children.Add(child.gameObject);
-        children.ForEach(child => DestroyImmediate(child));
-    }
 
-    // 高さの基準線を可視化（GizmosボタンがONのときだけ見える）
-    private void OnDrawGizmosSelected()
-    {
-        if (fieldObject != null)
-        {
-            Gizmos.color = new Color(1, 0, 0, 0.5f); // 赤色（半透明）
-            Bounds b = fieldObject.GetComponent<Collider>().bounds;
-            // 高さ（Y）だけ設定値に固定して表示
-            Vector3 center = new Vector3(b.center.x, minSpawnHeight, b.center.z);
-            Vector3 size = new Vector3(b.size.x, 0.1f, b.size.z);
-            Gizmos.DrawCube(center, size);
-        }
+        // リストから漏れた子オブジェクトも念のため全削除
+        var list = new List<GameObject>();
+        foreach(Transform child in transform) list.Add(child.gameObject);
+        list.ForEach(DestroyImmediate);
     }
 }
