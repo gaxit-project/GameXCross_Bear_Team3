@@ -18,6 +18,7 @@ public class CameraController : MonoBehaviour
 
     [Header("動作設定")]
     public bool enableRotation = true;
+    [SerializeField] private bool isLocked = false; // 入力を完全に無効化する
 
     [Header("Input Actions")]
     private CameraControls cameraControls;
@@ -67,6 +68,7 @@ public class CameraController : MonoBehaviour
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
+        if (isLocked) return;
         moveInput = context.ReadValue<Vector2>();
     }
 
@@ -77,6 +79,12 @@ public class CameraController : MonoBehaviour
 
     private void OnLookPerformed(InputAction.CallbackContext context)
     {
+        if (isLocked)
+        {
+            lookInput = Vector2.zero;
+            return;
+        }
+
         if (enableRotation)
         {
             lookInput = context.ReadValue<Vector2>();
@@ -94,6 +102,7 @@ public class CameraController : MonoBehaviour
 
     private void OnElevatePerformed(InputAction.CallbackContext context)
     {
+        if (isLocked) return;
         elevateInput = context.ReadValue<float>();
     }
 
@@ -117,6 +126,14 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if (isLocked)
+        {
+            moveInput = Vector2.zero;
+            lookInput = Vector2.zero;
+            elevateInput = 0.0f;
+            return;
+        }
+
         // enableRotationがfalseの場合は、入力もリセットしておく
         if (!enableRotation)
         {
@@ -169,8 +186,27 @@ public class CameraController : MonoBehaviour
         UpdateCursorState();
     }
 
+    public void SetLocked(bool locked)
+    {
+        isLocked = locked;
+        if (locked)
+        {
+            moveInput = Vector2.zero;
+            lookInput = Vector2.zero;
+            elevateInput = 0.0f;
+        }
+        UpdateCursorState();
+    }
+
     private void UpdateCursorState()
     {
+        if (isLocked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
+
         if (enableRotation)
         {
             Cursor.lockState = CursorLockMode.Locked;

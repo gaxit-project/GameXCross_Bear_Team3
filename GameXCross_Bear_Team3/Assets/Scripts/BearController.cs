@@ -333,13 +333,15 @@ public class BearController : MonoBehaviour
         }
 
         Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
-        Vector3 destination = _targetHouse.HouseCollider.ClosestPoint(transform.position);
+        // 距離判定は水平面で行う（高さ差で遠く判定されないようにする）
+        Vector3 destination = _targetHouse.HouseCollider.ClosestPoint(attackPosition);
+        destination.y = attackPosition.y;
         float dist = Vector3.Distance(attackPosition, destination);
 
         if (animator && enableAnimation) animator.SetBool("IsMoving", dist > 5.0f);
 
-        float stopThreshold = attackRange - 1.5f;
-        if (stopThreshold < 1.0f) stopThreshold = 1.0f;
+        // 実際の攻撃判定と同じレンジで止まる
+        float stopThreshold = Mathf.Max(attackRange, 1.0f);
 
         if (dist <= stopThreshold)
         {
@@ -350,7 +352,9 @@ public class BearController : MonoBehaviour
             }
             _agent.updateRotation = false;
 
-            Vector3 lookTarget = destination;
+            // 家の中心方向を向く（高さは熊と同じに揃える）
+            Vector3 houseCenter = _targetHouse.HouseCollider.bounds.center;
+            Vector3 lookTarget = houseCenter;
             lookTarget.y = transform.position.y;
             transform.LookAt(lookTarget);
 
