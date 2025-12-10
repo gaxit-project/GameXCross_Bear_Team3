@@ -3,20 +3,20 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    [Header("�J�����ړ��ݒ�")]
+    [Header("カメラ移動設定")]
     [SerializeField] private float moveSpeed = 5.0f;
     [SerializeField] private float verticalSpeed = 5.0f;
 
-    [Header("�J������]�ݒ�")]
+    [Header("カメラ回転設定")]
     [SerializeField] private float lookSensitivity = 100.0f;
     [SerializeField] private float pitchMax = 85.0f;
     [SerializeField] private float pitchMin = -85.0f;
     [SerializeField] private bool invertY = false;
 
-    [Header("�R���|�[�l���g")]
+    [Header("コンポーネント")]
     [SerializeField] private Transform pivotTransform;
 
-    [Header("����ݒ�")]
+    [Header("動作設定")]
     public bool enableRotation = true;
 
     [Header("Input Actions")]
@@ -113,11 +113,11 @@ public class CameraController : MonoBehaviour
         if (enableRotation)
         {
 
-            // ���_��]�̏���
+            // カメラ回転処理
             float lookX = lookInput.x * lookSensitivity * Time.deltaTime;
             float lookY = lookInput.y * lookSensitivity * Time.deltaTime;
 
-            // ���������̓���
+            // 水平方向の回転
             yaw += lookX;
 
             transform.rotation = Quaternion.Euler(0.0f, yaw, 0.0f);
@@ -134,11 +134,11 @@ public class CameraController : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Pivot Transform ���ݒ肳��Ă��܂���BInspector�ŃJ�����܂��̓s�{�b�g����蓖�ĂĂ��������B", this);
+                Debug.LogWarning("Pivot Transform が未設定です。Inspectorでカメラ本体またはピボットを割り当ててください。", this);
             }
         }
 
-        // ���_�ړ��̏���
+        // カメラ移動処理
         Vector3 moveDirection = new Vector3(moveInput.x, 0, moveInput.y);
         transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.Self);
 
