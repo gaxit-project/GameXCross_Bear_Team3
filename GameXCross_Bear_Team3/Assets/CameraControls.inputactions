@@ -50,6 +50,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "left",
+                    "type": "Button",
+                    "id": "85d892cc-e730-4573-af98-ce95acddcee9",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "right",
+                    "type": "Button",
+                    "id": "227d9bc7-3031-40f0-8a5e-1ac6a0a8a2c8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -204,6 +222,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "put",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e3311de6-5d44-4682-a394-5f197d3283dd",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "left",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8a1cd349-23f9-41c2-a376-6ea0da2eec68",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "right",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

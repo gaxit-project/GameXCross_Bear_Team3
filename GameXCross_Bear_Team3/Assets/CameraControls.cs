@@ -136,6 +136,24 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""left"",
+                    ""type"": ""Button"",
+                    ""id"": ""85d892cc-e730-4573-af98-ce95acddcee9"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""right"",
+                    ""type"": ""Button"",
+                    ""id"": ""227d9bc7-3031-40f0-8a5e-1ac6a0a8a2c8"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -292,6 +310,28 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""action"": ""put"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e3311de6-5d44-4682-a394-5f197d3283dd"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8a1cd349-23f9-41c2-a376-6ea0da2eec68"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -333,6 +373,8 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         m_Map_Elevate = m_Map.FindAction("Elevate", throwIfNotFound: true);
         m_Map_cansel = m_Map.FindAction("cansel", throwIfNotFound: true);
         m_Map_put = m_Map.FindAction("put", throwIfNotFound: true);
+        m_Map_left = m_Map.FindAction("left", throwIfNotFound: true);
+        m_Map_right = m_Map.FindAction("right", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
@@ -422,6 +464,8 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Map_Elevate;
     private readonly InputAction m_Map_cansel;
     private readonly InputAction m_Map_put;
+    private readonly InputAction m_Map_left;
+    private readonly InputAction m_Map_right;
     /// <summary>
     /// Provides access to input actions defined in input action map "Map".
     /// </summary>
@@ -453,6 +497,14 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Map/put".
         /// </summary>
         public InputAction @put => m_Wrapper.m_Map_put;
+        /// <summary>
+        /// Provides access to the underlying input action "Map/left".
+        /// </summary>
+        public InputAction @left => m_Wrapper.m_Map_left;
+        /// <summary>
+        /// Provides access to the underlying input action "Map/right".
+        /// </summary>
+        public InputAction @right => m_Wrapper.m_Map_right;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -494,6 +546,12 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @put.started += instance.OnPut;
             @put.performed += instance.OnPut;
             @put.canceled += instance.OnPut;
+            @left.started += instance.OnLeft;
+            @left.performed += instance.OnLeft;
+            @left.canceled += instance.OnLeft;
+            @right.started += instance.OnRight;
+            @right.performed += instance.OnRight;
+            @right.canceled += instance.OnRight;
         }
 
         /// <summary>
@@ -520,6 +578,12 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @put.started -= instance.OnPut;
             @put.performed -= instance.OnPut;
             @put.canceled -= instance.OnPut;
+            @left.started -= instance.OnLeft;
+            @left.performed -= instance.OnLeft;
+            @left.canceled -= instance.OnLeft;
+            @right.started -= instance.OnRight;
+            @right.performed -= instance.OnRight;
+            @right.canceled -= instance.OnRight;
         }
 
         /// <summary>
@@ -691,6 +755,20 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPut(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "left" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnLeft(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "right" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRight(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Game" which allows adding and removing callbacks.
