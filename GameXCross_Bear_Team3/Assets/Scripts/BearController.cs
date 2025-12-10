@@ -146,28 +146,57 @@ public class BearController : MonoBehaviour
     public void OnAttackHit()
     {
         // ハンターへの攻撃
-        if (_targetHunter != null)
+        if (_targetHunter != null && _targetHunter.gameObject.activeSelf && !_targetHunter.IsDead())
         {
-            float dist = Vector3.Distance(detectionPoint.position, _targetHunter.transform.position);
-            // 距離の誤差許容
-            if (dist < attackRange + 2.0f)
+            Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
+            float dist = Vector3.Distance(attackPosition, _targetHunter.transform.position);
+            // 距離の誤差許容（攻撃範囲より少し広めに設定）
+            if (dist <= attackRange + 2.0f)
             {
-                Debug.Log("熊: ハンターへ攻撃ヒット");
+                Debug.Log($"熊: ハンターへ攻撃ヒット (距離: {dist:F2}, 攻撃範囲: {attackRange})");
                 _targetHunter.TakeDamage(attackDamage);
+            }
+            else
+            {
+                Debug.Log($"熊: ハンターが攻撃範囲外 (距離: {dist:F2}, 攻撃範囲: {attackRange})");
             }
             return; // ハンター優先
         }
 
         // 家への攻撃
-        if (_targetHouse != null && !_targetHouse.IsDestroyed)
+        if (_targetHouse != null && !_targetHouse.IsDestroyed && _targetHouse.HouseCollider != null)
         {
-            Vector3 hitPoint = _targetHouse.HouseCollider.ClosestPoint(detectionPoint.position);
-            float dist = Vector3.Distance(detectionPoint.position, hitPoint);
-
-            if (dist < attackRange + 3.0f)
+            Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
+            
+            // 方法1: ClosestPointを使った距離判定
+            Vector3 hitPoint = _targetHouse.HouseCollider.ClosestPoint(attackPosition);
+            float distToClosest = Vector3.Distance(attackPosition, hitPoint);
+            
+            // 方法2: Raycastを使って熊の正面方向から家に当たっているか確認
+            bool hitByRaycast = false;
+            Vector3 attackDirection = transform.forward;
+            RaycastHit hit;
+            if (Physics.Raycast(attackPosition, attackDirection, out hit, attackRange + 2.0f))
             {
-                Debug.Log("熊: 家へ攻撃ヒット");
+                if (hit.collider == _targetHouse.HouseCollider)
+                {
+                    hitByRaycast = true;
+                }
+            }
+            
+            // 方法3: 家のコライダーの境界ボックスとの距離判定（より寛容）
+            Bounds houseBounds = _targetHouse.HouseCollider.bounds;
+            float distToBounds = Vector3.Distance(attackPosition, houseBounds.ClosestPoint(attackPosition));
+            
+            // いずれかの条件を満たせば攻撃が当たったと判定
+            if (distToClosest <= attackRange + 3.0f || hitByRaycast || distToBounds <= attackRange + 2.0f)
+            {
+                Debug.Log($"熊: 家へ攻撃ヒット (ClosestPoint距離: {distToClosest:F2}, Bounds距離: {distToBounds:F2}, Raycast: {hitByRaycast})");
                 _targetHouse.TakeDamage(attackDamage);
+            }
+            else
+            {
+                Debug.Log($"熊: 家が攻撃範囲外 (ClosestPoint距離: {distToClosest:F2}, Bounds距離: {distToBounds:F2}, 攻撃範囲: {attackRange})");
             }
         }
     }
@@ -208,7 +237,7 @@ public class BearController : MonoBehaviour
                 if (_targetHunter != null)
                 {
                     // ハンターが死んだ、または無効になったらターゲット解除して次を探す
-                    if (_targetHunter == null || !_targetHunter.gameObject.activeSelf)
+                    if (_targetHunter == null || !_targetHunter.gameObject.activeSelf || _targetHunter.IsDead())
                     {
                         _targetHunter = null;
                         FindNextTarget();
@@ -255,7 +284,15 @@ public class BearController : MonoBehaviour
     // ハンターに対する挙動
     private void HandleHunterTarget()
     {
-        float dist = Vector3.Distance(detectionPoint.position, _targetHunter.transform.position);
+        if (_targetHunter == null || !_targetHunter.gameObject.activeSelf || _targetHunter.IsDead())
+        {
+            _targetHunter = null;
+            FindNextTarget();
+            return;
+        }
+
+        Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
+        float dist = Vector3.Distance(attackPosition, _targetHunter.transform.position);
 
         if (animator && enableAnimation) animator.SetBool("IsMoving", dist > attackRange - 1.0f);
 
@@ -289,8 +326,15 @@ public class BearController : MonoBehaviour
     // 家に対する挙動
     private void HandleHouseTarget()
     {
+        if (_targetHouse == null || _targetHouse.IsDestroyed || _targetHouse.HouseCollider == null)
+        {
+            FindNextTarget();
+            return;
+        }
+
+        Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
         Vector3 destination = _targetHouse.HouseCollider.ClosestPoint(transform.position);
-        float dist = Vector3.Distance(detectionPoint.position, destination);
+        float dist = Vector3.Distance(attackPosition, destination);
 
         if (animator && enableAnimation) animator.SetBool("IsMoving", dist > 5.0f);
 
@@ -355,8 +399,9 @@ public class BearController : MonoBehaviour
         if (validTargets.Count == 0) return;
 
         // 一番近い壊れていない家を探す
+        Vector3 searchPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
         _targetHouse = validTargets
-            .OrderBy(h => Vector3.Distance(detectionPoint.position, h.HouseCollider.ClosestPoint(detectionPoint.position)))
+            .OrderBy(h => Vector3.Distance(searchPosition, h.HouseCollider.ClosestPoint(searchPosition)))
             .FirstOrDefault();
 
         if (_targetHouse != null)

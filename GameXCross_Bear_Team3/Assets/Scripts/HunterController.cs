@@ -36,6 +36,7 @@ public class HunterController : MonoBehaviour
     private BearController _targetBear;
     private float _currentHealth;
     private bool _isDead = false;
+    private float _patrolWaitTimer = 0f;
 
     private IDisposable _attackStream;
     private IDisposable _patrolStream;
@@ -161,6 +162,7 @@ public class HunterController : MonoBehaviour
 
         _agent.isStopped = false;
         MoveToRandomPoint();
+        _patrolWaitTimer = waitTimeAtPatrolPoint;
 
         _patrolStream = this.UpdateAsObservable()
             .Where(_ => !_isDead && _targetBear == null)
@@ -172,8 +174,15 @@ public class HunterController : MonoBehaviour
                 
                 if (!_agent.pathPending && _agent.remainingDistance < 0.5f)
                 {
-                    // 一定確率でランダムな地点へ移動
-                    if (UnityEngine.Random.value < 0.01f) MoveToRandomPoint();
+                    // 到着後は設定時間待ってから次のポイントへ
+                    if (_patrolWaitTimer > 0f)
+                    {
+                        _patrolWaitTimer -= Time.deltaTime;
+                        return;
+                    }
+
+                    MoveToRandomPoint();
+                    _patrolWaitTimer = waitTimeAtPatrolPoint;
                 }
             })
             .AddTo(this);
@@ -218,6 +227,14 @@ public class HunterController : MonoBehaviour
         {
             Die();
         }
+    }
+
+    /// <summary>
+    /// 死亡しているかどうかを返す
+    /// </summary>
+    public bool IsDead()
+    {
+        return _isDead;
     }
 
     private void Die()
