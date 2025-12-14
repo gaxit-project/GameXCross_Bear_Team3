@@ -1,113 +1,87 @@
 ﻿using UnityEngine;
 using UnityEngine.AddressableAssets;
-using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using UniRx;
 
 public class BearSpawner : MonoBehaviour
 {
     [SerializeField] private string bearPrefabAddress = "Bear.prefab";
-
     [SerializeField] private Transform[] spawnPoints;
-    [SerializeField] private float moveSpeed = 5.0f; // 移動速度
+    [SerializeField] private float moveSpeed = 5.0f;
 
-    private bool hasSpawned = false;
-    private bool startedOnce = false; // DontDestroyOnLoad 時に Start が二度呼ばれないことへの対応
-
-    private void Awake()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnEnable()
-    {
-        // シーン再読み込み時にも確実に生成されるように
-        hasSpawned = false;
-    }
+    // ウェーブごとの敵の数（要素0が1ウェーブ目）
+    [SerializeField] private int[] enemiesPerWave = new int[] { 1, 1, 1 };
 
     private void Start()
     {
-        startedOnce = true;
-        // StartCoroutineを使わず、直接asyncメソッドを呼び出す
-        if (!hasSpawned)
+        if (GameManager.Instance != null)
         {
-            SpawnBearAsync();
+            // バトル開始を検知して敵を生成
+            GameManager.Instance.CurrentState
+                .Where(state => state == GameState.Battle)
+                .Subscribe(_ => SpawnWaveEnemies())
+                .AddTo(this);
         }
     }
 
-    private void OnDestroy()
+    private async void SpawnWaveEnemies()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+        int currentWaveIndex = GameManager.Instance.CurrentWave.Value - 1; // 0始まりにする
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // DontDestroyOnLoad で残っている場合にリセットして再スポーンする
-        if (!startedOnce) return; // 通常シーンオブジェクトは再生成されるので不要
+        // 設定値が足りない場合は最後の設定を使う
+        int count = (currentWaveIndex < enemiesPerWave.Length)
+            ? enemiesPerWave[currentWaveIndex]
+            : enemiesPerWave[enemiesPerWave.Length - 1];
 
-        hasSpawned = false;
-        if (gameObject.activeInHierarchy)
+        Debug.Log($"Spawner: ウェーブ{currentWaveIndex + 1}開始。{count}体のクマを生成します。");
+
+        for (int i = 0; i < count; i++)
         {
-            SpawnBearAsync();
+            // GameManagerに登録（生成前にカウントアップしておくのが安全）
+            GameManager.Instance.RegisterEnemy();
+
+            await SpawnBearAsync();
+
+            // 複数生成する場合は少しずらす
+            if (count > 1) await Task.Delay(1000);
         }
     }
 
-    private async void SpawnBearAsync()
+    private async Task SpawnBearAsync()
     {
-        // 少し待機してから実行（シーン遷移直後の初期化を待つ）
-        await Task.Delay(100);
+        if (spawnPoints == null || spawnPoints.Length == 0) return;
 
-        if(spawnPoints == null || spawnPoints.Length == 0)
-        {
-            Debug.LogError("BearSpawner: スポーン地点 (Spawn Points) が設定されていません！Inspectorで設定してください。");
-            return;
-        }
-
-        // 出現位置をランダムに決定
         int randomIndex = Random.Range(0, spawnPoints.Length);
-        Transform targetPoint = spawnPoints[randomIndex];
-        
-        if (targetPoint == null)
-        {
-            Debug.LogError("BearSpawner: スポーン地点が無効です。");
-            return;
-        }
-
-        Vector3 spawnPos = targetPoint.position;
+        Vector3 spawnPos = spawnPoints[randomIndex].position;
 
         UnityEngine.AI.NavMeshHit hit;
-        if(UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out hit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
+        if (UnityEngine.AI.NavMesh.SamplePosition(spawnPos, out hit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
         {
             spawnPos = hit.position;
         }
 
         try
         {
-            // 生成
             var op = Addressables.InstantiateAsync(bearPrefabAddress, spawnPos, Quaternion.identity);
             var bearObj = await op.Task;
 
-            if(bearObj != null)
+            if (bearObj != null)
             {
                 var controller = bearObj.GetComponent<BearController>();
                 if (controller != null)
                 {
                     controller.Initialize(moveSpeed);
-                    hasSpawned = true;
-                    Debug.Log("BearSpawner: クマを生成しました。");
-                }
-                else
-                {
-                    Debug.LogWarning("BearSpawner: BearControllerコンポーネントが見つかりませんでした。");
                 }
             }
             else
             {
-                Debug.LogError("BearSpawner: クマの生成に失敗しました。Addressablesの設定を確認してください。");
+                // 生成失敗したらカウントを戻す（そうしないとウェーブが終わらなくなる）
+                GameManager.Instance.ReportEnemyDefeated();
             }
         }
-        catch (System.Exception e)
+        catch
         {
-            Debug.LogError($"BearSpawner: エラーが発生しました: {e.Message}");
+            GameManager.Instance.ReportEnemyDefeated();
         }
     }
 }

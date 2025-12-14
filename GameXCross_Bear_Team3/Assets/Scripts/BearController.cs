@@ -101,27 +101,29 @@ public class BearController : MonoBehaviour
 
     private void Die()
     {
+        if (_isDead) return; // 二重呼び出し防止
+
         _isDead = true;
         _agent.enabled = false;
         StopAttacking();
         if (animator && enableAnimation) animator.SetTrigger("Die");
-        Debug.Log("熊: 死亡しました。");
 
         GetComponent<Collider>().enabled = false;
 
-        // 横に倒れて消えるアニメーション
+        // 【追加】GameManagerに死亡を報告
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ReportEnemyDefeated();
+        }
+
+        // --- 以下、元のアニメーション処理 ---
         Vector3 currentRotation = transform.eulerAngles;
-        // Z軸を回転させて横に倒れる（左または右に倒れる）
         Vector3 fallRotation = new Vector3(currentRotation.x, currentRotation.y, currentRotation.z + 90f);
-        
+
         Sequence deathSequence = DOTween.Sequence();
-        // 横に倒れる（0.5秒）
         deathSequence.Append(transform.DORotate(fallRotation, 0.5f).SetEase(Ease.OutQuad));
-        // 少し沈む（0.3秒）
         deathSequence.Join(transform.DOMoveY(transform.position.y - 0.5f, 0.5f).SetEase(Ease.InQuad));
-        // スケールを0にして消える（0.3秒）
         deathSequence.Append(transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InQuad));
-        // アニメーション完了後に削除
         deathSequence.OnComplete(() => Destroy(gameObject));
     }
 

@@ -1,26 +1,53 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UniRx;
 
 public class PointerContoroller : MonoBehaviour
 {
-    [Header("�ړ����x")]
+    [Header("移動速度")]
     [SerializeField] private float Speed = 1;
-    private Vector2 input;
     [SerializeField] public GameObject ScrollUI;
     [SerializeField] public GameObject pointer;
     [SerializeField] public money money;
-    [Header("���ݑI�����Ă���ݒu��")]
+
+    [Header("現在選択している設置物")]
     [SerializeField] public GameObject obj;
-    [Header("���̐ݒu���̐ݒu�R�X�g")]
+
+    [Header("その設置物の設置コスト")]
     [SerializeField] public int cost;
 
+    private Vector2 input;
     private bool left=false, right=false;
     private Vector3 rotation;
 
     void Start()
     {
         pointer.SetActive(false);
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.CurrentState
+                .Subscribe(state =>
+                {
+                    if (state == GameState.Setup)
+                    {
+                        // 準備フェーズになったらUIを表示
+                        ScrollUI.SetActive(true);
+                        pointer.SetActive(false); // ポインターは初期状態オフ
+                    }
+                    else
+                    {
+                        // 襲撃中またはリザルト画面ならUIを隠す
+                        ScrollUI.SetActive(false);
+
+                        // 配置しようとしていたポインターも強制キャンセル
+                        pointer.SetActive(false);
+                        obj = null;
+                    }
+                })
+                .AddTo(this);
+        }
     }
 
     // Update is called once per frame
@@ -31,10 +58,13 @@ public class PointerContoroller : MonoBehaviour
 
         if (left == true)
             rotation.y -= 10 * Time.deltaTime;
+
         if (right == true)
             rotation.y += 10 * Time.deltaTime;
+
         if(left == false&&right == false)
             rotation.y = 0;
+
         transform.Rotate(rotation);
     }
 
@@ -54,6 +84,12 @@ public class PointerContoroller : MonoBehaviour
 
     public void OnPut(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.CurrentState.Value == GameState.Battle)
+        {
+            Debug.Log("襲撃中は配置できません！");
+            return;
+        }
+
         if (context.performed)
         {
             if (money.moneycount > cost)
