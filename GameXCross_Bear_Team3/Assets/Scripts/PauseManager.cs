@@ -1,11 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PauseManager : MonoBehaviour
 {
-    [Header("UI�R���|�[�l���g")]
+    [Header("UIコンポーネント")]
     [SerializeField] private GameObject pausePanel;
 
-    [Header("����Ώ�")]
+    [Header("コンポーネント")]
     [SerializeField] private CameraController cameraController;
 
     private CameraControls controles;
