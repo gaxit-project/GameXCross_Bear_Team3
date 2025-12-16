@@ -52,9 +52,13 @@ public class CameraSwitcher : MonoBehaviour
         var gamepad = Gamepad.current;
         if(gamepad != null)
         {
-            if (gamepad.buttonWest.wasPressedThisFrame)
+            if (gamepad.leftTrigger.wasPressedThisFrame)
             {
                 CycleNextCamera();
+            }
+            else if (gamepad.rightTrigger.wasPressedThisFrame)
+            {
+                CyclePreviousCamera();
             }
         }
     }
@@ -62,6 +66,12 @@ public class CameraSwitcher : MonoBehaviour
     private void CycleNextCamera()
     {
         int nextIndex = (currentCameraIndex + 1) % cameras.Length;
+        SwitchCamera(nextIndex);
+    }
+
+    private void CyclePreviousCamera()
+    {
+        int nextIndex = (currentCameraIndex + 3) % cameras.Length;
         SwitchCamera(nextIndex);
     }
 
