@@ -36,6 +36,8 @@ public class BearController : MonoBehaviour
     private bool _isTrapped = false;
     private bool _isDead = false;
 
+    public bool IsParalyzed => _isTrapped;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -125,6 +127,78 @@ public class BearController : MonoBehaviour
         deathSequence.Join(transform.DOMoveY(transform.position.y - 0.5f, 0.5f).SetEase(Ease.InQuad));
         deathSequence.Append(transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InQuad));
         deathSequence.OnComplete(() => Destroy(gameObject));
+    }
+
+    /// <summary>
+    /// 電気柵などによる麻痺
+    /// </summary>
+    /// <param name="duration">麻痺時間（秒）</param>
+    /// <param name="damage">受けるダメージ</param>
+    public void ApplyParalysis(float duration, float damage)
+    {
+        if (_isDead) return;
+
+        // 既に動けない状態ならダメージだけ受ける（連続麻痺防止）
+        if (_isTrapped)
+        {
+            TakeDamage(damage, null);
+            return;
+        }
+
+        Debug.Log("熊: 感電しました！麻痺状態になります。");
+
+        // 1. ダメージ処理
+        TakeDamage(damage, null);
+        if (_isDead) return;
+
+        // 2. 状態の拘束
+        _isTrapped = true;       // 行動ロジックを停止させるフラグ
+        _agent.isStopped = true; // NavMesh Agent停止
+        StopAttacking();         // 攻撃動作キャンセル
+
+        // 3. 感電演出
+        transform.DOShakePosition(0.5f, strength: 0.5f, vibrato: 30, randomness: 90)
+                 .SetLink(gameObject);
+
+        transform.DOShakeRotation(0.5f, strength: 30f, vibrato: 30, randomness: 90)
+                 .SetLink(gameObject);
+
+        // アニメーション
+        if (animator != null && enableAnimation)
+        {
+            animator.SetTrigger("Damage"); // ダメージモーション等を再生
+            animator.speed = 0; // 一時的にアニメーションを止める場合
+        }
+
+        // 4. 指定時間後に復帰
+        Observable.Timer(TimeSpan.FromSeconds(duration))
+            .Subscribe(_ =>
+            {
+                if (!_isDead && this != null)
+                {
+                    RecoverFromParalysis();
+                }
+            })
+            .AddTo(this);
+    }
+
+    /// <summary>
+    /// 麻痺からの復帰処理
+    /// </summary>
+    private void RecoverFromParalysis()
+    {
+        Debug.Log("熊: 麻痺から回復しました。");
+        _isTrapped = false;
+
+        if (animator != null && enableAnimation) animator.speed = 1.0f;
+
+        if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
+        {
+            _agent.isStopped = false;
+        }
+
+        // 次のターゲットを探す
+        FindNextTarget();
     }
 
     public void OnTrapped(Vector3 trapCenterPosition)
