@@ -23,6 +23,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float setupTime = 30.0f; // 準備時間
     [SerializeField] private int maxWaves = 3;        // 最大ウェーブ数
 
+    [Header("バランスデータ参照")]
+    [SerializeField] private GameBalanceData balanceData; // ここにアセットをアタッチ
+    public GameBalanceData Balance => balanceData; // 他クラスからのアクセサ
+
     // 公開プロパティ
     public ReactiveProperty<GameState> CurrentState { get; private set; }
         = new ReactiveProperty<GameState>(GameState.Setup);
@@ -45,6 +49,13 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // バランスデータから設定時間を上書き
+        if (balanceData != null)
+        {
+            setupTime = balanceData.setupTime;
+            maxWaves = balanceData.maxWaves;
+        }
+
         RefreshHouseList();
         StartSetupPhase();
     }
