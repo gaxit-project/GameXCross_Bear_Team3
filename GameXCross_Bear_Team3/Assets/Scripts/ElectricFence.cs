@@ -2,60 +2,60 @@
 using UniRx;
 using UniRx.Triggers;
 using DG.Tweening;
-using System;
 
 public class ElectricFence : MonoBehaviour
 {
     [Header("設定")]
     [SerializeField] private float damage = 10f;        // ダメージ量
     [SerializeField] private float paralysisDuration = 3.0f; // 麻痺時間
-    [SerializeField] private float reloadTime = 5.0f;   // 再度通電するまでのクールダウン
+    private Collider _collider;
 
-    private bool _isReady = true; // 通電可能か
+    private bool _isBroken = false;
+
 
     private void Start()
     {
+        _collider = GetComponent<Collider>();
+
         this.OnTriggerEnterAsObservable()
-            .Where(_ => _isReady) // 準備完了している場合のみ
             .Subscribe(other =>
             {
                 // BearControllerを取得
                 if (other.TryGetComponent<BearController>(out var bear))
                 {
-                    OnBearContact(bear);
+                    OnBearTouch(bear);
                 }
             })
             .AddTo(this);
     }
 
-    private void OnBearContact(BearController bear)
+    private void OnBearTouch(BearController bear)
     {
-        if (bear == null) return;
+        if (_isBroken) return;
+        _isBroken = true; // 二重発動防止
 
-        // 熊に麻痺とダメージを与える
+        // 1. 熊への作用（麻痺 ＆ ダメージ）
         bear.ApplyParalysis(paralysisDuration, damage);
 
-        Debug.Log("電気柵: 放電しました！クールダウンに入ります。");
-
-        // クールダウン開始
-        EnterCooldown();
+        // 2. 柵の破壊処理
+        BreakFence();
     }
 
-    private void EnterCooldown()
+    private void BreakFence()
     {
-        _isReady = false;
+        // コライダーを無効化（これ以上当たり判定が発生しないように）
+        if (_collider != null) _collider.enabled = false;
 
-        // 指定時間後に復帰 (UniRx)
-        Observable.Timer(TimeSpan.FromSeconds(reloadTime))
-            .Subscribe(_ =>
-            {
-                Reactivate();
-            })
-            .AddTo(this);
-    }
+        Debug.Log("電気柵: 感電作動！");
 
-    private void Reactivate()
-    {
-        _isReady = true;
+        var seq = DOTween.Sequence();
+        seq.Append(transform.DOShakeRotation(0.5f, 30f));
+        seq.Join(transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack));
+
+        // アニメーション完了後にGameObjectを削除
+        seq.OnComplete(() =>
+        {
+            Destroy(gameObject);
+        });
     }
 }
