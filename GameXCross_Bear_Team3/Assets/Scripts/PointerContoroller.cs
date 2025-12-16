@@ -14,15 +14,24 @@ public class PointerContoroller : MonoBehaviour
     [Header("現在選択している設置物")]
     [SerializeField] public GameObject obj;
 
+    [Header("現在表示しているゴースト")]
+    [SerializeField] public GameObject ghost;
+
     [Header("その設置物の設置コスト")]
     [SerializeField] public int cost;
 
     private Vector2 input;
-    private bool left=false, right=false;
+    private bool left = false, right = false;
     private Vector3 rotation;
+
+    // 【追加】カメラの情報をキャッシュする変数
+    private Camera _mainCamera;
 
     void Start()
     {
+        // 【追加】メインカメラを取得
+        _mainCamera = Camera.main;
+
         pointer.SetActive(false);
 
         if (GameManager.Instance != null)
@@ -53,16 +62,38 @@ public class PointerContoroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 MoveDirection = new Vector3(input.x, 0, input.y);
-        transform.Translate(MoveDirection * Speed * Time.deltaTime ,Space.World);
+        // === 【変更箇所ここから】 ===
 
+        // 1. スティック入力を3Dベクトルに変換
+        Vector3 inputDir = new Vector3(input.x, 0, input.y);
+
+        // 2. 入力がある場合だけ計算（無駄な処理を省くため）
+        if (inputDir.sqrMagnitude > 0.001f)
+        {
+            // 3. カメラのY軸（水平回転）の角度だけを取り出す
+            float cameraY = _mainCamera.transform.eulerAngles.y;
+
+            // 4. その角度の回転情報（クォータニオン）を作成
+            Quaternion cameraRotation = Quaternion.Euler(0, cameraY, 0);
+
+            // 5. 入力ベクトルをカメラの向きに合わせて回転させる
+            Vector3 moveDirection = cameraRotation * inputDir;
+
+            // 6. 移動（Space.Worldであることに注意）
+            transform.Translate(moveDirection * Speed * Time.deltaTime, Space.World);
+        }
+
+        // === 【変更箇所ここまで】 ===
+
+
+        // 回転処理（既存のまま）
         if (left == true)
             rotation.y -= 10 * Time.deltaTime;
 
         if (right == true)
             rotation.y += 10 * Time.deltaTime;
 
-        if(left == false&&right == false)
+        if (left == false && right == false)
             rotation.y = 0;
 
         transform.Rotate(rotation);
@@ -75,9 +106,10 @@ public class PointerContoroller : MonoBehaviour
 
     public void OnCansel(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if (context.performed)
         {
             ScrollUI.SetActive(true);
+            ghost.SetActive(false);
             pointer.SetActive(false);
         }
     }
@@ -108,7 +140,7 @@ public class PointerContoroller : MonoBehaviour
         }
         else
         {
-            left= false;
+            left = false;
         }
     }
 
@@ -120,7 +152,7 @@ public class PointerContoroller : MonoBehaviour
         }
         else
         {
-            right= false;
+            right = false;
         }
     }
 }

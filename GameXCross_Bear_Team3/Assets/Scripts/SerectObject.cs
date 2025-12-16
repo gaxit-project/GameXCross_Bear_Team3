@@ -5,6 +5,8 @@ public class SerectObject : MonoBehaviour
 {
     [SerializeField] public GameObject ScrollUI;
     [SerializeField] public GameObject pointer;
+    [SerializeField, Header("表示するゴースト")]
+    public GameObject ghost;
     [SerializeField,Header("設定する設置物")]
     public GameObject obj;
     [SerializeField, Header("そのコスト")]
@@ -24,7 +26,9 @@ public class SerectObject : MonoBehaviour
     {
         ScrollUI.SetActive(false);
         pointer.SetActive(true);
+        ghost.SetActive(true);
         p.obj = obj;
         p.cost = cost;
+        p.ghost = ghost;
     }
 }
