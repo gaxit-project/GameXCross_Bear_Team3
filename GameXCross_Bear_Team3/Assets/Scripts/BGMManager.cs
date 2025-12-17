@@ -29,12 +29,17 @@ public class BGMManager : MonoBehaviour
                 .Subscribe(state => SwitchBGM(state))
                 .AddTo(this);
         }
+        else
+        {
+            Debug.LogError("BGMManager: GameManagerが見つかりません！");
+        }
     }
 
     private void SwitchBGM(GameState state)
     {
-        AudioClip nextClip = null;
+        Debug.Log($"BGMManager: 状態が {state} になりました。曲を選定します。");
 
+        AudioClip nextClip = null;
         // フェーズに応じて曲を選ぶ
         switch (state)
         {
@@ -93,6 +98,7 @@ public class BGMManager : MonoBehaviour
     {
         if (clip != null)
         {
+            Debug.Log($"BGMManager: 再生開始 -> {clip.name}");
             _audioSource.clip = clip;
             _audioSource.volume = 0f; // 音量0から開始
             _audioSource.Play();
