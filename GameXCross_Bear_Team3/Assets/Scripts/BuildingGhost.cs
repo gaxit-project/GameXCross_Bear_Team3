@@ -8,6 +8,7 @@ public class BuildingGhost : MonoBehaviour
     [SerializeField] private string groundTag = "Ground";
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material invalidMaterial;
+    [SerializeField] private PointerContoroller p;
 
     [Header("判定調整")]
     [SerializeField] private float sizeScale = 0.9f;
@@ -35,6 +36,11 @@ public class BuildingGhost : MonoBehaviour
     {
         CheckOverlap();
         UpdateVisual();
+
+        if(isPlaceable)
+            p.canput = true;
+        else
+            p.canput = false;
     }
 
     private void CheckOverlap()
@@ -65,7 +71,7 @@ public class BuildingGhost : MonoBehaviour
             overlapFound = true;
 
             // デバッグ用：何が邪魔しているかコンソールに表示
-            Debug.Log($"邪魔なオブジェクト: {hit.name}");
+            //Debug.Log($"邪魔なオブジェクト: {hit.name}");
 
             break;
         }

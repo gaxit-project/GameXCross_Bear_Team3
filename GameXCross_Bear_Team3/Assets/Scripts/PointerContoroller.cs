@@ -20,6 +20,7 @@ public class PointerContoroller : MonoBehaviour
     [Header("その設置物の設置コスト")]
     [SerializeField] public int cost;
 
+    public bool canput;
     private Vector2 input;
     private bool left = false, right = false;
     private Vector3 rotation;
@@ -124,7 +125,7 @@ public class PointerContoroller : MonoBehaviour
 
         if (context.performed)
         {
-            if (money.moneycount > cost)
+            if (money.moneycount >= cost && canput)
             {
                 Instantiate(obj, pointer.transform.position, pointer.transform.rotation);
                 money.moneycount -= cost;
