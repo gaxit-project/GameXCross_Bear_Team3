@@ -17,6 +17,7 @@ public class BearController : MonoBehaviour
     [SerializeField] private float attackInterval = 1.0f;
     [SerializeField] private float attackRange = 5.0f;
     [SerializeField] private float detectionRadius = 15.0f; // ハンター検出範囲
+    [SerializeField] private int captureReward = 30000; // 捕獲時の報酬金額
 
     [Header("参照")]
     [SerializeField] private Transform detectionPoint;
@@ -77,7 +78,7 @@ public class BearController : MonoBehaviour
     /// </summary>
     public void TakeDamage(float damage, HunterController attacker)
     {
-        if (_isDead) return;
+        if (_isDead || _isTrapped) return;
 
         _currentHealth -= damage;
         transform.DOPunchScale(Vector3.one * -0.1f, 0.2f); // ダメージ演出
@@ -216,6 +217,17 @@ public class BearController : MonoBehaviour
 
         Debug.Log($"{name}が罠にかかりました。");
         transform.DOShakeScale(0.5f, 0.5f);
+
+        if (GameManager.Instance != null)
+        {
+            // 1. 敵の数を減らしてフェーズ進行を進める
+            GameManager.Instance.ReportEnemyDefeated();
+
+            // 2. 捕獲報酬を登録する
+            GameManager.Instance.AddPendingReward(captureReward);
+        }
+
+        Debug.Log("熊を捕獲しました！");
     }
 
     // アニメーションイベントから呼ばれる攻撃処理

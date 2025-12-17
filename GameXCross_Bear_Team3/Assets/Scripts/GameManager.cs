@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
-using UniRx;
+﻿using System;
 using System.Linq;
-using System;
+using UniRx;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -23,6 +24,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float setupTime = 30.0f; // 準備時間
     [SerializeField] private int maxWaves = 3;        // 最大ウェーブ数
 
+    [Header("参照")]
+    [SerializeField] private money moneyScript;
+
     [Header("バランスデータ参照")]
     [SerializeField] private GameBalanceData balanceData; // ここにアセットをアタッチ
     public GameBalanceData Balance => balanceData; // 他クラスからのアクセサ
@@ -38,6 +42,7 @@ public class GameManager : MonoBehaviour
         = new ReactiveProperty<int>(1); // 1ウェーブ目から開始
 
     private int activeEnemies = 0; // 現在生存している敵の数
+    private int pendingIncome = 0; // 次のフェーズで入る予定のお金
     private HouseHealth[] allHouses;
     private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -49,6 +54,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if (moneyScript == null)
+        {
+            moneyScript = FindFirstObjectByType<money>();
+        }
+
         // バランスデータから設定時間を上書き
         if (balanceData != null)
         {
@@ -70,6 +80,14 @@ public class GameManager : MonoBehaviour
     // ---------------------------------------------------------
     private void StartSetupPhase()
     {
+        // 前のウェーブで捕獲した分のお金を支払う
+        if (pendingIncome > 0 && moneyScript != null)
+        {
+            moneyScript.moneycount += pendingIncome;
+            Debug.Log($"捕獲報酬: {pendingIncome}円 を獲得しました！");
+            pendingIncome = 0; // リセット
+        }
+
         CurrentState.Value = GameState.Setup;
         TimeRemaining.Value = setupTime;
         Debug.Log($"--- 第 {CurrentWave.Value} ウェーブ 準備開始 ---");
@@ -126,6 +144,15 @@ public class GameManager : MonoBehaviour
         {
             FinishWave();
         }
+    }
+
+    /// <summary>
+    /// 捕獲報酬を保留リストに追加する
+    /// </summary>
+    public void AddPendingReward(int amount)
+    {
+        pendingIncome += amount;
+        Debug.Log($"捕獲報酬 {amount}円 をストックしました。(現在のストック: {pendingIncome}円)");
     }
 
     private void FinishWave()
