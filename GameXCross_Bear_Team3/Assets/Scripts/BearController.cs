@@ -17,7 +17,8 @@ public class BearController : MonoBehaviour
     [SerializeField] private float attackInterval = 1.0f;
     [SerializeField] private float attackRange = 5.0f;
     [SerializeField] private float detectionRadius = 15.0f; // ハンター検出範囲
-    [SerializeField] private int captureReward = 30000; // 捕獲時の報酬金額
+    [SerializeField] private int captureReward = 30000; // 捕獲時の報酬
+    [SerializeField] private int defeatReward = 30000;  // 倒した時の報酬
 
     [Header("参照")]
     [SerializeField] private Transform detectionPoint;
@@ -113,13 +114,17 @@ public class BearController : MonoBehaviour
 
         GetComponent<Collider>().enabled = false;
 
-        // 【追加】GameManagerに死亡を報告
+        // GameManagerに死亡を報告
         if (GameManager.Instance != null)
         {
             GameManager.Instance.ReportEnemyDefeated();
+
+            // 倒した時の報酬を加算（即時加算か、AddPendingRewardかはGameManagerの仕様に合わせてください）
+            GameManager.Instance.AddPendingReward(defeatReward);
+            Debug.Log($"熊を討伐！ {defeatReward}円 獲得");
         }
 
-        // --- 以下、元のアニメーション処理 ---
+        // アニメーション処理
         Vector3 currentRotation = transform.eulerAngles;
         Vector3 fallRotation = new Vector3(currentRotation.x, currentRotation.y, currentRotation.z + 90f);
 
