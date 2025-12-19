@@ -23,7 +23,7 @@ public class CageTrap : MonoBehaviour
     {
         Debug.Log("クマが罠にかかりました。");
 
-        bear.OnTrapped(transform.position);
+        bear.OnTrapped(this.gameObject);
 
         GetComponent<Collider>().enabled = false;
     }

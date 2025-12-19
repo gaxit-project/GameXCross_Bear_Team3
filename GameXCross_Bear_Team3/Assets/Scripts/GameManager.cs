@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using System.Linq;
 using UniRx;
 using UnityEditor;
@@ -80,6 +81,8 @@ public class GameManager : MonoBehaviour
     // ---------------------------------------------------------
     private void StartSetupPhase()
     {
+        CleanupEnemies();
+
         // 前のウェーブで捕獲した分のお金を支払う
         if (pendingIncome > 0 && moneyScript != null)
         {
@@ -170,6 +173,33 @@ public class GameManager : MonoBehaviour
             // 全ウェーブクリア
             Debug.Log("全ウェーブクリア！勝利！");
             TransitionToResultScene(true); // true = クリア
+        }
+    }
+
+    /// <summary>
+    /// シーン内に残っている敵（捕獲済み・死亡済み）を削除する
+    /// </summary>
+    private void CleanupEnemies()
+    {
+        var allBears = FindObjectsByType<BearController>(FindObjectsSortMode.None);
+
+        foreach (var bear in allBears)
+        {
+            // 捕獲されている熊を対象にする
+            if (bear.IsParalyzed)
+            {
+                // 1. その熊が紐づいている檻を消す
+                GameObject trap = bear.GetAssignedTrap();
+                if (trap != null)
+                {
+                    Destroy(trap);
+                }
+
+                // 2. 熊自身を消す
+                bear.transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => {
+                    Destroy(bear.gameObject);
+                });
+            }
         }
     }
 

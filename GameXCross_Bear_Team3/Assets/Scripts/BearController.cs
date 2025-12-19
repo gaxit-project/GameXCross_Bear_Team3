@@ -1,10 +1,11 @@
-﻿using UnityEngine;
-using UnityEngine.AI;
-using DG.Tweening;
-using UniRx;
-using UniRx.Triggers;
+﻿using DG.Tweening;
 using System;
 using System.Linq;
+using UniRx;
+using UniRx.Triggers;
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UIElements;
 // using UnityEditor; // ビルド時にエラーになる可能性があるためコメントアウト
 
 [RequireComponent(typeof(NavMeshAgent))]
@@ -35,6 +36,7 @@ public class BearController : MonoBehaviour
 
     // 状態管理
     private IDisposable _attackStream;
+    private GameObject _assignedTrap; // 捕まった檻を保存する変数
     private bool _isTrapped = false;
     private bool _isDead = false;
 
@@ -207,17 +209,18 @@ public class BearController : MonoBehaviour
         FindNextTarget();
     }
 
-    public void OnTrapped(Vector3 trapCenterPosition)
+    public void OnTrapped(GameObject trap)
     {
         if (_isTrapped || _isDead) return;
 
         _isTrapped = true;
+        _assignedTrap = trap; // どの檻に捕まったか記録
         _agent.enabled = false;
         StopAttacking();
 
         if (animator && enableAnimation) animator.speed = 0;
 
-        transform.position = trapCenterPosition;
+        transform.position = trap.transform.position;
         transform.rotation = Quaternion.identity;
 
         Debug.Log($"{name}が罠にかかりました。");
@@ -234,6 +237,7 @@ public class BearController : MonoBehaviour
 
         Debug.Log("熊を捕獲しました！");
     }
+    public GameObject GetAssignedTrap() => _assignedTrap;
 
     // アニメーションイベントから呼ばれる攻撃処理
     public void OnAttackHit()
