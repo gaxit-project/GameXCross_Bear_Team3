@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
 using UniRx;
@@ -27,6 +27,7 @@ public class HunterController : MonoBehaviour
     [Header("コンポーネント")]
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private LayerMask bearLayer;
 
     [Header("デバッグ")]
     [SerializeField] private bool isDebugMode = false; // アニメーションなしのデバッグモード
@@ -45,6 +46,8 @@ public class HunterController : MonoBehaviour
     {
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = moveSpeed;
+        // 攻撃範囲(attackRange)の80%程度の距離で止まるように設定
+        _agent.stoppingDistance = attackRange * 0.8f;
         _currentHealth = maxHealth;
         _spawnPosition = transform.position;
 
@@ -53,7 +56,12 @@ public class HunterController : MonoBehaviour
 
     private void Start()
     {
-        StartPatrol();
+        //StartPatrol();
+
+        // 初期状態を停止状態に設定
+        _agent.isStopped = true;
+        if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
+
         ObserveSurroundings();
     }
 
@@ -85,8 +93,12 @@ public class HunterController : MonoBehaviour
                 // 攻撃範囲内なら攻撃
                 if (dist <= attackRange)
                 {
-                    if (!_agent.isStopped) _agent.isStopped = true;
-                    transform.LookAt(_targetBear.transform);
+                    /*if (!_agent.isStopped) _agent.isStopped = true;
+                    transform.LookAt(_targetBear.transform);*/
+
+                    // 止まって熊を見る
+                    _agent.isStopped = true;
+                    transform.LookAt(new Vector3(_targetBear.transform.position.x, transform.position.y, _targetBear.transform.position.z));
 
                     if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
 
@@ -143,8 +155,11 @@ public class HunterController : MonoBehaviour
         if (!isDebugMode && animator) animator.SetTrigger("Attack");
         if (muzzleFlash) muzzleFlash.Play();
 
-        // クマにダメージを与える（attackerとして自分を渡す）
-        _targetBear.TakeDamage(damage, this);
+        if (_targetBear != null)
+        {
+            Debug.Log($"ハンター({gameObject.name}) -> 熊({_targetBear.name}) : {damage} ダメージ");
+            _targetBear.TakeDamage(damage, this);
+        }
 
         // 攻撃演出（反動）
         transform.DOPunchRotation(new Vector3(-2f, 0, 0), 0.1f);
@@ -210,7 +225,14 @@ public class HunterController : MonoBehaviour
         Debug.Log("ハンター: ターゲットロスト。パトロールに戻ります。");
         _targetBear = null;
         StopShooting();
-        StartPatrol();
+        //StartPatrol();
+        if (_agent.isActiveAndEnabled)
+        {
+            _agent.isStopped = true;
+            _agent.velocity = Vector3.zero;
+        }
+
+        if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
     }
 
     /// <summary>
@@ -222,6 +244,7 @@ public class HunterController : MonoBehaviour
 
         _currentHealth -= damage;
         transform.DOShakeScale(0.2f, 0.1f); // ダメージ演出
+        Debug.Log($"ハンター: ダメージを受けた！ 残りHP: {_currentHealth}");
 
         if (_currentHealth <= 0)
         {

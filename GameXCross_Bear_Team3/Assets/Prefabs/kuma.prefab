@@ -363,8 +363,9 @@ MonoBehaviour:
   maxHealth: 100
   attackDamage: 20
   attackInterval: 1
-  attackRange: 5
-  detectionRadius: 15
+  attackRange: 8
+  detectionRadius: 100
+  captureReward: 300
   detectionPoint: {fileID: 7177185434794227229}
   enableAnimation: 0
   animator: {fileID: 975201996841167052}

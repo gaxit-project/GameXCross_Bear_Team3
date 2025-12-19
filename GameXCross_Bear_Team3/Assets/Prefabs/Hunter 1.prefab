@@ -98,14 +98,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 50
   moveSpeed: 3.5
-  attackRange: 15
+  attackRange: 50
   attackInterval: 1.5
   damage: 10
-  detectionRadius: 20
+  detectionRadius: 300
   patrolRadius: 20
   waitTimeAtPatrolPoint: 3
   animator: {fileID: 0}
   muzzleFlash: {fileID: 0}
+  bearLayer:
+    serializedVersion: 2
+    m_Bits: 0
   isDebugMode: 0
 --- !u!195 &278426321114213791
 NavMeshAgent:
