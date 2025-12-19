@@ -44,7 +44,7 @@ public class BearController : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         _rb = GetComponent<Rigidbody>();
 
-        _agent.stoppingDistance = 0f;
+        _agent.stoppingDistance = attackRange - 0.5f;
         _currentHealth = maxHealth; // 初期化
 
         if (detectionPoint == null) detectionPoint = transform;
@@ -236,55 +236,52 @@ public class BearController : MonoBehaviour
         // ハンターへの攻撃
         if (_targetHunter != null && _targetHunter.gameObject.activeSelf && !_targetHunter.IsDead())
         {
-            Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
-            float dist = Vector3.Distance(attackPosition, _targetHunter.transform.position);
+            // 1. 高さ(Y軸)を無視した距離計算
+            Vector3 bearPos = transform.position;
+            Vector3 hunterPos = _targetHunter.transform.position;
+            bearPos.y = 0;
+            hunterPos.y = 0;
+
+            //Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
+            //float dist = Vector3.Distance(attackPosition, _targetHunter.transform.position);
+            float dist = Vector3.Distance(bearPos, hunterPos);
             // 距離の誤差許容（攻撃範囲より少し広めに設定）
-            if (dist <= attackRange + 2.0f)
+            if (dist <= attackRange + 5.0f)
             {
-                Debug.Log($"熊: ハンターへ攻撃ヒット (距離: {dist:F2}, 攻撃範囲: {attackRange})");
+                Debug.Log($"熊({gameObject.name}) -> ハンター({_targetHunter.name}) : {attackDamage} ダメージ");
                 _targetHunter.TakeDamage(attackDamage);
             }
-            else
-            {
-                Debug.Log($"熊: ハンターが攻撃範囲外 (距離: {dist:F2}, 攻撃範囲: {attackRange})");
-            }
+
             return; // ハンター優先
         }
 
-        // 家への攻撃
-        if (_targetHouse != null && !_targetHouse.IsDestroyed && _targetHouse.HouseCollider != null)
+        // 家への攻撃判定
+        if (_targetHouse != null && !_targetHouse.IsDestroyed)
         {
-            Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
-            
-            // 方法1: ClosestPointを使った距離判定
-            Vector3 hitPoint = _targetHouse.HouseCollider.ClosestPoint(attackPosition);
-            float distToClosest = Vector3.Distance(attackPosition, hitPoint);
-            
-            // 方法2: Raycastを使って熊の正面方向から家に当たっているか確認
-            bool hitByRaycast = false;
-            Vector3 attackDirection = transform.forward;
-            RaycastHit hit;
-            if (Physics.Raycast(attackPosition, attackDirection, out hit, attackRange + 2.0f))
+            // 1. 自分の周囲に球体の判定を発生させる
+            float detectionSize = attackRange + 2.0f; // 判定サイズを広げる
+            Vector3 checkCenter = transform.position + transform.forward * 3.0f; // 少し前方を起点にする
+
+            // 2. 範囲内のコライダーをすべて取得
+            Collider[] hitColliders = Physics.OverlapSphere(checkCenter, detectionSize);
+
+            // 3. 狙っている家がその範囲に含まれているか確認
+            bool isHit = hitColliders.Any(c => c == _targetHouse.HouseCollider);
+
+            if (isHit)
             {
-                if (hit.collider == _targetHouse.HouseCollider)
-                {
-                    hitByRaycast = true;
-                }
-            }
-            
-            // 方法3: 家のコライダーの境界ボックスとの距離判定（より寛容）
-            Bounds houseBounds = _targetHouse.HouseCollider.bounds;
-            float distToBounds = Vector3.Distance(attackPosition, houseBounds.ClosestPoint(attackPosition));
-            
-            // いずれかの条件を満たせば攻撃が当たったと判定
-            if (distToClosest <= attackRange + 3.0f || hitByRaycast || distToBounds <= attackRange + 2.0f)
-            {
-                Debug.Log($"熊: 家へ攻撃ヒット (ClosestPoint距離: {distToClosest:F2}, Bounds距離: {distToBounds:F2}, Raycast: {hitByRaycast})");
+                Debug.Log($"熊: 家への広域攻撃ヒット (判定半径: {detectionSize})");
                 _targetHouse.TakeDamage(attackDamage);
             }
             else
             {
-                Debug.Log($"熊: 家が攻撃範囲外 (ClosestPoint距離: {distToClosest:F2}, Bounds距離: {distToBounds:F2}, 攻撃範囲: {attackRange})");
+                // 4. 万が一外れた場合でも、非常に近い場合は強制ヒット
+                float distToHouse = Vector3.Distance(transform.position, _targetHouse.HouseCollider.ClosestPoint(transform.position));
+                if (distToHouse <= attackRange + 3.0f)
+                {
+                    Debug.Log("熊: 近接補正により家へヒット");
+                    _targetHouse.TakeDamage(attackDamage);
+                }
             }
         }
     }
@@ -382,10 +379,13 @@ public class BearController : MonoBehaviour
         Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
         float dist = Vector3.Distance(attackPosition, _targetHunter.transform.position);
 
+        // 判定の遊びを作る
+        float effectiveRange = (_attackStream != null) ? attackRange + 2.0f : attackRange;
+
         if (animator && enableAnimation) animator.SetBool("IsMoving", dist > attackRange - 1.0f);
 
         // 攻撃範囲内
-        if (dist <= attackRange)
+        if (dist <= effectiveRange)
         {
             if (!_agent.isStopped)
             {
@@ -429,7 +429,10 @@ public class BearController : MonoBehaviour
         if (animator && enableAnimation) animator.SetBool("IsMoving", dist > 5.0f);
 
         // 実際の攻撃判定と同じレンジで止まる
-        float stopThreshold = Mathf.Max(attackRange, 1.0f);
+        //float stopThreshold = Mathf.Max(attackRange, 1.0f);
+
+        // 攻撃開始距離を少し広げて、壁に密着しすぎる前に足を止める
+        float stopThreshold = attackRange + 2.0f; // 余裕を持たせる
 
         if (dist <= stopThreshold)
         {
@@ -450,7 +453,7 @@ public class BearController : MonoBehaviour
         }
         else
         {
-            bool isAttackingAndInRange = (_attackStream != null && dist <= attackRange);
+            /*bool isAttackingAndInRange = (_attackStream != null && dist <= attackRange);
             if (isAttackingAndInRange)
             {
                 StopAttacking();
@@ -459,7 +462,22 @@ public class BearController : MonoBehaviour
                 {
                     _agent.SetDestination(destination);
                 }
+            }*/
+
+            // 回転制御を戻して追跡する
+            StopAttacking();
+
+            if (_agent.isStopped) _agent.isStopped = false;
+
+            _agent.updateRotation = true; // 移動方向を向くようにする
+
+            // 目的地が大きく変わった場合のみパスを更新（負荷軽減）
+            if (Vector3.Distance(_agent.destination, destination) > 1.0f)
+            {
+                _agent.SetDestination(destination);
             }
+
+            if (animator && enableAnimation) animator.SetBool("IsMoving", true);
         }
     }
 
@@ -499,6 +517,7 @@ public class BearController : MonoBehaviour
         if (_targetHouse != null)
         {
             _agent.isStopped = false;
+            _agent.updateRotation = true; // 移動開始時に向きの固定を解除
             Vector3 targetPos = _targetHouse.HouseCollider.ClosestPoint(transform.position);
             _agent.SetDestination(targetPos);
         }
@@ -508,7 +527,7 @@ public class BearController : MonoBehaviour
     {
         if (_attackStream != null) return;
 
-        _attackStream = Observable.Interval(TimeSpan.FromSeconds(attackInterval))
+        _attackStream = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(attackInterval))
             .Subscribe(_ =>
             {
                 // ハンター・家、どちらを狙っている場合でも、OnAttackHitで判定してダメージを与える
