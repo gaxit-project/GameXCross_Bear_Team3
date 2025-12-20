@@ -36,11 +36,6 @@ public class BuildingGhost : MonoBehaviour
     {
         CheckOverlap();
         UpdateVisual();
-
-        if(isPlaceable)
-            p.canput = true;
-        else
-            p.canput = false;
     }
 
     private void CheckOverlap()
@@ -86,6 +81,7 @@ public class BuildingGhost : MonoBehaviour
 
         // 適用するマテリアルを先に決定
         Material targetMaterial = isPlaceable ? validMaterial : invalidMaterial;
+        p.canput = isPlaceable ? true : false;
 
         // 【変更点4】取得した全てのレンダラーに対してループ処理でマテリアルを適用
         foreach (var renderer in meshRenderers)
