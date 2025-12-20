@@ -56,20 +56,44 @@ public class HunterController : MonoBehaviour
 
     private void Start()
     {
-        //StartPatrol();
+        StopMovement();
 
-        // 初期状態を停止状態に設定
-        _agent.isStopped = true;
-        if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
+        // GameManagerの状態を監視し、フェーズに合わせて挙動を制御
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.CurrentState
+                .Subscribe(state =>
+                {
+                    if (state == GameState.Setup)
+                    {
+                        Debug.Log("ハンター: 準備フェーズ。待機します。");
+                        ReturnToWait(); // ターゲットを解除し、パスをクリアして停止
+                    }
+                })
+                .AddTo(this);
+        }
 
         ObserveSurroundings();
     }
 
     private void ObserveSurroundings()
     {
+        // 準備フェーズ中は強制停止ロック
+        this.UpdateAsObservable()
+        .Where(_ => GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Setup)
+        .Subscribe(_ =>
+        {
+            if (_agent.hasPath || _agent.velocity.sqrMagnitude > 0.01f)
+            {
+                StopMovement(); // 準備中は毎フレーム停止を保証
+            }
+        })
+        .AddTo(this);
+
         // 定期的に周囲を探索（ターゲットが見つかるまで）
         Observable.Interval(TimeSpan.FromSeconds(0.5f))
             .Where(_ => !_isDead && _targetBear == null)
+            .Where(_ => GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Battle)
             .Subscribe(_ =>
             {
                 DetectNearestBear();
@@ -79,6 +103,7 @@ public class HunterController : MonoBehaviour
         // 毎フレーム更新
         this.UpdateAsObservable()
             .Where(_ => !_isDead && _targetBear != null)
+            .Where(_ => GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Battle)
             .Subscribe(_ =>
             {
                 // ターゲットが無効（死亡/破壊）ならパトロールに戻る
@@ -93,11 +118,8 @@ public class HunterController : MonoBehaviour
                 // 攻撃範囲内なら攻撃
                 if (dist <= attackRange)
                 {
-                    /*if (!_agent.isStopped) _agent.isStopped = true;
-                    transform.LookAt(_targetBear.transform);*/
+                    StopMovement();
 
-                    // 止まって熊を見る
-                    _agent.isStopped = true;
                     transform.LookAt(new Vector3(_targetBear.transform.position.x, transform.position.y, _targetBear.transform.position.z));
 
                     if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
@@ -181,6 +203,7 @@ public class HunterController : MonoBehaviour
 
         _patrolStream = this.UpdateAsObservable()
             .Where(_ => !_isDead && _targetBear == null)
+            .Where(_ => GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Battle)
             .Subscribe(_ =>
             {
                 if (!isDebugMode && animator) animator.SetBool("IsMoving", _agent.velocity.magnitude > 0.1f);
@@ -235,6 +258,17 @@ public class HunterController : MonoBehaviour
         }
 
         SetMoveVisuals(false);
+    }
+
+    private void StopMovement()
+    {
+        if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
+        {
+            _agent.isStopped = true;
+            _agent.velocity = Vector3.zero; // 慣性による滑りを止める
+            _agent.velocity = Vector3.zero; // 速度を物理的にゼロにする
+        }
+        SetMoveVisuals(false); // アニメーションをアイドル状態にする
     }
 
     // アニメーター操作の集約
