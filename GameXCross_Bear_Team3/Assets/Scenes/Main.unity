@@ -50260,7 +50260,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &842595553
 RectTransform:
   m_ObjectHideFlags: 0
@@ -51011,6 +51011,32 @@ MonoBehaviour:
   ghost: {fileID: 0}
   cost: 0
   canput: 0
+  rotationSpeed: 90
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationrightInput:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Rotationright Input
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 4875ce0a-327b-46a9-a7ab-360f545cd55c
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 4518017496754520552, guid: 601a570d2621f82499b7021af269fa03, type: 3}
+  rotationleftInput:
+    m_UseReference: 1
+    m_Action:
+      m_Name: Rotationleft Input
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 61536a28-df21-443f-9ab9-d83e389c088e
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 7564027917928265407, guid: 601a570d2621f82499b7021af269fa03, type: 3}
 --- !u!114 &848974979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51140,6 +51166,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 227d9bc7-3031-40f0-8a5e-1ac6a0a8a2c8
     m_ActionName: 'Map/right[/XInputControllerWindows/rightShoulder]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2ff34b9c-81d4-440c-801e-ae8fb3726b1d
+    m_ActionName: 'Map/pause[/XInputControllerWindows/start]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Map

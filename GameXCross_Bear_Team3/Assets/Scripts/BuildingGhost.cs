@@ -8,16 +8,13 @@ public class BuildingGhost : MonoBehaviour
     [SerializeField] private string groundTag = "Ground";
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material invalidMaterial;
-    [SerializeField] private PointerContoroller p;
+    [SerializeField] private PointerContoroller p; // コントローラーの名前はそのままにしています
 
     [Header("判定調整")]
     [SerializeField] private float sizeScale = 0.9f;
 
     private BoxCollider boxCollider;
-
-    // 【変更点1】単体ではなく、配列（複数）で保持する
     private MeshRenderer[] meshRenderers;
-
     private bool isPlaceable = true;
 
     public bool IsPlaceable => isPlaceable;
@@ -25,10 +22,7 @@ public class BuildingGhost : MonoBehaviour
     private void Awake()
     {
         boxCollider = GetComponent<BoxCollider>();
-
-        // 【変更点2】自分自身を含む、すべての子オブジェクトのMeshRendererを取得する
         meshRenderers = GetComponentsInChildren<MeshRenderer>();
-
         boxCollider.isTrigger = true;
     }
 
@@ -40,9 +34,17 @@ public class BuildingGhost : MonoBehaviour
 
     private void CheckOverlap()
     {
-        // 判定ボックスの中心とサイズ
-        Vector3 center = transform.position + boxCollider.center;
-        Vector3 halfExtents = (boxCollider.size * 0.5f) * sizeScale;
+        // 【修正1】中心点の計算
+        // boxCollider.centerはローカル座標なので、TransformPointでワールド座標に変換します。
+        // これにより、オブジェクトが回転していても正しい中心位置が計算されます。
+        Vector3 center = transform.TransformPoint(boxCollider.center);
+
+        // 【修正2】サイズの計算
+        // boxCollider.sizeは元のサイズなので、オブジェクトのスケール(lossyScale)を掛け合わせます。
+        // これでオブジェクトを拡大縮小していても判定ボックスが追従します。
+        Vector3 worldSize = Vector3.Scale(boxCollider.size, transform.lossyScale);
+        Vector3 halfExtents = (worldSize * 0.5f) * sizeScale;
+
         Quaternion orientation = transform.rotation;
 
         // 指定範囲内のすべてのコライダーを取得
@@ -52,22 +54,14 @@ public class BuildingGhost : MonoBehaviour
 
         foreach (var hit in hitColliders)
         {
-            // 【修正ポイント】
-            // 以前：if (hit.gameObject == gameObject) continue;
-            // これだと「自分自身」しか無視できず、「自分の子」には反応してしまう
-
-            // 今回：自分、または自分の子要素（ヒエラルキーの下にあるもの）なら無視する
+            // 自分、または自分の子要素なら無視
             if (hit.transform.IsChildOf(transform)) continue;
 
-            // 2. 地面タグは無視
+            // 地面タグは無視
             if (hit.CompareTag(groundTag)) continue;
 
-            // ここに来たということは「自分たち」でも「地面」でもない何かに当たっている
             overlapFound = true;
-
-            // デバッグ用：何が邪魔しているかコンソールに表示
-            //Debug.Log($"邪魔なオブジェクト: {hit.name}");
-
+            // Debug.Log($"衝突: {hit.name}"); 
             break;
         }
 
@@ -76,27 +70,20 @@ public class BuildingGhost : MonoBehaviour
 
     private void UpdateVisual()
     {
-        // 【変更点3】レンダラーが一つもない場合は何もしない
         if (meshRenderers == null || meshRenderers.Length == 0) return;
 
-        // 適用するマテリアルを先に決定
         Material targetMaterial = isPlaceable ? validMaterial : invalidMaterial;
-        p.canput = isPlaceable ? true : false;
 
-        // 【変更点4】取得した全てのレンダラーに対してループ処理でマテリアルを適用
+        // pがアタッチされていない場合のnullチェックを追加しておくと安全です
+        if (p != null) p.canput = isPlaceable;
+
         foreach (var renderer in meshRenderers)
         {
             if (renderer == null) continue;
 
-            // もし「1つのオブジェクトに複数のマテリアル（例：ドアとノブ）」がついている場合、
-            // その全てを置き換えるには sharedMaterials 配列ごと入れ替える必要があります。
-            // 単純なモデルなら renderer.sharedMaterial = targetMaterial; だけでOKです。
-
-            // --- 念の為、全マテリアルスロットを上書きする丁寧な実装 ---
             Material[] mats = renderer.sharedMaterials;
             bool needsUpdate = false;
 
-            // マテリアル配列の中身をチェックして書き換え
             for (int i = 0; i < mats.Length; i++)
             {
                 if (mats[i] != targetMaterial)
@@ -106,7 +93,6 @@ public class BuildingGhost : MonoBehaviour
                 }
             }
 
-            // 変更が必要な場合のみ適用（負荷対策）
             if (needsUpdate)
             {
                 renderer.sharedMaterials = mats;
@@ -114,14 +100,25 @@ public class BuildingGhost : MonoBehaviour
         }
     }
 
+    // 【修正3】Gizmosも計算式を合わせる
+    // Physics.OverlapBoxと全く同じ計算で描画しないと、見た目と判定がズレて原因がわからなくなります
     private void OnDrawGizmos()
     {
         if (boxCollider == null) return;
 
         Gizmos.color = isPlaceable ? Color.green : Color.red;
-        Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.lossyScale);
+
+        // Physicsの計算と同じロジックを用意
+        Vector3 center = transform.TransformPoint(boxCollider.center);
+        Vector3 worldSize = Vector3.Scale(boxCollider.size, transform.lossyScale);
+        Vector3 size = worldSize * sizeScale;
+
+        // 回転させた状態でキューブを描画
+        Matrix4x4 rotationMatrix = Matrix4x4.TRS(center, transform.rotation, size);
         Gizmos.matrix = rotationMatrix;
 
-        Gizmos.DrawWireCube(boxCollider.center, boxCollider.size * sizeScale);
+        // Matrixですでに位置・回転・サイズを適用しているので、
+        // DrawWireCubeには原点中心・サイズ1の立方体を渡せばOK
+        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
     }
 }

@@ -28,11 +28,24 @@ public class PointerContoroller : MonoBehaviour
     // 【追加】カメラの情報をキャッシュする変数
     private Camera _mainCamera;
 
+    [Header("設定")]
+    [Tooltip("回転速度（度/秒）")]
+    [SerializeField] private float rotationSpeed = 90f;
+
+    [Tooltip("回転軸（例: (0, 1, 0) でY軸回転）")]
+    [SerializeField] private Vector3 rotationAxis = Vector3.up;
+
+    [Header("入力設定")]
+    [Tooltip("回転に使用するボタン設定")]
+    public InputActionProperty rotationrightInput;
+    public InputActionProperty rotationleftInput;
+
     void Start()
     {
         // 【追加】メインカメラを取得
         _mainCamera = Camera.main;
 
+        ghost.SetActive(false);
         pointer.SetActive(false);
 
         if (GameManager.Instance != null)
@@ -52,6 +65,7 @@ public class PointerContoroller : MonoBehaviour
                         ScrollUI.SetActive(false);
 
                         // 配置しようとしていたポインターも強制キャンセル
+                        ghost.SetActive(true);
                         pointer.SetActive(false);
                         obj = null;
                     }
@@ -84,20 +98,17 @@ public class PointerContoroller : MonoBehaviour
             transform.Translate(moveDirection * Speed * Time.deltaTime, Space.World);
         }
 
-        // === 【変更箇所ここまで】 ===
-
-
-        // 回転処理（既存のまま）
-        if (left == true)
-            rotation.y -= 10 * Time.deltaTime;
-
-        if (right == true)
-            rotation.y += 10 * Time.deltaTime;
-
-        if (left == false && right == false)
-            rotation.y = 0;
-
-        transform.Rotate(rotation);
+        // ボタンが押されているか判定 (IsPressed)
+        if (rotationrightInput.action.IsPressed())
+        {
+            // 等速回転の処理: 軸 * 速度 * フレーム間の時間
+            transform.Rotate(rotationAxis * rotationSpeed * Time.deltaTime);
+        }
+        if (rotationleftInput.action.IsPressed())
+        {
+            // 等速回転の処理: 軸 * 速度 * フレーム間の時間
+            transform.Rotate(rotationAxis * -rotationSpeed * Time.deltaTime);
+        }
     }
 
     public void OnPerformed(InputAction.CallbackContext context)
@@ -133,27 +144,16 @@ public class PointerContoroller : MonoBehaviour
         }
     }
 
-    public void Onleft(InputAction.CallbackContext context)
+    // オブジェクトが有効になったときに入力を有効化
+    private void OnEnable()
     {
-        if (context.performed)
-        {
-            left = true;
-        }
-        else
-        {
-            left = false;
-        }
+        rotationrightInput.action.Enable();
     }
 
-    public void Onright(InputAction.CallbackContext context)
+    // オブジェクトが無効になったときに入力を無効化
+    private void OnDisable()
     {
-        if (context.performed)
-        {
-            right = true;
-        }
-        else
-        {
-            right = false;
-        }
+        rotationleftInput.action.Disable();
     }
+
 }
