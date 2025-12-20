@@ -58329,7 +58329,7 @@ MonoBehaviour:
   groundTag: Ground
   validMaterial: {fileID: 2100000, guid: a9449cbc66dbc7946a7f62310bbd4552, type: 2}
   invalidMaterial: {fileID: 2100000, guid: b07f4449a79dc344b8d3a6be7a2c1cea, type: 2}
-  p: {fileID: 0}
+  p: {fileID: 848974978}
   sizeScale: 1
 --- !u!65 &977479335
 BoxCollider:
@@ -70282,7 +70282,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1124478300
 Transform:
   m_ObjectHideFlags: 0
