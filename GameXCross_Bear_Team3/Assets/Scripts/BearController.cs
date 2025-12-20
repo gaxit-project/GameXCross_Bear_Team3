@@ -242,55 +242,37 @@ public class BearController : MonoBehaviour
     // アニメーションイベントから呼ばれる攻撃処理
     public void OnAttackHit()
     {
-        // ハンターへの攻撃
+        // 1. ハンター優先判定
         if (_targetHunter != null && _targetHunter.gameObject.activeSelf && !_targetHunter.IsDead())
         {
-            // 1. 高さ(Y軸)を無視した距離計算
-            Vector3 bearPos = transform.position;
-            Vector3 hunterPos = _targetHunter.transform.position;
-            bearPos.y = 0;
-            hunterPos.y = 0;
-
-            //Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
-            //float dist = Vector3.Distance(attackPosition, _targetHunter.transform.position);
-            float dist = Vector3.Distance(bearPos, hunterPos);
-            // 距離の誤差許容（攻撃範囲より少し広めに設定）
-            if (dist <= attackRange + 5.0f)
+            float dist = Vector3.Distance(transform.position, _targetHunter.transform.position);
+            if (dist <= attackRange + 1.0f) // 1.0fの猶予
             {
-                Debug.Log($"熊({gameObject.name}) -> ハンター({_targetHunter.name}) : {attackDamage} ダメージ");
                 _targetHunter.TakeDamage(attackDamage);
             }
-
-            return; // ハンター優先
+            return;
         }
 
-        // 家への攻撃判定
+        // 2. 家への攻撃判定
         if (_targetHouse != null && !_targetHouse.IsDestroyed)
         {
-            // 1. 自分の周囲に球体の判定を発生させる
-            float detectionSize = attackRange + 2.0f; // 判定サイズを広げる
-            Vector3 checkCenter = transform.position + transform.forward * 3.0f; // 少し前方を起点にする
+            // 表面までの最短距離を再計算
+            Vector3 bearPos = transform.position;
+            Vector3 closestPoint = _targetHouse.HouseCollider.ClosestPoint(bearPos);
+            float dist = Vector3.Distance(
+                new Vector3(bearPos.x, 0, bearPos.z),
+                new Vector3(closestPoint.x, 0, closestPoint.z)
+            );
 
-            // 2. 範囲内のコライダーをすべて取得
-            Collider[] hitColliders = Physics.OverlapSphere(checkCenter, detectionSize);
-
-            // 3. 狙っている家がその範囲に含まれているか確認
-            bool isHit = hitColliders.Any(c => c == _targetHouse.HouseCollider);
-
-            if (isHit)
+            // 停止距離(attackRange)よりも少し広い判定（遊び）を持たせる
+            if (dist <= attackRange + 2.0f)
             {
-                Debug.Log($"熊: 家への広域攻撃ヒット (判定半径: {detectionSize})");
+                Debug.Log($"熊: 家への攻撃ヒット！ 距離: {dist:F2}");
                 _targetHouse.TakeDamage(attackDamage);
             }
             else
             {
-                // 4. 万が一外れた場合でも、非常に近い場合は強制ヒット
-                float distToHouse = Vector3.Distance(transform.position, _targetHouse.HouseCollider.ClosestPoint(transform.position));
-                if (distToHouse <= attackRange + 3.0f)
-                {
-                    Debug.Log("熊: 近接補正により家へヒット");
-                    _targetHouse.TakeDamage(attackDamage);
-                }
+                Debug.LogWarning($"熊: 攻撃アニメーションが再生されましたが、家が遠すぎます。 距離: {dist:F2}");
             }
         }
     }
@@ -429,21 +411,21 @@ public class BearController : MonoBehaviour
             return;
         }
 
-        Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
-        // 距離判定は水平面で行う（高さ差で遠く判定されないようにする）
-        Vector3 destination = _targetHouse.HouseCollider.ClosestPoint(attackPosition);
-        destination.y = attackPosition.y;
-        float dist = Vector3.Distance(attackPosition, destination);
+        Vector3 bearPos = transform.position;
+        Vector3 closestPointOnHouse = _targetHouse.HouseCollider.ClosestPoint(bearPos);
 
-        if (animator && enableAnimation) animator.SetBool("IsMoving", dist > 5.0f);
+        // Y軸を無視して水平距離を出す（高さの差で空振りするのを防ぐ）
+        float horizontalDist = Vector3.Distance(
+            new Vector3(bearPos.x, 0, bearPos.z),
+            new Vector3(closestPointOnHouse.x, 0, closestPointOnHouse.z)
+        );
 
-        // 実際の攻撃判定と同じレンジで止まる
-        //float stopThreshold = Mathf.Max(attackRange, 1.0f);
+        if (animator && enableAnimation) animator.SetBool("IsMoving", horizontalDist > 5.0f);
 
         // 攻撃開始距離を少し広げて、壁に密着しすぎる前に足を止める
         float stopThreshold = attackRange + 2.0f; // 余裕を持たせる
 
-        if (dist <= stopThreshold)
+        if (horizontalDist <= stopThreshold)
         {
             if (!_agent.isStopped)
             {
@@ -477,14 +459,8 @@ public class BearController : MonoBehaviour
             StopAttacking();
 
             if (_agent.isStopped) _agent.isStopped = false;
-
-            _agent.updateRotation = true; // 移動方向を向くようにする
-
-            // 目的地が大きく変わった場合のみパスを更新（負荷軽減）
-            if (Vector3.Distance(_agent.destination, destination) > 1.0f)
-            {
-                _agent.SetDestination(destination);
-            }
+            _agent.updateRotation = true;
+            _agent.SetDestination(closestPointOnHouse);
 
             if (animator && enableAnimation) animator.SetBool("IsMoving", true);
         }
