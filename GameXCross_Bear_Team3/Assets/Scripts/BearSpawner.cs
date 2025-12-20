@@ -38,13 +38,15 @@ public class BearSpawner : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             // GameManagerに登録（生成前にカウントアップしておくのが安全）
-            GameManager.Instance.RegisterEnemy();
+            //GameManager.Instance.RegisterEnemy();
 
             await SpawnBearAsync();
 
             // 複数生成する場合は少しずらす
             if (count > 1) await Task.Delay(1000);
         }
+
+        GameManager.Instance.NotifySpawningComplete();
     }
 
     private async Task SpawnBearAsync()

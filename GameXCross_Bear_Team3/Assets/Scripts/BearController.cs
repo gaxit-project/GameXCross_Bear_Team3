@@ -71,6 +71,12 @@ public class BearController : MonoBehaviour
         transform.localScale = Vector3.one * 0.1f;
         transform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack);
 
+        // GameManagerに自分を登録する
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RegisterEnemy();
+        }
+
         FindNextTarget();
         ObserveState();
         ObserveCollision();

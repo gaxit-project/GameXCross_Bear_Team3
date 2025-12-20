@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using UniRx;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,15 +21,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float sceneTransitionDelay = 2.0f;
 
     [Header("ゲームバランス")]
-    [SerializeField] private float setupTime = 30.0f; // 準備時間
-    [SerializeField] private int maxWaves = 3;        // 最大ウェーブ数
+    [SerializeField] private float setupTime = 30.0f;
+    [SerializeField] private int maxWaves = 3;
 
     [Header("参照")]
     [SerializeField] private money moneyScript;
 
     [Header("バランスデータ参照")]
-    [SerializeField] private GameBalanceData balanceData; // ここにアセットをアタッチ
-    public GameBalanceData Balance => balanceData; // 他クラスからのアクセサ
+    [SerializeField] private GameBalanceData balanceData;
+    public GameBalanceData Balance => balanceData;
 
     // 公開プロパティ
     public ReactiveProperty<GameState> CurrentState { get; private set; }
@@ -40,17 +39,24 @@ public class GameManager : MonoBehaviour
         = new ReactiveProperty<float>();
 
     public ReactiveProperty<int> CurrentWave { get; private set; }
-        = new ReactiveProperty<int>(1); // 1ウェーブ目から開始
+        = new ReactiveProperty<int>(1);
 
-    private int activeEnemies = 0; // 現在生存している敵の数
-    private int pendingIncome = 0; // 次のフェーズで入る予定のお金
-    private HouseHealth[] allHouses;
-    private CompositeDisposable disposables = new CompositeDisposable();
+    // シーン内の実体を管理するコレクション
+    private readonly ReactiveCollection<BearController> _activeEnemies = new();
+    private readonly ReactiveCollection<HouseHealth> _activeHouses = new();
+
+    // 内部変数
+    private int activeEnemies = 0;
+    private int _pendingIncome = 0;
+    private bool _isWaveSpawningComplete = false;
+    private CompositeDisposable _disposables = new CompositeDisposable();
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else { Destroy(gameObject); return; }
+
+        InitializeObservables();
     }
 
     private void Start()
@@ -60,20 +66,28 @@ public class GameManager : MonoBehaviour
             moneyScript = FindFirstObjectByType<money>();
         }
 
-        // バランスデータから設定時間を上書き
         if (balanceData != null)
         {
             setupTime = balanceData.setupTime;
             maxWaves = balanceData.maxWaves;
         }
 
-        RefreshHouseList();
         StartSetupPhase();
     }
 
-    private void OnDestroy()
+    private void InitializeObservables()
     {
-        disposables?.Dispose();
+        // 敵のリストが0になった時の監視
+        _activeEnemies.ObserveCountChanged()
+            .Where(count => count == 0 && _isWaveSpawningComplete && CurrentState.Value == GameState.Battle)
+            .Subscribe(_ => FinishWave())
+            .AddTo(_disposables);
+
+        // 家のリストが0になった時の監視
+        _activeHouses.ObserveCountChanged()
+            .Where(count => count == 0 && CurrentState.Value == GameState.Battle)
+            .Subscribe(_ => TransitionToResultScene(false))
+            .AddTo(_disposables);
     }
 
     // ---------------------------------------------------------
@@ -83,19 +97,17 @@ public class GameManager : MonoBehaviour
     {
         CleanupEnemies();
 
-        // 前のウェーブで捕獲した分のお金を支払う
-        if (pendingIncome > 0 && moneyScript != null)
+        // 報酬の支払い
+        if (_pendingIncome > 0 && moneyScript != null)
         {
-            moneyScript.moneycount += pendingIncome;
-            Debug.Log($"捕獲報酬: {pendingIncome}円 を獲得しました！");
-            pendingIncome = 0; // リセット
+            moneyScript.moneycount += _pendingIncome;
+            Debug.Log($"捕獲報酬: {_pendingIncome}円 を獲得しました！");
+            _pendingIncome = 0;
         }
 
         CurrentState.Value = GameState.Setup;
         TimeRemaining.Value = setupTime;
-        Debug.Log($"--- 第 {CurrentWave.Value} ウェーブ 準備開始 ---");
 
-        // カウントダウン
         Observable.Interval(TimeSpan.FromSeconds(1))
             .TakeWhile(_ => CurrentState.Value == GameState.Setup)
             .Subscribe(_ =>
@@ -106,140 +118,97 @@ public class GameManager : MonoBehaviour
                     StartBattlePhase();
                 }
             })
-            .AddTo(disposables);
+            .AddTo(_disposables);
     }
 
     private void StartBattlePhase()
     {
         CurrentState.Value = GameState.Battle;
         TimeRemaining.Value = 0;
-        activeEnemies = 0; // カウントリセット
-
+        _isWaveSpawningComplete = false;
         Debug.Log($"--- 第 {CurrentWave.Value} ウェーブ 襲撃開始 ---");
-
-        // 家の生存チェック
-        Observable.Interval(TimeSpan.FromSeconds(0.5f))
-            .Where(_ => CurrentState.Value == GameState.Battle)
-            .Subscribe(_ => CheckAllHousesDestroyed())
-            .AddTo(disposables);
     }
 
-    /// <summary>
-    /// 敵の生成を登録する
-    /// </summary>
-    public void RegisterEnemy()
+    // ---------------------------------------------------------
+    // 敵・家の登録と報告
+    // ---------------------------------------------------------
+    public void RegisterEnemy(BearController bear = null)
     {
         activeEnemies++;
+        if (bear != null && !_activeEnemies.Contains(bear)) _activeEnemies.Add(bear);
         Debug.Log($"敵出現。残り敵数: {activeEnemies}");
     }
 
-    /// <summary>
-    /// 敵が倒されたことを報告する
-    /// </summary>
-    public void ReportEnemyDefeated()
+    public void ReportEnemyDefeated(BearController bear = null)
     {
         if (CurrentState.Value != GameState.Battle) return;
 
-        activeEnemies--;
+        if (activeEnemies > 0) activeEnemies--;
+        if (bear != null) _activeEnemies.Remove(bear);
+
         Debug.Log($"敵撃破。残り敵数: {activeEnemies}");
 
-        if (activeEnemies <= 0)
+        if (activeEnemies <= 0 && _isWaveSpawningComplete)
         {
             FinishWave();
         }
     }
 
-    /// <summary>
-    /// 捕獲報酬を保留リストに追加する
-    /// </summary>
+    public void NotifySpawningComplete()
+    {
+        _isWaveSpawningComplete = true;
+        Debug.Log("全ての敵の生成が完了しました。");
+        if (activeEnemies <= 0) FinishWave();
+    }
+
+    public void RegisterHouse(HouseHealth house) => _activeHouses.Add(house);
+    public void ReportHouseDestroyed(HouseHealth house) => _activeHouses.Remove(house);
+
     public void AddPendingReward(int amount)
     {
-        pendingIncome += amount;
-        Debug.Log($"捕獲報酬 {amount}円 をストックしました。(現在のストック: {pendingIncome}円)");
+        _pendingIncome += amount;
+        Debug.Log($"報酬 {amount}円 ストック。合計: {_pendingIncome}円");
     }
 
     private void FinishWave()
     {
-        Debug.Log($"ウェーブ {CurrentWave.Value} クリア！");
-
         if (CurrentWave.Value < maxWaves)
         {
-            // 次のウェーブへ
             CurrentWave.Value++;
             StartSetupPhase();
         }
         else
         {
-            // 全ウェーブクリア
-            Debug.Log("全ウェーブクリア！勝利！");
-            TransitionToResultScene(true); // true = クリア
+            TransitionToResultScene(true);
         }
     }
 
-    /// <summary>
-    /// シーン内に残っている敵（捕獲済み・死亡済み）を削除する
-    /// </summary>
     private void CleanupEnemies()
     {
         var allBears = FindObjectsByType<BearController>(FindObjectsSortMode.None);
-
         foreach (var bear in allBears)
         {
-            // 捕獲されている熊を対象にする
             if (bear.IsParalyzed)
             {
-                // 1. その熊が紐づいている檻を消す
                 GameObject trap = bear.GetAssignedTrap();
-                if (trap != null)
-                {
-                    Destroy(trap);
-                }
-
-                // 2. 熊自身を消す
-                bear.transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => {
-                    Destroy(bear.gameObject);
-                });
+                if (trap != null) Destroy(trap);
+                bear.transform.DOScale(Vector3.zero, 0.5f).OnComplete(() => Destroy(bear.gameObject));
             }
-        }
-    }
-
-    // ---------------------------------------------------------
-    // 家の状態管理
-    // ---------------------------------------------------------
-    public void RefreshHouseList()
-    {
-        var houseObjects = GameObject.FindGameObjectsWithTag("House");
-        allHouses = houseObjects
-            .Select(h => h.GetComponent<HouseHealth>())
-            .Where(h => h != null)
-            .ToArray();
-    }
-
-    private void CheckAllHousesDestroyed()
-    {
-        if (allHouses == null || allHouses.Length == 0) return;
-
-        bool allDestroyed = allHouses.All(h => h == null || !h.gameObject.activeSelf || h.IsDestroyed);
-
-        if (allDestroyed)
-        {
-            Debug.Log("全滅しました... ゲームオーバー");
-            TransitionToResultScene(false); // false = 敗北
         }
     }
 
     private void TransitionToResultScene(bool isClear)
     {
         if (CurrentState.Value == GameState.Result) return;
-
         CurrentState.Value = GameState.Result;
 
         Observable.Timer(TimeSpan.FromSeconds(sceneTransitionDelay))
-            .Subscribe(_ =>
-            {
-                try { SceneManager.LoadScene(resultSceneName); }
-                catch (Exception e) { Debug.LogError(e.Message); }
-            })
-            .AddTo(disposables);
+            .Subscribe(_ => SceneManager.LoadScene(resultSceneName))
+            .AddTo(_disposables);
+    }
+
+    private void OnDestroy()
+    {
+        _disposables?.Dispose();
     }
 }
