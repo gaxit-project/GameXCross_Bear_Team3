@@ -72,6 +72,7 @@ public class PointerContoroller : MonoBehaviour
                 })
                 .AddTo(this);
         }
+        else Debug.Log("ゲームマネージャーがないよ！");
     }
 
     // Update is called once per frame
