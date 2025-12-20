@@ -154,6 +154,15 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""2ff34b9c-81d4-440c-801e-ae8fb3726b1d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -332,6 +341,17 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""action"": ""right"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f62356e0-9847-4e81-8379-66435803e2d8"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -375,6 +395,7 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         m_Map_put = m_Map.FindAction("put", throwIfNotFound: true);
         m_Map_left = m_Map.FindAction("left", throwIfNotFound: true);
         m_Map_right = m_Map.FindAction("right", throwIfNotFound: true);
+        m_Map_pause = m_Map.FindAction("pause", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
@@ -466,6 +487,7 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Map_put;
     private readonly InputAction m_Map_left;
     private readonly InputAction m_Map_right;
+    private readonly InputAction m_Map_pause;
     /// <summary>
     /// Provides access to input actions defined in input action map "Map".
     /// </summary>
@@ -505,6 +527,10 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Map/right".
         /// </summary>
         public InputAction @right => m_Wrapper.m_Map_right;
+        /// <summary>
+        /// Provides access to the underlying input action "Map/pause".
+        /// </summary>
+        public InputAction @pause => m_Wrapper.m_Map_pause;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -552,6 +578,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @right.started += instance.OnRight;
             @right.performed += instance.OnRight;
             @right.canceled += instance.OnRight;
+            @pause.started += instance.OnPause;
+            @pause.performed += instance.OnPause;
+            @pause.canceled += instance.OnPause;
         }
 
         /// <summary>
@@ -584,6 +613,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @right.started -= instance.OnRight;
             @right.performed -= instance.OnRight;
             @right.canceled -= instance.OnRight;
+            @pause.started -= instance.OnPause;
+            @pause.performed -= instance.OnPause;
+            @pause.canceled -= instance.OnPause;
         }
 
         /// <summary>
@@ -769,6 +801,13 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPause(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Game" which allows adding and removing callbacks.

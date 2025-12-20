@@ -11449,6 +11449,7 @@ GameObject:
   - component: {fileID: 165155367}
   - component: {fileID: 165155368}
   - component: {fileID: 165155370}
+  - component: {fileID: 165155371}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -11563,6 +11564,84 @@ MonoBehaviour:
   - {fileID: 1548917807}
   - {fileID: 114595684}
   switchKeys: 290000002a0000002b0000002c000000
+--- !u!114 &165155371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165155364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 601a570d2621f82499b7021af269fa03, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 776f08aa-0447-4c64-9068-ba449a7efdd4
+    m_ActionName: 'Map/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/XInputControllerWindows/leftStick]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e8e605d0-5d38-483e-ba7d-d01f8fbf6ea3
+    m_ActionName: 'Map/Look[/Mouse/delta,/XInputControllerWindows/rightStick]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 18d3f6c6-d2fb-43a2-9aa0-d79d8c88453f
+    m_ActionName: 'Map/Elevate[/Keyboard/shift,/Keyboard/space]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b5d28ddb-16e5-4135-a7f7-c76913918f6e
+    m_ActionName: 'Map/cansel[/XInputControllerWindows/buttonEast]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ae324e41-6ff6-4a6b-8b3c-2ededa327811
+    m_ActionName: 'Map/put[/XInputControllerWindows/buttonSouth]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 85d892cc-e730-4573-af98-ce95acddcee9
+    m_ActionName: 'Map/left[/XInputControllerWindows/leftShoulder]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 227d9bc7-3031-40f0-8a5e-1ac6a0a8a2c8
+    m_ActionName: 'Map/right[/XInputControllerWindows/rightShoulder]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 165155367}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: OnPausePerformed
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 2ff34b9c-81d4-440c-801e-ae8fb3726b1d
+    m_ActionName: 'Map/pause[/XInputControllerWindows/start]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c153cf72-a071-42ab-adf4-d6fc65c32807
+    m_ActionName: 'Game/Pause[/Keyboard/escape]'
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Map
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &166808094
 GameObject:
   m_ObjectHideFlags: 0
