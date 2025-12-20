@@ -65,7 +65,7 @@ public class PointerContoroller : MonoBehaviour
                         ScrollUI.SetActive(false);
 
                         // 配置しようとしていたポインターも強制キャンセル
-                        ghost.SetActive(true);
+                        ghost.SetActive(false);
                         pointer.SetActive(false);
                         obj = null;
                     }
@@ -110,6 +110,8 @@ public class PointerContoroller : MonoBehaviour
             // 等速回転の処理: 軸 * 速度 * フレーム間の時間
             transform.Rotate(rotationAxis * -rotationSpeed * Time.deltaTime);
         }
+
+        
     }
 
     public void OnPerformed(InputAction.CallbackContext context)
@@ -155,6 +157,24 @@ public class PointerContoroller : MonoBehaviour
     private void OnDisable()
     {
         rotationleftInput.action.Disable();
+    }
+
+    public void UIsetfalse()
+    {
+        // 襲撃中またはリザルト画面ならUIを隠す
+        ScrollUI.SetActive(false);
+
+        // 配置しようとしていたポインターも強制キャンセル
+        ghost.SetActive(false);
+        pointer.SetActive(false);
+        obj = null;
+    }
+
+    public void UIsettrue()
+    {
+        // 準備フェーズになったらUIを表示
+        ScrollUI.SetActive(true);
+        pointer.SetActive(false); // ポインターは初期状態オフ
     }
 
 }

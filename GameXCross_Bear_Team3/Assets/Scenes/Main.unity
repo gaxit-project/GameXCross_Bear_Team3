@@ -11545,6 +11545,7 @@ MonoBehaviour:
   setupTime: 60
   maxWaves: 3
   moneyScript: {fileID: 0}
+  pointerContoroller: {fileID: 0}
   balanceData: {fileID: 11400000, guid: 87d94968c11bb904f9112be71ea2bfc7, type: 2}
 --- !u!114 &165155370
 MonoBehaviour:
@@ -51007,8 +51008,8 @@ MonoBehaviour:
   ScrollUI: {fileID: 7249335416971573198}
   pointer: {fileID: 848974977}
   money: {fileID: 2121703159}
-  obj: {fileID: 0}
-  ghost: {fileID: 0}
+  obj: {fileID: 5994922789081639359}
+  ghost: {fileID: 1124478299}
   cost: 0
   canput: 0
   rotationSpeed: 90

@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
 
     [Header("参照")]
     [SerializeField] private money moneyScript;
+    [SerializeField] private PointerContoroller pointerContoroller;
 
     [Header("バランスデータ参照")]
     [SerializeField] private GameBalanceData balanceData;
@@ -65,6 +66,10 @@ public class GameManager : MonoBehaviour
         {
             moneyScript = FindFirstObjectByType<money>();
         }
+        if (pointerContoroller == null)
+        {
+            pointerContoroller = FindFirstObjectByType<PointerContoroller>();
+        }
 
         if (balanceData != null)
         {
@@ -96,6 +101,7 @@ public class GameManager : MonoBehaviour
     private void StartSetupPhase()
     {
         CleanupEnemies();
+        pointerContoroller.UIsettrue();
 
         // 報酬の支払い
         if (_pendingIncome > 0 && moneyScript != null)
@@ -123,6 +129,7 @@ public class GameManager : MonoBehaviour
 
     private void StartBattlePhase()
     {
+        pointerContoroller.UIsetfalse();
         CurrentState.Value = GameState.Battle;
         TimeRemaining.Value = 0;
         _isWaveSpawningComplete = false;
