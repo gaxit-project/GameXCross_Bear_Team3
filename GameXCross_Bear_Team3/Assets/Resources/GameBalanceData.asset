@@ -17,7 +17,7 @@ MonoBehaviour:
   enemiesPerWave: 020000000200000002000000
   hunterMaxHealth: 50
   hunterMoveSpeed: 3.5
-  hunterAttackDamage: 10
+  hunterAttackDamage: 20
   hunterAttackRange: 100
   hunterAttackInterval: 1.5
   hunterDetectionRadius: 300

@@ -84,7 +84,7 @@ public class HunterController : MonoBehaviour
                 // ターゲットが無効（死亡/破壊）ならパトロールに戻る
                 if (_targetBear == null || !_targetBear.isActiveAndEnabled)
                 {
-                    ReturnToPatrol();
+                    ReturnToWait();
                     return;
                 }
 
@@ -220,19 +220,30 @@ public class HunterController : MonoBehaviour
         _patrolStream = null;
     }
 
-    private void ReturnToPatrol()
+    private void ReturnToWait()
     {
-        Debug.Log("ハンター: ターゲットロスト。パトロールに戻ります。");
+        Debug.Log("ハンター: ターゲットロスト。その場で待機します。");
         _targetBear = null;
         StopShooting();
-        //StartPatrol();
-        if (_agent.isActiveAndEnabled)
+        StopPatrol();
+
+        if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
         {
+            _agent.ResetPath(); // 経路情報を削除
             _agent.isStopped = true;
             _agent.velocity = Vector3.zero;
         }
 
-        if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
+        SetMoveVisuals(false);
+    }
+
+    // アニメーター操作の集約
+    private void SetMoveVisuals(bool isMoving)
+    {
+        if (!isDebugMode && animator != null)
+        {
+            animator.SetBool("IsMoving", isMoving);
+        }
     }
 
     /// <summary>
