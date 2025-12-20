@@ -18,13 +18,13 @@ MonoBehaviour:
   hunterMaxHealth: 50
   hunterMoveSpeed: 3.5
   hunterAttackDamage: 10
-  hunterAttackRange: 15
+  hunterAttackRange: 100
   hunterAttackInterval: 1.5
-  hunterDetectionRadius: 20
+  hunterDetectionRadius: 300
   bearMaxHealth: 100
   bearMoveSpeed: 5
   bearAttackDamage: 20
-  bearAttackInterval: 1
+  bearAttackInterval: 2
   bearAttackRange: 5
   bearDetectionRadius: 15
   houseMaxHp: 100
