@@ -53,7 +53,7 @@ public class PauseManager : MonoBehaviour
         }
     }
 
-    private void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    public void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
         if(isPaused)
         {
