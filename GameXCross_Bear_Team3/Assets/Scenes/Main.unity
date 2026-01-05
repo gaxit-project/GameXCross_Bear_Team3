@@ -37655,7 +37655,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e7fbb368572e4841a47e1b05ee4f784, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seSource: {fileID: 0}
+  seSource: {fileID: 624825559}
 --- !u!1 &625788043
 GameObject:
   m_ObjectHideFlags: 0
@@ -136434,6 +136434,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 278426321114213791, guid: d408fb30a243291409f1d014e65fc912, type: 3}
+      propertyPath: m_AutoRepath
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1746947889372383977, guid: d408fb30a243291409f1d014e65fc912, type: 3}
       propertyPath: m_LocalPosition.x
       value: 20.4
