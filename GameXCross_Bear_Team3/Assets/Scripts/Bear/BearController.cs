@@ -39,7 +39,9 @@ public class BearController : MonoBehaviour, TrapTarget
     private bool _isDead = false;
     private bool _isRewardProcessed = false; // 報酬支払い済みフラグ
 
-    public bool IsDead => _currentHealth <= 0; // 死亡判定プロパティ
+    // public bool IsDead => _currentHealth <= 0; // 死亡判定プロパティ
+
+    public bool IsDead => _isDead;
 
     public bool IsParalyzed => _isTrapped; // 麻痺・行動不能状態であるかを判定する
 
@@ -193,13 +195,13 @@ public class BearController : MonoBehaviour, TrapTarget
 
         Debug.Log($"{name}が罠にかかりました。");
         transform.DOShakeScale(0.5f, 0.5f);
+        
+        TryProcessReward();
 
         if (GameManager.Instance != null)
         {
             GameManager.Instance.ReportEnemyDefeated();
         }
-
-        TryProcessReward();
 
         Debug.Log("熊を捕獲しました！");
     }
@@ -525,11 +527,12 @@ public class BearController : MonoBehaviour, TrapTarget
 
         GetComponent<Collider>().enabled = false;
 
+        TryProcessReward();
+
         // GameManagerに死亡を報告
         if (GameManager.Instance != null)
         {
             GameManager.Instance.ReportEnemyDefeated();
-            TryProcessReward();
             Debug.Log($"熊を討伐！ {defeatReward}円 獲得");
         }
 

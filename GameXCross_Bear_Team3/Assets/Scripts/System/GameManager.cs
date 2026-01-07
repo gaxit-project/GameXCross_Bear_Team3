@@ -154,6 +154,7 @@ public class GameManager : MonoBehaviour
 
     public void ReportEnemyDefeated(BearController bear = null)
     {
+        /*
         if (CurrentState.Value != GameState.Battle) return;
 
         if (activeEnemies > 0) activeEnemies--;
@@ -163,6 +164,18 @@ public class GameManager : MonoBehaviour
 
         if (activeEnemies <= 0 && _isWaveSpawningComplete)
         {
+            FinishWave();
+        }
+        */
+
+        var enemies = FindObjectsByType<BearController>(FindObjectsSortMode.None);
+
+        // 「死んでおらず、かつ、捕まってもいない」敵がまだいるかチェック
+        bool anyAlive = enemies.Any(e => !e.IsDead && !e.IsParalyzed && e.gameObject.activeInHierarchy);
+
+        if (!anyAlive)
+        {
+            Debug.Log("すべての敵を撃退または捕獲しました！");
             FinishWave();
         }
     }
