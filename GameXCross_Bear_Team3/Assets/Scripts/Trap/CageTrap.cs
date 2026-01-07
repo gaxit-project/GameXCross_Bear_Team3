@@ -8,23 +8,21 @@ public class CageTrap : MonoBehaviour
     private void Start()
     {
         this.OnTriggerEnterAsObservable()
-            .Subscribe(collider =>
+            .First()
+            .Select(other => other.GetComponent<TrapTarget>())
+            .Where(target => target != null)
+            .Subscribe(target =>
             {
-                var bear = collider.GetComponent<BearController>();
-                if (bear != null)
-                {
-                    ActivateTrap(bear);
-                }
-            })
-            .AddTo(this);
+                target.Capture(this.gameObject);
+            });
     }
 
-    private void ActivateTrap(BearController bear)
-    {
-        Debug.Log("クマが罠にかかりました。");
+    //private void ActivateTrap(BearController bear)
+    //{
+    //    Debug.Log("クマが罠にかかりました。");
 
-        bear.OnTrapped(this.gameObject);
+    //    bear.OnTrapped(this.gameObject);
 
-        GetComponent<Collider>().enabled = false;
-    }
+    //    GetComponent<Collider>().enabled = false;
+    //}
 }
