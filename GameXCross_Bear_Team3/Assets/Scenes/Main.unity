@@ -136602,6 +136602,14 @@ PrefabInstance:
       propertyPath: pointer
       value: 
       objectReference: {fileID: 848974977}
+    - target: {fileID: 3143367332833177030, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: f692a8d5e0737be49acb9fa1d00aa66f, type: 3}
+    - target: {fileID: 4635707896785293105, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c6eda2d74be86e240b41541c55c6c973, type: 3}
     - target: {fileID: 5078503951804648783, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_Name
       value: TrapSerectionPanel2
@@ -136613,6 +136621,10 @@ PrefabInstance:
     - target: {fileID: 5708622946714855249, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5708622946714855249, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 315
       objectReference: {fileID: 0}
     - target: {fileID: 5708622946714855249, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -136661,6 +136673,10 @@ PrefabInstance:
     - target: {fileID: 7501037451883950451, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7501037451883950451, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 315
       objectReference: {fileID: 0}
     - target: {fileID: 7501037451883950451, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -136781,6 +136797,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 194235466939305635, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+    - {fileID: 173072851515777204, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+    - {fileID: 2241102507817835711, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
