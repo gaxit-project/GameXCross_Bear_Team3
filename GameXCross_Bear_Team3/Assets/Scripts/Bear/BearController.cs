@@ -5,12 +5,10 @@ using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
-// using UnityEditor; // ビルド時にエラーになる可能性があるためコメントアウト
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Rigidbody))]
-public class BearController : MonoBehaviour
+public class BearController : MonoBehaviour, TrapTarget
 {
     [Header("ステータス")]
     [SerializeField] private float maxHealth = 100f; // HP初期値
@@ -39,8 +37,13 @@ public class BearController : MonoBehaviour
     private GameObject _assignedTrap; // 捕まった檻を保存する変数
     private bool _isTrapped = false;
     private bool _isDead = false;
+    private bool _isRewardProcessed = false; // 報酬支払い済みフラグ
 
-    public bool IsParalyzed => _isTrapped;
+    // public bool IsDead => _currentHealth <= 0; // 死亡判定プロパティ
+
+    public bool IsDead => _isDead;
+
+    public bool IsParalyzed => _isTrapped; // 麻痺・行動不能状態であるかを判定する
 
     private void Awake()
     {
@@ -56,6 +59,7 @@ public class BearController : MonoBehaviour
         if (!enableAnimation && animator != null) animator.enabled = false;
     }
 
+    // 初期状態
     public void Initialize(float speed)
     {
         _agent.enabled = true;
@@ -82,9 +86,7 @@ public class BearController : MonoBehaviour
         ObserveCollision();
     }
 
-    /// <summary>
     /// ハンターからダメージを受けた際の処理
-    /// </summary>
     public void TakeDamage(float damage, HunterController attacker)
     {
         if (_isDead || _isTrapped) return;
@@ -111,53 +113,14 @@ public class BearController : MonoBehaviour
         }
     }
 
-    private void Die()
-    {
-        if (_isDead) return; // 二重呼び出し防止
-
-        _isDead = true;
-        _agent.enabled = false;
-        StopAttacking();
-        if (animator && enableAnimation) animator.SetTrigger("Die");
-
-        GetComponent<Collider>().enabled = false;
-
-        // GameManagerに死亡を報告
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.ReportEnemyDefeated();
-
-            // 倒した時の報酬を加算（即時加算か、AddPendingRewardかはGameManagerの仕様に合わせてください）
-            GameManager.Instance.AddPendingReward(defeatReward);
-            Debug.Log($"熊を討伐！ {defeatReward}円 獲得");
-        }
-
-        // アニメーション処理
-        Vector3 currentRotation = transform.eulerAngles;
-        Vector3 fallRotation = new Vector3(currentRotation.x, currentRotation.y, currentRotation.z + 90f);
-
-        Sequence deathSequence = DOTween.Sequence();
-        deathSequence.Append(transform.DORotate(fallRotation, 0.5f).SetEase(Ease.OutQuad));
-        deathSequence.Join(transform.DOMoveY(transform.position.y - 0.5f, 0.5f).SetEase(Ease.InQuad));
-        deathSequence.Append(transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InQuad));
-        deathSequence.OnComplete(() => Destroy(gameObject));
-    }
-
     /// <summary>
     /// 電気柵などによる麻痺
     /// </summary>
     /// <param name="duration">麻痺時間（秒）</param>
     /// <param name="damage">受けるダメージ</param>
-    public void ApplyParalysis(float duration, float damage)
+    public void ApplyStun(float duration, float damage)
     {
-        if (_isDead) return;
-
-        // 既に動けない状態ならダメージだけ受ける（連続麻痺防止）
-        if (_isTrapped)
-        {
-            TakeDamage(damage, null);
-            return;
-        }
+        if (_isDead || IsParalyzed) return;
 
         Debug.Log("熊: 感電しました！麻痺状態になります。");
 
@@ -215,9 +178,10 @@ public class BearController : MonoBehaviour
         FindNextTarget();
     }
 
-    public void OnTrapped(GameObject trap)
+    // 罠にかかった際の拘束処理を実行し、捕獲状態へ移行
+    public void Capture(GameObject trap)
     {
-        if (_isTrapped || _isDead) return;
+        if (_isDead || _isTrapped) return;
 
         _isTrapped = true;
         _assignedTrap = trap; // どの檻に捕まったか記録
@@ -231,18 +195,18 @@ public class BearController : MonoBehaviour
 
         Debug.Log($"{name}が罠にかかりました。");
         transform.DOShakeScale(0.5f, 0.5f);
+        
+        TryProcessReward();
 
         if (GameManager.Instance != null)
         {
-            // 1. 敵の数を減らしてフェーズ進行を進める
             GameManager.Instance.ReportEnemyDefeated();
-
-            // 2. 捕獲報酬を登録する
-            GameManager.Instance.AddPendingReward(captureReward);
         }
 
         Debug.Log("熊を捕獲しました！");
     }
+
+    // 自身を現在拘束している罠の参照を取得する
     public GameObject GetAssignedTrap() => _assignedTrap;
 
     // アニメーションイベントから呼ばれる攻撃処理
@@ -283,6 +247,7 @@ public class BearController : MonoBehaviour
         }
     }
 
+    // 物理的な接触を起点とした攻撃や罠のトリガーを常時監視
     private void ObserveCollision()
     {
         this.OnTriggerEnterAsObservable()
@@ -299,6 +264,7 @@ public class BearController : MonoBehaviour
             .AddTo(this);
     }
 
+    // HPや経過時間などの内部状態を監視し、死亡や状態復帰のロジックを制御
     private void ObserveState()
     {
         // 定期的にハンターを探索（ターゲットがない、または家をターゲットしている場合のみ）
@@ -342,9 +308,7 @@ public class BearController : MonoBehaviour
             .AddTo(this);
     }
 
-    /// <summary>
     /// 周囲のハンターを検出する
-    /// </summary>
     private void DetectNearestHunter()
     {
         var hunters = Physics.OverlapSphere(detectionPoint.position, detectionRadius)
@@ -450,17 +414,6 @@ public class BearController : MonoBehaviour
         }
         else
         {
-            /*bool isAttackingAndInRange = (_attackStream != null && dist <= attackRange);
-            if (isAttackingAndInRange)
-            {
-                StopAttacking();
-                if (_agent.isStopped) _agent.isStopped = false;
-                if (Vector3.Distance(_agent.destination, destination) > 1.0f)
-                {
-                    _agent.SetDestination(destination);
-                }
-            }*/
-
             // 回転制御を戻して追跡する
             StopAttacking();
 
@@ -472,6 +425,7 @@ public class BearController : MonoBehaviour
         }
     }
 
+    // 最寄りの攻撃対象（家・ハンター）を探し、移動を開始
     private void FindNextTarget()
     {
         StopAttacking();
@@ -514,6 +468,7 @@ public class BearController : MonoBehaviour
         }
     }
 
+    // 一定間隔で攻撃するループ
     private void StartAttacking()
     {
         if (_attackStream != null) return;
@@ -534,6 +489,7 @@ public class BearController : MonoBehaviour
             .AddTo(this);
     }
 
+    // 実行中の攻撃ループの停止・リソースの解放
     private void StopAttacking()
     {
         if (_attackStream != null)
@@ -541,5 +497,53 @@ public class BearController : MonoBehaviour
             _attackStream.Dispose();
             _attackStream = null;
         }
+    }
+
+    /// 状態に応じた報酬を確定し、GameManagerに報告する
+    private void TryProcessReward()
+    {
+        if (_isRewardProcessed) return; // すでに処理済みなら何もしない
+
+        int reward = 0;
+        if (_isDead) reward = defeatReward;
+        else if (IsParalyzed) reward = captureReward;
+
+        if (reward > 0)
+        {
+            _isRewardProcessed = true;
+            GameManager.Instance.AddPendingReward(reward);
+        }
+    }
+
+    // 死亡状態へ移行、AI停止、演出再生、自身を破棄
+    private void Die()
+    {
+        if (_isDead) return; // 二重呼び出し防止
+
+        _isDead = true;
+        _agent.enabled = false;
+        StopAttacking();
+        if (animator && enableAnimation) animator.SetTrigger("Die");
+
+        GetComponent<Collider>().enabled = false;
+
+        TryProcessReward();
+
+        // GameManagerに死亡を報告
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ReportEnemyDefeated();
+            Debug.Log($"熊を討伐！ {defeatReward}円 獲得");
+        }
+
+        // アニメーション処理
+        Vector3 currentRotation = transform.eulerAngles;
+        Vector3 fallRotation = new Vector3(currentRotation.x, currentRotation.y, currentRotation.z + 90f);
+
+        Sequence deathSequence = DOTween.Sequence();
+        deathSequence.Append(transform.DORotate(fallRotation, 0.5f).SetEase(Ease.OutQuad));
+        deathSequence.Join(transform.DOMoveY(transform.position.y - 0.5f, 0.5f).SetEase(Ease.InQuad));
+        deathSequence.Append(transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InQuad));
+        deathSequence.OnComplete(() => Destroy(gameObject));
     }
 }

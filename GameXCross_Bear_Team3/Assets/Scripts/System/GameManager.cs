@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     [Header("参照")]
     [SerializeField] private money moneyScript;
-    [SerializeField] private PointerContoroller pointerContoroller;
+    [SerializeField] private PointerContoroller pointerController;
 
     [Header("バランスデータ参照")]
     [SerializeField] private GameBalanceData balanceData;
@@ -66,9 +66,9 @@ public class GameManager : MonoBehaviour
         {
             moneyScript = FindFirstObjectByType<money>();
         }
-        if (pointerContoroller == null)
+        if (pointerController == null)
         {
-            pointerContoroller = FindFirstObjectByType<PointerContoroller>();
+            pointerController = FindFirstObjectByType<PointerContoroller>();
         }
 
         if (balanceData != null)
@@ -100,19 +100,25 @@ public class GameManager : MonoBehaviour
     // ---------------------------------------------------------
     private void StartSetupPhase()
     {
-        CleanupEnemies();
-        pointerContoroller.UIsettrue();
+        CurrentState.Value = GameState.Setup;
+        TimeRemaining.Value = setupTime;
+        pointerController.UIsettrue();
 
         // 報酬の支払い
-        if (_pendingIncome > 0 && moneyScript != null)
+        if (_pendingIncome > 0)
         {
-            moneyScript.moneycount += _pendingIncome;
-            Debug.Log($"捕獲報酬: {_pendingIncome}円 を獲得しました！");
+            if (moneyScript != null)
+            {
+                moneyScript.moneycount += _pendingIncome;
+                Debug.Log($"捕獲報酬: {_pendingIncome}円 を獲得しました！");
+            }
             _pendingIncome = 0;
         }
 
-        CurrentState.Value = GameState.Setup;
-        TimeRemaining.Value = setupTime;
+        CleanupEnemies();
+
+        // カウントダウンタイマーの開始
+        _disposables.Clear(); // リセット
 
         Observable.Interval(TimeSpan.FromSeconds(1))
             .TakeWhile(_ => CurrentState.Value == GameState.Setup)
@@ -121,7 +127,7 @@ public class GameManager : MonoBehaviour
                 TimeRemaining.Value -= 1;
                 if (TimeRemaining.Value <= 0)
                 {
-                    StartBattlePhase();
+                    StartBattlePhase(); // 0秒になるとバトル開始
                 }
             })
             .AddTo(_disposables);
@@ -129,7 +135,7 @@ public class GameManager : MonoBehaviour
 
     private void StartBattlePhase()
     {
-        pointerContoroller.UIsetfalse();
+        pointerController.UIsetfalse();
         CurrentState.Value = GameState.Battle;
         TimeRemaining.Value = 0;
         _isWaveSpawningComplete = false;
@@ -148,6 +154,7 @@ public class GameManager : MonoBehaviour
 
     public void ReportEnemyDefeated(BearController bear = null)
     {
+        /*
         if (CurrentState.Value != GameState.Battle) return;
 
         if (activeEnemies > 0) activeEnemies--;
@@ -157,6 +164,18 @@ public class GameManager : MonoBehaviour
 
         if (activeEnemies <= 0 && _isWaveSpawningComplete)
         {
+            FinishWave();
+        }
+        */
+
+        var enemies = FindObjectsByType<BearController>(FindObjectsSortMode.None);
+
+        // 「死んでおらず、かつ、捕まってもいない」敵がまだいるかチェック
+        bool anyAlive = enemies.Any(e => !e.IsDead && !e.IsParalyzed && e.gameObject.activeInHierarchy);
+
+        if (!anyAlive)
+        {
+            Debug.Log("すべての敵を撃退または捕獲しました！");
             FinishWave();
         }
     }
