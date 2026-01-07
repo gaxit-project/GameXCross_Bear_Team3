@@ -136594,6 +136594,10 @@ PrefabInstance:
       propertyPath: pointer
       value: 
       objectReference: {fileID: 848974977}
+    - target: {fileID: 2283157198723294984, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -115
+      objectReference: {fileID: 0}
     - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: p
       value: 
@@ -136614,6 +136618,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: f692a8d5e0737be49acb9fa1d00aa66f, type: 3}
+    - target: {fileID: 4149622598163586450, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -115
+      objectReference: {fileID: 0}
     - target: {fileID: 4635707896785293105, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_Sprite
       value: 
