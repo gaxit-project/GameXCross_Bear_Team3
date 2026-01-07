@@ -365,8 +365,8 @@ MonoBehaviour:
   attackInterval: 1
   attackRange: 8
   detectionRadius: 100
-  captureReward: 30000
-  defeatReward: 15000
+  captureReward: 200000
+  defeatReward: 100000
   detectionPoint: {fileID: 7177185434794227229}
   enableAnimation: 0
   animator: {fileID: 975201996841167052}

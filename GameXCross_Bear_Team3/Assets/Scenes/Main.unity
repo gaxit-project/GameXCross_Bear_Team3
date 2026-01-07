@@ -127838,7 +127838,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5883016336981739628, guid: c05ae1a86db9c3b448ecac4e924a76e4, type: 3}
       propertyPath: moneycount
-      value: 50000
+      value: 500000
       objectReference: {fileID: 0}
     - target: {fileID: 6377902184010498457, guid: c05ae1a86db9c3b448ecac4e924a76e4, type: 3}
       propertyPath: m_Pivot.x
@@ -136571,6 +136571,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 848974978}
     - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: cost
+      value: 300000
+      objectReference: {fileID: 0}
+    - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: ghost
       value: 
       objectReference: {fileID: 1683152857}
@@ -136594,6 +136598,10 @@ PrefabInstance:
       propertyPath: p
       value: 
       objectReference: {fileID: 848974978}
+    - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: cost
+      value: 50000
+      objectReference: {fileID: 0}
     - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: ghost
       value: 
@@ -136786,6 +136794,10 @@ PrefabInstance:
       propertyPath: p
       value: 
       objectReference: {fileID: 848974978}
+    - target: {fileID: 8944863643874766821, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: cost
+      value: 100000
+      objectReference: {fileID: 0}
     - target: {fileID: 8944863643874766821, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: ghost
       value: 
