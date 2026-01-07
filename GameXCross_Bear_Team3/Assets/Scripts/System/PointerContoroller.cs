@@ -150,13 +150,15 @@ public class PointerContoroller : MonoBehaviour
     // オブジェクトが有効になったときに入力を有効化
     private void OnEnable()
     {
-        rotationrightInput.action.Enable();
+        if (rotationrightInput.action != null) rotationrightInput.action.Enable();
+        if (rotationleftInput.action != null) rotationleftInput.action.Enable();
     }
 
     // オブジェクトが無効になったときに入力を無効化
     private void OnDisable()
     {
-        rotationleftInput.action.Disable();
+        if (rotationrightInput.action != null) rotationrightInput.action.Disable();
+        if (rotationleftInput.action != null) rotationleftInput.action.Disable();
     }
 
     public void UIsetfalse()
