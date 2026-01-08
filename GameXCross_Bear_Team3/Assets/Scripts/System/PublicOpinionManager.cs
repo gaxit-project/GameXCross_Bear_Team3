@@ -1,0 +1,93 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class PublicOpinionManager : MonoBehaviour
+{
+    [SerializeField,Header("表示上の世論の数値")]
+    [Range(-1,1)]private float PublicOpinion;
+
+    [Header("UI参照")]
+    [SerializeField] private Image faceImage; // 顔を表示するImageコンポーネント
+    [SerializeField] private GameObject face; // 顔の位置を動かすgameobject
+
+    [Header("白いスプライト画像")]
+    [SerializeField] private Sprite sadSprite;    // 悲しい顔（白）
+    [SerializeField] private Sprite normalSprite; // 普通の顔（白）
+    [SerializeField] private Sprite smileSprite;  // 笑顔（白）
+
+    [Header("色の設定")]
+    [SerializeField] private Color badColor = Color.red;    // -1に近いときの色（赤）
+    [SerializeField] private Color midColor = Color.yellow; // 0付近の色（黄）
+    [SerializeField] private Color goodColor = Color.green; // 1に近いときの色（緑）
+
+    public float POchangeSpeed = 1f;
+
+    [Range(-1, 1)] public float POvalue;   //値を参照するときはこれを参照して下さい
+    public static PublicOpinionManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        // これがないと他から呼べません！
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        PublicOpinion = Mathf.Lerp(PublicOpinion,POvalue,POchangeSpeed * Time.deltaTime);
+        faceColor();
+        faceSplite();
+    }
+
+    private void faceColor()
+    {
+        Color currentColor;
+        if (POvalue < 0)
+        {
+            // マイナスエリア (-1 ～ 0)
+            // -1(赤) から 0(黄) へ変化させる
+            // t + 1 をすることで、入力「-1～0」を「0～1」の割合に変換できる
+            currentColor = Color.Lerp(badColor, midColor, PublicOpinion + 1f);
+        }
+        else
+        {
+            // プラスエリア (0 ～ 1)
+            // 0(黄) から 1(緑) へ変化させる
+            // t はそのまま「0～1」の割合として使える
+            currentColor = Color.Lerp(midColor, goodColor, PublicOpinion);
+        }
+
+        // 色を適用
+        faceImage.color = currentColor;
+    }
+
+    private void faceSplite()
+    {
+        if (PublicOpinion >= 0.35 && faceImage.sprite != smileSprite)
+            faceImage.sprite = smileSprite;
+        else if(PublicOpinion <= -0.35 && faceImage.sprite != sadSprite)
+            faceImage.sprite = sadSprite;
+        else if(PublicOpinion < 0.35 && PublicOpinion > -0.35 && faceImage.sprite != normalSprite)
+            faceImage.sprite = normalSprite;
+    }
+
+
+    /// <summary>
+    /// 世論の変化。引数は増減させる量(-2f~+2f)。世論の範囲は-1f~+1fとする。
+    /// </summary>
+    /// <param name="value">ここに記入した値だけ変化する</param>
+    public void POchanging(float value)
+    {
+        value = Mathf.Clamp(value,-2,2);
+        POvalue += value;
+        POvalue = Mathf.Clamp(POvalue,-1,1);
+    }
+
+
+}
