@@ -8,7 +8,6 @@ public class PublicOpinionManager : MonoBehaviour
 
     [Header("UI参照")]
     [SerializeField] private Image faceImage; // 顔を表示するImageコンポーネント
-    [SerializeField] private GameObject face; // 顔の位置を動かすgameobject
 
     [Header("白いスプライト画像")]
     [SerializeField] private Sprite sadSprite;    // 悲しい顔（白）
@@ -25,6 +24,8 @@ public class PublicOpinionManager : MonoBehaviour
     [Range(-1, 1)] public float POvalue;   //値を参照するときはこれを参照して下さい
     public static PublicOpinionManager Instance { get; private set; }
 
+    private Vector3 pos;
+
     private void Awake()
     {
         // これがないと他から呼べません！
@@ -38,9 +39,15 @@ public class PublicOpinionManager : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void Start()
+    {
+        pos = faceImage.rectTransform.anchoredPosition;
+    }
+
+    private void Update()
     {
         PublicOpinion = Mathf.Lerp(PublicOpinion,POvalue,POchangeSpeed * Time.deltaTime);
+        faceImage.rectTransform.anchoredPosition = new Vector3(pos.x,pos.y + PublicOpinion * 100,pos.z);
         faceColor();
         faceSplite();
     }
@@ -89,5 +96,14 @@ public class PublicOpinionManager : MonoBehaviour
         POvalue = Mathf.Clamp(POvalue,-1,1);
     }
 
+    /// <summary>
+    /// 現在のPO値が任意の引数以上かかどうか調べる。
+    /// </summary>
+    /// <param name="judgementValue">判断基準となる値</param>
+    /// <returns>引数以上であればtrue、そうでなければfalseを返す。</returns>
+    public bool JudgePO(float judgementValue)
+    {
+        return POvalue >= judgementValue;
+    }
 
 }
