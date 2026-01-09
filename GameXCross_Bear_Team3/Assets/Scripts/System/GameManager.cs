@@ -88,10 +88,14 @@ public class GameManager : MonoBehaviour
             .Subscribe(_ => FinishWave())
             .AddTo(_disposables);
 
-        // 家のリストが0になった時の監視
+        // 家のリストが0になった時の監視（Setup中でもBattle中でも反応）
         _activeHouses.ObserveCountChanged()
-            .Where(count => count == 0 && CurrentState.Value == GameState.Battle)
-            .Subscribe(_ => TransitionToResultScene(false))
+            .Where(count => count == 0 && CurrentState.Value != GameState.Result)
+            .Subscribe(_ =>
+            {
+                Debug.Log("全ての家が破壊されました！ゲームオーバー");
+                TransitionToResultScene(false);
+            })
             .AddTo(_disposables);
     }
 
@@ -154,26 +158,12 @@ public class GameManager : MonoBehaviour
 
     public void ReportEnemyDefeated(BearController bear = null)
     {
-        /*
-        if (CurrentState.Value != GameState.Battle) return;
-
-        if (activeEnemies > 0) activeEnemies--;
-        if (bear != null) _activeEnemies.Remove(bear);
-
-        Debug.Log($"敵撃破。残り敵数: {activeEnemies}");
-
-        if (activeEnemies <= 0 && _isWaveSpawningComplete)
-        {
-            FinishWave();
-        }
-        */
-
         var enemies = FindObjectsByType<BearController>(FindObjectsSortMode.None);
 
-        // 「死んでおらず、かつ、捕まってもいない」敵がまだいるかチェック
-        bool anyAlive = enemies.Any(e => !e.IsDead && !e.IsParalyzed && e.gameObject.activeInHierarchy);
+        // 「死んでいない」敵がまだいるかチェック（捕獲済みはIsDead=trueで判定）
+        bool anyAlive = enemies.Any(e => !e.IsDead && e.gameObject.activeInHierarchy);
 
-        if (!anyAlive)
+        if (!anyAlive && _isWaveSpawningComplete)
         {
             Debug.Log("すべての敵を撃退または捕獲しました！");
             FinishWave();
@@ -188,7 +178,18 @@ public class GameManager : MonoBehaviour
     }
 
     public void RegisterHouse(HouseHealth house) => _activeHouses.Add(house);
-    public void ReportHouseDestroyed(HouseHealth house) => _activeHouses.Remove(house);
+    
+    public void ReportHouseDestroyed(HouseHealth house)
+    {
+        _activeHouses.Remove(house);
+        
+        // 家が残っているか即座に確認
+        if (_activeHouses.Count == 0 && CurrentState.Value != GameState.Result)
+        {
+            Debug.Log("全ての家が破壊されました！ゲームオーバー");
+            TransitionToResultScene(false);
+        }
+    }
 
     public void AddPendingReward(int amount)
     {
