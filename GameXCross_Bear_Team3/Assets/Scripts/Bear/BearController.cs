@@ -196,7 +196,9 @@ public class BearController : MonoBehaviour, TrapTarget
         Debug.Log($"{name}が罠にかかりました。");
         transform.DOShakeScale(0.5f, 0.5f);
         
+        // 捕獲時点で報酬を確定させ、Dead状態にする（二重支払い防止）
         TryProcessReward();
+        _isDead = true;
 
         if (GameManager.Instance != null)
         {

@@ -1,8 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UniRx;
 using DG.Tweening;
-using System;
-using NUnit.Framework.Constraints;
 
 [RequireComponent(typeof(Collider))]
 public class HouseHealth : MonoBehaviour
@@ -21,6 +19,12 @@ public class HouseHealth : MonoBehaviour
         HouseCollider = GetComponent<Collider>();
     }
 
+    private void Start()
+    {
+        // GameManagerに家を登録
+        GameManager.Instance.RegisterHouse(this);
+    }
+
     public void TakeDamage(float amount)
     {
         if(IsDestroyed) return;
@@ -37,8 +41,13 @@ public class HouseHealth : MonoBehaviour
 
     private void Collapse()
     {
-        transform.DOKill();
+            // GameManagerに家の破壊を報告
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ReportHouseDestroyed(this);
+        }
 
+        transform.DOKill();
         transform.SetParent(null);
 
         var seq = DOTween.Sequence();

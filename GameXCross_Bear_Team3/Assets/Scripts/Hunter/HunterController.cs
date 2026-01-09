@@ -102,39 +102,55 @@ public class HunterController : MonoBehaviour
 
         // 毎フレーム更新
         this.UpdateAsObservable()
-            .Where(_ => !_isDead && _targetBear != null)
+            .Where(_ => !_isDead)
             .Where(_ => GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Battle)
             .Subscribe(_ =>
             {
-                // ターゲットが無効（死亡/破壊）ならパトロールに戻る
-                if (_targetBear == null || !_targetBear.isActiveAndEnabled)
+                // ターゲットが有効な場合の処理
+                if (_targetBear != null && _targetBear.isActiveAndEnabled && !_targetBear.IsDead)
                 {
-                    ReturnToWait();
-                    return;
+                    float dist = Vector3.Distance(transform.position, _targetBear.transform.position);
+
+                    // 攻撃範囲内なら攻撃
+                    if (dist <= attackRange)
+                    {
+                        StopMovement();
+
+                        transform.LookAt(new Vector3(_targetBear.transform.position.x, transform.position.y, _targetBear.transform.position.z));
+
+                        if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
+
+                        if (_attackStream == null) StartShooting();
+                        
+                        // ★ クマが非常に近い場合は後退（後ずさり防止）
+                        if (dist < attackRange * 0.3f)  // 攻撃範囲の30%以下なら逃げる
+                        {
+                            Vector3 awayDirection = (transform.position - _targetBear.transform.position).normalized;
+                            Vector3 backupTarget = transform.position + awayDirection * (attackRange * 0.5f);
+                            _agent.isStopped = false;
+                            _agent.SetDestination(backupTarget);
+                        }
+                    }
+                    // 範囲外なら追跡
+                    else
+                    {
+                        if (_agent.isStopped) _agent.isStopped = false;
+                        
+                        // クマまでの距離を保つために、目的地をクマの近く（攻撃範囲内）に設定
+                        Vector3 directionToBear = (_targetBear.transform.position - transform.position).normalized;
+                        Vector3 stoppingPoint = _targetBear.transform.position - directionToBear * (attackRange * 0.8f);
+                        
+                        _agent.SetDestination(stoppingPoint);
+
+                        if (!isDebugMode && animator) animator.SetBool("IsMoving", true);
+
+                        StopShooting(); // 射撃停止
+                    }
                 }
-
-                float dist = Vector3.Distance(transform.position, _targetBear.transform.position);
-
-                // 攻撃範囲内なら攻撃
-                if (dist <= attackRange)
+                // ターゲットが無効（死亡/破壊）なら待機状態に
+                else if (_targetBear != null && (_targetBear.IsDead || !_targetBear.isActiveAndEnabled))
                 {
-                    StopMovement();
-
-                    transform.LookAt(new Vector3(_targetBear.transform.position.x, transform.position.y, _targetBear.transform.position.z));
-
-                    if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
-
-                    if (_attackStream == null) StartShooting();
-                }
-                // 範囲外なら追跡
-                else
-                {
-                    if (_agent.isStopped) _agent.isStopped = false;
-                    _agent.SetDestination(_targetBear.transform.position);
-
-                    if (!isDebugMode && animator) animator.SetBool("IsMoving", true);
-
-                    StopShooting(); // 射撃停止
+                    ReturnToWait();  // ← その場で待機（パトロール開始しない）
                 }
             })
             .AddTo(this);
@@ -153,6 +169,7 @@ public class HunterController : MonoBehaviour
         {
             _targetBear = bears;
             StopPatrol();
+            StartShooting();  // ← クマ発見時に即座に攻撃開始
             Debug.Log("ハンター: クマを発見！攻撃を開始します。");
         }
     }

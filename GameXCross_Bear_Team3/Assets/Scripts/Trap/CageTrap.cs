@@ -8,13 +8,13 @@ public class CageTrap : MonoBehaviour
     private void Start()
     {
         this.OnTriggerEnterAsObservable()
-            .First()
             .Select(other => other.GetComponent<TrapTarget>())
             .Where(target => target != null)
             .Subscribe(target =>
             {
                 target.Capture(this.gameObject);
-            });
+            })
+            .AddTo(this);
     }
 
     //private void ActivateTrap(BearController bear)
