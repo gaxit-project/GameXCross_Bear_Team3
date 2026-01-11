@@ -9,7 +9,6 @@ public class PointerContoroller : MonoBehaviour
     [SerializeField] private float Speed = 1;
     [SerializeField] public GameObject ScrollUI;
     [SerializeField] public GameObject pointer;
-    [SerializeField] public money money;
 
     [Header("現在選択している設置物")]
     [SerializeField] public GameObject obj;
@@ -142,10 +141,10 @@ public class PointerContoroller : MonoBehaviour
 
         if (context.performed)
         {
-            if (money.moneycount >= cost && canput)
+            if (money.Instance.moneycount >= cost && canput)
             {
                 Instantiate(obj, pointer.transform.position, pointer.transform.rotation);
-                money.moneycount -= cost;
+                money.Instance.moneycount -= cost;
                 PublicOpinionManager.Instance.POchanging(POchangevalue);
             }
         }

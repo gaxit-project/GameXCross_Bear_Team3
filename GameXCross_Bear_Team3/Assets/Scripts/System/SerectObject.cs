@@ -28,6 +28,18 @@ public class SerectObject : MonoBehaviour
 
     public void Onclick()
     {
+        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue)&&money.Instance.moneycount >= cost)
+        {
+            changeUI();
+        }
+        else
+        {
+            Debug.Log("‚¨‹à‚©¢˜_’l‚ª‘«‚è‚Ü‚¹‚ñI");
+        }
+    }
+
+    private void changeUI()
+    {
         ScrollUI.SetActive(false);
         pointer.SetActive(true);
         ghost.SetActive(true);
