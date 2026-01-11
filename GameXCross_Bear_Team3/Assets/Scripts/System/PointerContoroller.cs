@@ -20,6 +20,9 @@ public class PointerContoroller : MonoBehaviour
     [Header("その設置物の設置コスト")]
     [SerializeField] public int cost;
 
+    [Header("その設置物の設置時の変動世論値")]
+    [SerializeField] public float POchangevalue;
+
     public bool canput;
     private Vector2 input;
     private bool left = false, right = false;
@@ -143,6 +146,7 @@ public class PointerContoroller : MonoBehaviour
             {
                 Instantiate(obj, pointer.transform.position, pointer.transform.rotation);
                 money.moneycount -= cost;
+                PublicOpinionManager.Instance.POchanging(POchangevalue);
             }
         }
     }

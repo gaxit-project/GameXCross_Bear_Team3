@@ -11,6 +11,10 @@ public class SerectObject : MonoBehaviour
     public GameObject obj;
     [SerializeField, Header("そのコスト")]
     public int cost;
+    [SerializeField, Header("必要な世論値")]
+    public float necessaryPOvalue;
+    [SerializeField, Header("置いたときの世論値の変化量")]
+    public float POchangevalue;
     [SerializeField, Header("ポインター")]
     public PointerContoroller p;
 
@@ -30,5 +34,6 @@ public class SerectObject : MonoBehaviour
         p.obj = obj;
         p.cost = cost;
         p.ghost = ghost;
+        p.POchangevalue = POchangevalue;
     }
 }
