@@ -8,6 +8,20 @@ public class money : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI Text;
 
+    public static money Instance { get; private set; }
+
+    private void Awake()
+    {
+        // ‚±‚ê‚ª‚È‚¢‚Æ‘¼‚©‚çŒÄ‚×‚Ü‚¹‚ñI
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     void Start()
     {
         Text.text = moneycount.ToString("N0");

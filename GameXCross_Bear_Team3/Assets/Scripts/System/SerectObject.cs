@@ -11,6 +11,10 @@ public class SerectObject : MonoBehaviour
     public GameObject obj;
     [SerializeField, Header("そのコスト")]
     public int cost;
+    [SerializeField, Header("必要な世論値")]
+    public float necessaryPOvalue;
+    [SerializeField, Header("置いたときの世論値の変化量")]
+    public float POchangevalue;
     [SerializeField, Header("ポインター")]
     public PointerContoroller p;
 
@@ -24,11 +28,24 @@ public class SerectObject : MonoBehaviour
 
     public void Onclick()
     {
+        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue)&&money.Instance.moneycount >= cost)
+        {
+            changeUI();
+        }
+        else
+        {
+            Debug.Log("お金か世論値が足りません！");
+        }
+    }
+
+    private void changeUI()
+    {
         ScrollUI.SetActive(false);
         pointer.SetActive(true);
         ghost.SetActive(true);
         p.obj = obj;
         p.cost = cost;
         p.ghost = ghost;
+        p.POchangevalue = POchangevalue;
     }
 }
