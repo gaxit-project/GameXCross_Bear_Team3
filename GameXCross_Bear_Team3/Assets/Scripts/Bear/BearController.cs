@@ -47,8 +47,17 @@ public class BearController : MonoBehaviour, TrapTarget
 
     private void Awake()
     {
+        Debug.Log("[Bear Awake] START");
         _agent = GetComponent<NavMeshAgent>();
         _rb = GetComponent<Rigidbody>();
+
+        // Rigidbodyをkinematicに設定（NavMeshAgentとの競合を防ぐ）
+        if (_rb != null)
+        {
+            _rb.isKinematic = true;
+            _rb.useGravity = false;
+            Debug.Log($"[Bear Awake] Rigidbody configured: isKinematic={_rb.isKinematic}");
+        }
 
         _agent.stoppingDistance = attackRange - 0.5f;
         _currentHealth = maxHealth; // 初期化
@@ -56,7 +65,20 @@ public class BearController : MonoBehaviour, TrapTarget
         if (detectionPoint == null) detectionPoint = transform;
         if (animator == null) animator = GetComponentInChildren<Animator>();
 
-        if (!enableAnimation && animator != null) animator.enabled = false;
+        // NavMeshAgentとアニメーターの競合を防ぐ
+        if (animator != null)
+        {
+            animator.applyRootMotion = false; // Root Motionを無効化
+            animator.updateMode = AnimatorUpdateMode.Normal;
+            Debug.Log($"[Bear Awake] Animator configured: applyRootMotion={animator.applyRootMotion}, updateMode={animator.updateMode}, enabled={animator.enabled}");
+            if (!enableAnimation) animator.enabled = false;
+        }
+
+        // NavMeshAgentの設定
+        _agent.updatePosition = true;  // NavMeshAgentが位置を制御
+        _agent.updateRotation = true;  // NavMeshAgentが回転を制御
+        
+        Debug.Log($"[Bear Awake] END - Agent enabled: {_agent.enabled}, isOnNavMesh: {_agent.isOnNavMesh}");
     }
 
     // 初期状態
@@ -69,13 +91,14 @@ public class BearController : MonoBehaviour, TrapTarget
         _isDead = false; // 初期化
         _currentHealth = maxHealth; // 初期化
 
+        Debug.Log($"[Bear Initialize] Agent: enabled={_agent.enabled}, speed={_agent.speed}, isOnNavMesh={_agent.isOnNavMesh}");
+
         Vector3 targetScale = transform.localScale;
 
-        // 出現アニメーション
-        transform.localScale = Vector3.one * 0.1f;
-        transform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack);
+        // 出現アニメーション（NavMeshAgent 位置制御確認中 - 問題が解決したら有効化）
+        // transform.localScale = Vector3.one * 0.1f;
+        // transform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack);
 
-        // GameManagerに自分を登録する
         if (GameManager.Instance != null)
         {
             GameManager.Instance.RegisterEnemy();
@@ -269,11 +292,14 @@ public class BearController : MonoBehaviour, TrapTarget
     // HPや経過時間などの内部状態を監視し、死亡や状態復帰のロジックを制御
     private void ObserveState()
     {
+        Debug.Log("[Bear ObserveState] Setting up observers");
+        
         // 定期的にハンターを探索（ターゲットがない、または家をターゲットしている場合のみ）
         Observable.Interval(TimeSpan.FromSeconds(0.5f))
             .Where(_ => !_isTrapped && !_isDead && _targetHunter == null)
             .Subscribe(_ =>
             {
+                Debug.Log("[Bear] Searching for hunter...");
                 DetectNearestHunter();
             })
             .AddTo(this);
@@ -345,7 +371,12 @@ public class BearController : MonoBehaviour, TrapTarget
         // 判定の遊びを作る
         float effectiveRange = (_attackStream != null) ? attackRange + 2.0f : attackRange;
 
-        if (animator && enableAnimation) animator.SetBool("IsMoving", dist > attackRange - 1.0f);
+        // アニメーション状態を更新（攻撃範囲外なら移動中）
+        bool isMoving = dist > attackRange - 1.0f;
+        if (animator && enableAnimation && animator.enabled)
+        {
+            animator.SetBool("IsMoving", isMoving);
+        }
 
         // 攻撃範囲内
         if (dist <= effectiveRange)
@@ -392,13 +423,21 @@ public class BearController : MonoBehaviour, TrapTarget
             new Vector3(closestPointOnHouse.x, 0, closestPointOnHouse.z)
         );
 
-        if (animator && enableAnimation) animator.SetBool("IsMoving", horizontalDist > 5.0f);
+        // アニメーション状態を更新
+        bool isMoving = horizontalDist > 5.0f;
+        if (animator && enableAnimation && animator.enabled)
+        {
+            animator.SetBool("IsMoving", isMoving);
+            Debug.Log($"[Bear] Animator.SetBool IsMoving: {isMoving}");
+        }
 
         // 攻撃開始距離を少し広げて、壁に密着しすぎる前に足を止める
         float stopThreshold = attackRange + 2.0f; // 余裕を持たせる
 
         if (horizontalDist <= stopThreshold)
         {
+            Debug.Log($"[Bear] Stop threshold reached: {horizontalDist:F2} <= {stopThreshold}");
+            
             if (!_agent.isStopped)
             {
                 _agent.isStopped = true;
@@ -416,6 +455,7 @@ public class BearController : MonoBehaviour, TrapTarget
         }
         else
         {
+            Debug.Log($"[Bear] Moving to house: {horizontalDist:F2} > {stopThreshold}");
             // 回転制御を戻して追跡する
             StopAttacking();
 
@@ -423,13 +463,17 @@ public class BearController : MonoBehaviour, TrapTarget
             _agent.updateRotation = true;
             _agent.SetDestination(closestPointOnHouse);
 
-            if (animator && enableAnimation) animator.SetBool("IsMoving", true);
+            if (animator && enableAnimation && animator.enabled)
+            {
+                animator.SetBool("IsMoving", true);
+            }
         }
     }
 
     // 最寄りの攻撃対象（家・ハンター）を探し、移動を開始
     private void FindNextTarget()
     {
+        Debug.Log("[Bear FindNextTarget] START");
         StopAttacking();
         
         // まずハンターを検出する（優先度が高いため）
@@ -438,6 +482,7 @@ public class BearController : MonoBehaviour, TrapTarget
         // ハンターが見つかった場合は、家へのターゲットを解除
         if (_targetHunter != null)
         {
+            Debug.Log($"[Bear] Hunter target found: {_targetHunter.name}");
             _targetHouse = null;
             return;
         }
@@ -446,6 +491,8 @@ public class BearController : MonoBehaviour, TrapTarget
         _targetHunter = null; // ハンターゲット解除
 
         var houses = GameObject.FindGameObjectsWithTag("House");
+        Debug.Log($"[Bear] Found {houses.Length} houses with tag 'House'");
+        
         if (houses.Length == 0) return;
 
         var validTargets = houses
@@ -453,6 +500,8 @@ public class BearController : MonoBehaviour, TrapTarget
             .Where(h => h != null && !h.IsDestroyed)
             .ToList();
 
+        Debug.Log($"[Bear] Valid house targets: {validTargets.Count}");
+        
         if (validTargets.Count == 0) return;
 
         // 一番近い壊れていない家を探す
@@ -463,10 +512,31 @@ public class BearController : MonoBehaviour, TrapTarget
 
         if (_targetHouse != null)
         {
+            Debug.Log($"[Bear] Target house selected: {_targetHouse.name}");
+            
+            if (!_agent.isOnNavMesh)
+            {
+                Debug.LogError($"[Bear] Agent is NOT on NavMesh! Position: {transform.position}");
+                return;
+            }
+            
             _agent.isStopped = false;
             _agent.updateRotation = true; // 移動開始時に向きの固定を解除
             Vector3 targetPos = _targetHouse.HouseCollider.ClosestPoint(transform.position);
-            _agent.SetDestination(targetPos);
+            
+            Debug.Log($"[Bear] Setting destination to house at: {targetPos}");
+            bool success = _agent.SetDestination(targetPos);
+            Debug.Log($"[Bear] SetDestination result: {success}, hasPath: {_agent.hasPath}, pathPending: {_agent.pathPending}");
+            
+            if (animator != null && enableAnimation && animator.enabled)
+            {
+                animator.SetBool("IsMoving", true);
+                Debug.Log("[Bear] Animator IsMoving set to TRUE");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[Bear] No valid house target found");
         }
     }
 
@@ -480,7 +550,10 @@ public class BearController : MonoBehaviour, TrapTarget
             {
                 // ハンター・家、どちらを狙っている場合でも、OnAttackHitで判定してダメージを与える
                 // アニメーションがある場合はTriggerセット
-                if (animator != null && enableAnimation) animator.SetTrigger("Attack");
+                if (animator != null && enableAnimation && animator.enabled)
+                {
+                    animator.SetTrigger("Attack");
+                }
 
                 // 攻撃演出
                 transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
