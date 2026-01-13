@@ -135,10 +135,10 @@ public class BearController : MonoBehaviour, TrapTarget
 
         // 3. 感電演出
         transform.DOShakePosition(0.5f, strength: 0.5f, vibrato: 30, randomness: 90)
-                 .SetLink(gameObject);
+                .SetLink(gameObject);
 
         transform.DOShakeRotation(0.5f, strength: 30f, vibrato: 30, randomness: 90)
-                 .SetLink(gameObject);
+                .SetLink(gameObject);
 
         // アニメーション
         if (animator != null && enableAnimation)
