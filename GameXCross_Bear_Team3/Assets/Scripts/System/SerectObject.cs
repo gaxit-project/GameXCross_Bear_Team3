@@ -47,5 +47,6 @@ public class SerectObject : MonoBehaviour
         p.cost = cost;
         p.ghost = ghost;
         p.POchangevalue = POchangevalue;
+        p.necessaryPOvalue = necessaryPOvalue;
     }
 }

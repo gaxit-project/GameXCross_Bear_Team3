@@ -206,6 +206,7 @@ public class BearController : MonoBehaviour, TrapTarget
         }
 
         Debug.Log("熊を捕獲しました！");
+        PublicOpinionManager.Instance.POchanging(0.5f);//世論値をプラス0.5します．
     }
 
     // 自身を現在拘束している罠の参照を取得する
@@ -537,6 +538,8 @@ public class BearController : MonoBehaviour, TrapTarget
             GameManager.Instance.ReportEnemyDefeated();
             Debug.Log($"熊を討伐！ {defeatReward}円 獲得");
         }
+
+        PublicOpinionManager.Instance.POchanging(0.2f);//世論値を0.2上昇させる
 
         // アニメーション処理
         Vector3 currentRotation = transform.eulerAngles;
