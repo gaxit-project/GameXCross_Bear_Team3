@@ -37688,6 +37688,7 @@ GameObject:
   - component: {fileID: 624825559}
   - component: {fileID: 624825558}
   - component: {fileID: 624825561}
+  - component: {fileID: 624825562}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -37837,6 +37838,44 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seSource: {fileID: 624825559}
+--- !u!114 &624825562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624825557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2b7d20205c0a742b4a4b223abe686b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
+  seList:
+  - key: UIpopup
+    clip: {fileID: 8300000, guid: b2f8a15aa281e6a4e8f518f15ca04400, type: 3}
+    volume: 0.5
+  - key: cursor
+    clip: {fileID: 8300000, guid: 0457810430d765d40898c10bacffcef1, type: 3}
+    volume: 0.5
+  - key: cansel
+    clip: {fileID: 8300000, guid: dc1568b8f88bfcf479254915d8eae85c, type: 3}
+    volume: 0.5
+  - key: unable
+    clip: {fileID: 8300000, guid: 67b0a10119d0fda43a38a80aea6429fe, type: 3}
+    volume: 0.5
+  - key: collapse
+    clip: {fileID: 8300000, guid: 2d0127cd13cfd504bac7ec6bde752ee5, type: 3}
+    volume: 0.5
+  - key: gun
+    clip: {fileID: 8300000, guid: fd520b6a54046c14dbe28d9c01dcdcdc, type: 3}
+    volume: 0.5
+  - key: deside
+    clip: {fileID: 8300000, guid: e11bbe4f481b18742bfad49cedd2506c, type: 3}
+    volume: 0.5
+  - key: bear
+    clip: {fileID: 8300000, guid: 516fbfb5aca342e4b9f1e940396ba076, type: 3}
+    volume: 0.5
 --- !u!1 &625788043
 GameObject:
   m_ObjectHideFlags: 0
