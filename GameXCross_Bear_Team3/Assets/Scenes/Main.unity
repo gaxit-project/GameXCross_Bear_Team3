@@ -51240,6 +51240,7 @@ MonoBehaviour:
   obj: {fileID: 5994922789081639359}
   ghost: {fileID: 1124478299}
   cost: 0
+  necessaryPOvalue: 0
   POchangevalue: 0
   canput: 0
   rotationSpeed: 90
@@ -137217,6 +137218,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 511076479239527402, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_text
+      value: 100,000
+      objectReference: {fileID: 0}
     - target: {fileID: 1338417091187942057, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_Size
       value: 1
@@ -137237,6 +137242,10 @@ PrefabInstance:
       propertyPath: pointer
       value: 
       objectReference: {fileID: 848974977}
+    - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: necessaryPOvalue
+      value: -0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1709722381673178005, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: p
       value: 
@@ -137269,6 +137278,14 @@ PrefabInstance:
       propertyPath: pointer
       value: 
       objectReference: {fileID: 848974977}
+    - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: POchangevalue
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: necessaryPOvalue
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 3143367332833177030, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -137316,6 +137333,10 @@ PrefabInstance:
     - target: {fileID: 6290717782752475510, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 6468843977073860661, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_text
+      value: 300,000
       objectReference: {fileID: 0}
     - target: {fileID: 6623430223510110579, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_AnchorMax.x
@@ -137469,6 +137490,18 @@ PrefabInstance:
       propertyPath: pointer
       value: 
       objectReference: {fileID: 848974977}
+    - target: {fileID: 8944863643874766821, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: POchangevalue
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8944863643874766821, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: necessaryPOvalue
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9154696898717553629, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_text
+      value: 50,000
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 194235466939305635, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}

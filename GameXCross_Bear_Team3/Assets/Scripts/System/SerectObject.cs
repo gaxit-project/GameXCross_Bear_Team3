@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SerectObject : MonoBehaviour
 {
@@ -18,17 +19,31 @@ public class SerectObject : MonoBehaviour
     [SerializeField, Header("ポインター")]
     public PointerContoroller p;
 
+    public Image Image;
+    private Color canpush;
+    private Color cantpush;
+
     [SerializeField] TextMeshProUGUI Text;
 
     private void Start()
     {
         Text.text = cost.ToString("N0");
+        Image = GetComponent<Image>();
+        canpush = Image.color;
+        cantpush = Color.gray;
     }
 
+    private void Update()
+    {
+        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue)&&money.Instance.moneycount >= cost)
+            Image.color = canpush;
+        else 
+            Image.color = cantpush;
+    }
 
     public void Onclick()
     {
-        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue)&&money.Instance.moneycount >= cost)
+        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue) && money.Instance.moneycount >= cost)
         {
             changeUI();
         }
