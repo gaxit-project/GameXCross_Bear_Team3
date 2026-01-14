@@ -2,51 +2,96 @@ using UnityEngine;
 
 public class HunterShooting : MonoBehaviour
 {
-    // アニメーターを操作するための変数
-    private Animator anim;
-
-    // 武器のモデル（見た目）を出し入れするための枠
+    public Animator anim;
+    // UnityのInspectorでセットする「武器モデル」の枠
     public GameObject revolverModel;
     public GameObject rifleModel;
+    
+    // 歩くスピード
+    public float moveSpeed = 3.0f;
+
+    // 現在選んでいる武器（0:リボルバー, 1:ライフル）
+    private int currentWeaponType = 0; 
 
     void Start()
     {
-        // 自分の体についているAnimatorを探してくる
-        anim = GetComponent<Animator>();
-
-        // 念のため、開始時はリボルバーを表示・ライフルを非表示にセット
-        revolverModel.SetActive(true);
-        rifleModel.SetActive(false);
+        // ゲーム開始時、まずはリボルバーを選択状態にする
+        currentWeaponType = 0;
+        // 止まっているので武器を表示する
+        UpdateWeaponVisibility(false); 
     }
 
     void Update()
     {
-        // ■ '1'キーを押したらリボルバーモードへ
+        // ■ 1. キーボードの「1」「2」で武器モード切替
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            // アニメーションをリボルバー構えに戻す
+            currentWeaponType = 0; // リボルバーに切り替え
             anim.SetBool("IsRifle", false);
-            // モデルの表示を切り替える
-            revolverModel.SetActive(true);
-            rifleModel.SetActive(false);
         }
-
-        // ■ '2'キーを押したらライフルモードへ
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            // アニメーションをライフル構えにする
+            currentWeaponType = 1; // ライフルに切り替え
             anim.SetBool("IsRifle", true);
-            // モデルの表示を切り替える
-            revolverModel.SetActive(false);
-            rifleModel.SetActive(true);
         }
 
-        // ■ 左クリックで発射
+        // ■ 2. クリックで発砲
+        // ※歩いていない（武器が出ている）時だけ撃てるようにするとより自然です
         if (Input.GetMouseButtonDown(0))
         {
-            // Animatorに「撃て(Fire)」と命令する
-            // ※今はリボルバーかライフルか、Animatorが勝手に判断してくれます
             anim.SetTrigger("Fire");
+        }
+
+        // ■ 3. 移動入力の判定
+        float h = Input.GetAxis("Horizontal"); // A, D キー
+        float v = Input.GetAxis("Vertical");   // W, S キー
+
+        // キー入力が少しでもあれば「歩いている(true)」と判定
+        bool isMoving = Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f;
+
+        // アニメーターに「歩いている」と伝える（歩きモーション再生）
+        anim.SetBool("IsWalking", isMoving);
+
+        // ★ここが最重要！
+        // 歩いている状態(isMoving)に合わせて、武器を出したり消したりする
+        UpdateWeaponVisibility(isMoving);
+
+        // ■ 4. 実際の移動処理
+        if (isMoving)
+        {
+            Vector3 moveDir = new Vector3(h, 0, v).normalized;
+            transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
+            if (moveDir != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(moveDir);
+            }
+        }
+    }
+
+    // 武器の表示・非表示をコントロールする専用の機能
+    void UpdateWeaponVisibility(bool isWalking)
+    {
+        // 【パターンA】歩いている時
+        if (isWalking)
+        {
+            // リボルバーもライフルも、両方とも強制的に消す！(false)
+            revolverModel.SetActive(false);
+            rifleModel.SetActive(false);
+        }
+        // 【パターンB】止まっている時
+        else
+        {
+            // 選んでいる武器の方だけを表示する(true)
+            if (currentWeaponType == 0) 
+            {
+                revolverModel.SetActive(true);  // リボルバーON
+                rifleModel.SetActive(false);    // ライフルOFF
+            }
+            else 
+            {
+                revolverModel.SetActive(false); // リボルバーOFF
+                rifleModel.SetActive(true);     // ライフルON
+            }
         }
     }
 }

@@ -58,6 +58,9 @@ public class GameManager : MonoBehaviour
         else { Destroy(gameObject); return; }
 
         InitializeObservables();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     private void Start()
@@ -78,6 +81,16 @@ public class GameManager : MonoBehaviour
         }
 
         StartSetupPhase();
+    }
+
+    private void Update()
+    {
+        // 何かが再表示しても毎フレーム強制で非表示にする
+        if (Cursor.visible)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     private void InitializeObservables()

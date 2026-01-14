@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PauseManager : MonoBehaviour
 {
     [Header("UIコンポーネント")]
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject firstSelectedOnPause; // 追加: 最初に選択するUI
 
     [Header("コンポーネント")]
     [SerializeField] private CameraController cameraController;
@@ -15,6 +17,10 @@ public class PauseManager : MonoBehaviour
     {
         controles = new CameraControls();
         pausePanel.SetActive(false);
+        if (EventSystem.current == null)
+        {
+            Debug.LogWarning("EventSystem がシーンにありません。UI入力が動きません。");
+        }
     }
     void Start()
     {
@@ -69,7 +75,13 @@ public class PauseManager : MonoBehaviour
     {
         isPaused = true;
 
-        if(pausePanel != null) pausePanel.SetActive(true);
+        if (pausePanel != null) pausePanel.SetActive(true);
+
+        // コントローラー選択先を設定
+        if (EventSystem.current != null && firstSelectedOnPause != null)
+        {
+            EventSystem.current.SetSelectedGameObject(firstSelectedOnPause);
+        }
 
         Time.timeScale = 0f;
 
@@ -84,8 +96,12 @@ public class PauseManager : MonoBehaviour
 
         Time.timeScale = 1f;
 
-        // ポーズ解除時はカメラの回転を有効化
-        // Update()でポーズパネルの状態をチェックしているため、ポーズパネルが表示されている場合は再度無効化される
-        if(cameraController != null) cameraController.SetRotationEnabled(true);
+        if (cameraController != null) cameraController.SetRotationEnabled(true);
+
+        // ポーズ解除時に選択をクリア
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
     }
 }

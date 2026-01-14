@@ -19,6 +19,9 @@ public class PointerContoroller : MonoBehaviour
     [Header("その設置物の設置コスト")]
     [SerializeField] public int cost;
 
+    [SerializeField, Header("必要な世論値")]
+    public float necessaryPOvalue;
+
     [Header("その設置物の設置時の変動世論値")]
     [SerializeField] public float POchangevalue;
 
@@ -113,7 +116,7 @@ public class PointerContoroller : MonoBehaviour
             transform.Rotate(rotationAxis * -rotationSpeed * Time.deltaTime);
         }
 
-        
+
     }
 
     public void OnPerformed(InputAction.CallbackContext context)
@@ -125,10 +128,15 @@ public class PointerContoroller : MonoBehaviour
     {
         if (context.performed)
         {
-            ScrollUI.SetActive(true);
-            ghost.SetActive(false);
-            pointer.SetActive(false);
+            cansel();
         }
+    }
+
+    private void cansel()
+    {
+        ScrollUI.SetActive(true);
+        ghost.SetActive(false);
+        pointer.SetActive(false);
     }
 
     public void OnPut(InputAction.CallbackContext context)
@@ -146,6 +154,9 @@ public class PointerContoroller : MonoBehaviour
                 Instantiate(obj, pointer.transform.position, pointer.transform.rotation);
                 money.Instance.moneycount -= cost;
                 PublicOpinionManager.Instance.POchanging(POchangevalue);
+
+                if(money.Instance.moneycount < cost || !PublicOpinionManager.Instance.JudgePO(necessaryPOvalue))
+                    cansel();//設置後世論値か金が足りなくなると強制的に選択前に戻される
             }
         }
     }
