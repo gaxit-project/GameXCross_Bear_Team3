@@ -118,7 +118,7 @@ public class HunterController : MonoBehaviour
 
                         transform.LookAt(new Vector3(_targetBear.transform.position.x, transform.position.y, _targetBear.transform.position.z));
 
-                        if (!isDebugMode && animator) animator.SetBool("IsMoving", false);
+                        if (!isDebugMode && animator) animator.SetBool("IsRifle", true);
 
                         if (_attackStream == null) StartShooting();
                         
@@ -142,7 +142,7 @@ public class HunterController : MonoBehaviour
                         
                         _agent.SetDestination(stoppingPoint);
 
-                        if (!isDebugMode && animator) animator.SetBool("IsMoving", true);
+                        if (!isDebugMode && animator) animator.SetBool("IsRifle", true);
 
                         StopShooting(); // 射撃停止
                     }
@@ -150,7 +150,7 @@ public class HunterController : MonoBehaviour
                 // ターゲットが無効（死亡/破壊）なら待機状態に
                 else if (_targetBear != null && (_targetBear.IsDead || !_targetBear.isActiveAndEnabled))
                 {
-                    ReturnToWait();  // ← その場で待機（パトロール開始しない）
+                    ReturnToWait();  // その場で待機（パトロール開始しない）
                 }
             })
             .AddTo(this);
@@ -169,7 +169,7 @@ public class HunterController : MonoBehaviour
         {
             _targetBear = bears;
             StopPatrol();
-            StartShooting();  // ← クマ発見時に即座に攻撃開始
+            StartShooting();  // クマ発見時に即座に攻撃開始
             Debug.Log("ハンター: クマを発見！攻撃を開始します。");
         }
     }
@@ -191,7 +191,7 @@ public class HunterController : MonoBehaviour
 
     private void Shoot()
     {
-        if (!isDebugMode && animator) animator.SetTrigger("Attack");
+        if (!isDebugMode && animator) animator.SetTrigger("Fire");
         if (muzzleFlash) muzzleFlash.Play();
 
         if (_targetBear != null)
@@ -274,7 +274,7 @@ public class HunterController : MonoBehaviour
             _agent.velocity = Vector3.zero;
         }
 
-        SetMoveVisuals(false);
+        if (!isDebugMode && animator) animator.SetBool("IsRifle", false);
     }
 
     private void StopMovement()
@@ -285,16 +285,7 @@ public class HunterController : MonoBehaviour
             _agent.velocity = Vector3.zero; // 慣性による滑りを止める
             _agent.velocity = Vector3.zero; // 速度を物理的にゼロにする
         }
-        SetMoveVisuals(false); // アニメーションをアイドル状態にする
-    }
-
-    // アニメーター操作の集約
-    private void SetMoveVisuals(bool isMoving)
-    {
-        if (!isDebugMode && animator != null)
-        {
-            animator.SetBool("IsMoving", isMoving);
-        }
+        if (!isDebugMode && animator) animator.SetBool("IsRifle", false);
     }
 
     /// <summary>
@@ -328,8 +319,6 @@ public class HunterController : MonoBehaviour
         _agent.enabled = false;
         StopShooting();
         StopPatrol();
-
-        if (!isDebugMode && animator) animator.SetTrigger("Die");
 
         Debug.Log("ハンター: 死亡しました。");
 
