@@ -134,6 +134,7 @@ public class PointerContoroller : MonoBehaviour
 
     private void cansel()
     {
+        SEmanager.Instance.Play("cansel");
         ScrollUI.SetActive(true);
         ghost.SetActive(false);
         pointer.SetActive(false);

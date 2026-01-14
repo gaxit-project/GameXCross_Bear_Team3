@@ -137326,6 +137326,10 @@ PrefabInstance:
       propertyPath: necessaryPOvalue
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 2827968702130379168, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_Transition
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3143367332833177030, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_Sprite
       value: 

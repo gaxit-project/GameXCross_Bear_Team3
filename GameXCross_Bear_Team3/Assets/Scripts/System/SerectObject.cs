@@ -46,10 +46,12 @@ public class SerectObject : MonoBehaviour
         if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue) && money.Instance.moneycount >= cost)
         {
             changeUI();
+            SEmanager.Instance.Play("deside");
         }
         else
         {
             Debug.Log("‚¨‹à‚©¢˜_’l‚ª‘«‚è‚Ü‚¹‚ñI");
+            SEmanager.Instance.Play("unable");
         }
     }
 
