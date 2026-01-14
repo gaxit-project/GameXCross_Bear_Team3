@@ -11555,6 +11555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pausePanel: {fileID: 1466005358}
+  firstSelectedOnPause: {fileID: 626345239}
   cameraController: {fileID: 67419635}
 --- !u!114 &165155368
 MonoBehaviour:
