@@ -46,8 +46,9 @@ public class HunterController : MonoBehaviour
     {
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = moveSpeed;
-        // 攻撃範囲(attackRange)の80%程度の距離で止まるように設定
         _agent.stoppingDistance = attackRange * 0.8f;
+        _agent.updatePosition = false;   // 追加: 位置は自前で反映
+        _agent.updateRotation = false;   // 追加: 回転も自前で反映
         _currentHealth = maxHealth;
         _spawnPosition = transform.position;
 
@@ -223,7 +224,8 @@ public class HunterController : MonoBehaviour
             .Where(_ => GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Battle)
             .Subscribe(_ =>
             {
-                if (!isDebugMode && animator) animator.SetBool("IsMoving", _agent.velocity.magnitude > 0.1f);
+                // 修正: Animatorのパラメータ名をIsWalkingに統一
+                if (!isDebugMode && animator) animator.SetBool("IsWalking", _agent.velocity.magnitude > 0.1f);
 
                 if (!_agent.isOnNavMesh || !_agent.isActiveAndEnabled) return;
                 
@@ -320,6 +322,8 @@ public class HunterController : MonoBehaviour
         StopShooting();
         StopPatrol();
 
+        PublicOpinionManager.Instance.POchanging(-0.5f);
+
         Debug.Log("ハンター: 死亡しました。");
 
         GetComponent<Collider>().enabled = false;
@@ -337,5 +341,15 @@ public class HunterController : MonoBehaviour
         deathSequence.Append(transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InQuad));
         // アニメーション完了後に削除
         deathSequence.OnComplete(() => Destroy(gameObject));
+    }
+
+    private void OnAnimatorMove()
+    {
+        if (animator == null || _agent == null) return;
+        // ルートモーションのデルタを NavMeshAgent に反映
+        Vector3 delta = animator.deltaPosition;
+        _agent.nextPosition += delta;
+        transform.position = _agent.nextPosition;
+        transform.rotation = animator.rootRotation;
     }
 }
