@@ -10,6 +10,14 @@ using System.Linq;
 [RequireComponent(typeof(Rigidbody))]
 public class HunterController : MonoBehaviour
 {
+    // 武器タイプ定義
+    public enum WeaponType
+    {
+        None,      // 武器なし
+        Rifle,     // ライフル
+        Revolver   // リボルバー
+    }
+
     [Header("ハンター設定")]
     [SerializeField] private float maxHealth = 50f;
     [SerializeField] private float moveSpeed = 3.5f;
@@ -19,6 +27,11 @@ public class HunterController : MonoBehaviour
     [SerializeField] private float attackInterval = 1.5f;
     [SerializeField] private float damage = 10f;
     [SerializeField] private float detectionRadius = 20.0f;
+
+    [Header("武器設定")]
+    [SerializeField] private WeaponType currentWeapon = WeaponType.None; // 初期状態は武器なし
+    [SerializeField] private float rifleAttackInterval = 1.5f;
+    [SerializeField] private float revolverAttackInterval = 0.8f;
 
     [Header("パトロール設定")]
     [SerializeField] private float patrolRadius = 20f;
@@ -42,15 +55,21 @@ public class HunterController : MonoBehaviour
     private IDisposable _attackStream;
     private IDisposable _patrolStream;
 
+    private WeaponType _equippedWeapon = WeaponType.None;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = moveSpeed;
         _agent.stoppingDistance = attackRange * 0.8f;
-        _agent.updatePosition = false;   // 追加: 位置は自前で反映
-        _agent.updateRotation = false;   // 追加: 回転も自前で反映
+        
+        // ★ NavMeshAgent に移動・回転を任せる
+        _agent.updatePosition = true;
+        _agent.updateRotation = true;
+        
         _currentHealth = maxHealth;
         _spawnPosition = transform.position;
+        _equippedWeapon = currentWeapon; // 初期武器を設定
 
         if (!isDebugMode && animator == null) animator = GetComponentInChildren<Animator>();
     }
@@ -112,19 +131,26 @@ public class HunterController : MonoBehaviour
                 {
                     float dist = Vector3.Distance(transform.position, _targetBear.transform.position);
 
-                    // 攻撃範囲内なら攻撃
+                    // 攻撃範囲内なら攻撃（構え＋停止）
                     if (dist <= attackRange)
                     {
                         StopMovement();
-
                         transform.LookAt(new Vector3(_targetBear.transform.position.x, transform.position.y, _targetBear.transform.position.z));
 
-                        if (!isDebugMode && animator) animator.SetBool("IsRifle", true);
+                        if (!isDebugMode && animator)
+                        {
+                            animator.SetBool("IsRifle", _equippedWeapon == WeaponType.Rifle);
+                            animator.SetBool("IsWalking", false);
+                        }
 
-                        if (_attackStream == null) StartShooting();
-                        
-                        // ★ クマが非常に近い場合は後退（後ずさり防止）
-                        if (dist < attackRange * 0.3f)  // 攻撃範囲の30%以下なら逃げる
+                        // ★ 武器がある場合のみ射撃開始
+                        if (_equippedWeapon != WeaponType.None && _attackStream == null)
+                        {
+                            StartShooting();
+                        }
+
+                        // クマが非常に近い場合は後退
+                        if (dist < attackRange * 0.3f)
                         {
                             Vector3 awayDirection = (transform.position - _targetBear.transform.position).normalized;
                             Vector3 backupTarget = transform.position + awayDirection * (attackRange * 0.5f);
@@ -132,26 +158,37 @@ public class HunterController : MonoBehaviour
                             _agent.SetDestination(backupTarget);
                         }
                     }
-                    // 範囲外なら追跡
+                    // 範囲外なら追跡（歩く＋構え解除）
                     else
                     {
-                        if (_agent.isStopped) _agent.isStopped = false;
-                        
-                        // クマまでの距離を保つために、目的地をクマの近く（攻撃範囲内）に設定
+                        _agent.isStopped = false;
                         Vector3 directionToBear = (_targetBear.transform.position - transform.position).normalized;
                         Vector3 stoppingPoint = _targetBear.transform.position - directionToBear * (attackRange * 0.8f);
                         
                         _agent.SetDestination(stoppingPoint);
 
-                        if (!isDebugMode && animator) animator.SetBool("IsRifle", true);
+                        if (!isDebugMode && animator)
+                        {
+                            animator.SetBool("IsRifle", false);
+                            animator.SetBool("IsWalking", _agent.velocity.magnitude > 0.1f);
+                        }
 
-                        StopShooting(); // 射撃停止
+                        StopShooting();
                     }
                 }
                 // ターゲットが無効（死亡/破壊）なら待機状態に
                 else if (_targetBear != null && (_targetBear.IsDead || !_targetBear.isActiveAndEnabled))
                 {
-                    ReturnToWait();  // その場で待機（パトロール開始しない）
+                    ReturnToWait();
+                }
+                else
+                {
+                    // ターゲットなし：アイドル
+                    if (!isDebugMode && animator)
+                    {
+                        animator.SetBool("IsWalking", false);
+                        animator.SetBool("IsRifle", false);
+                    }
                 }
             })
             .AddTo(this);
@@ -177,9 +214,12 @@ public class HunterController : MonoBehaviour
 
     private void StartShooting()
     {
-        if (_attackStream != null) return;
+        if (_attackStream != null || _equippedWeapon == WeaponType.None) return;
 
-        _attackStream = Observable.Interval(TimeSpan.FromSeconds(attackInterval))
+        // ★ 武器に応じて射撃間隔を変更
+        float interval = _equippedWeapon == WeaponType.Rifle ? rifleAttackInterval : revolverAttackInterval;
+
+        _attackStream = Observable.Interval(TimeSpan.FromSeconds(interval))
             .Subscribe(_ =>
             {
                 if (_targetBear != null && _targetBear.isActiveAndEnabled)
@@ -271,12 +311,16 @@ public class HunterController : MonoBehaviour
 
         if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
         {
-            _agent.ResetPath(); // 経路情報を削除
+            _agent.ResetPath();
             _agent.isStopped = true;
             _agent.velocity = Vector3.zero;
         }
 
-        if (!isDebugMode && animator) animator.SetBool("IsRifle", false);
+        if (!isDebugMode && animator)
+        {
+            animator.SetBool("IsWalking", false);
+            animator.SetBool("IsRifle", false);
+        }
     }
 
     private void StopMovement()
@@ -284,10 +328,13 @@ public class HunterController : MonoBehaviour
         if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
         {
             _agent.isStopped = true;
-            _agent.velocity = Vector3.zero; // 慣性による滑りを止める
-            _agent.velocity = Vector3.zero; // 速度を物理的にゼロにする
+            _agent.velocity = Vector3.zero;
         }
-        if (!isDebugMode && animator) animator.SetBool("IsRifle", false);
+        if (!isDebugMode && animator)
+        {
+            animator.SetBool("IsWalking", false);
+            animator.SetBool("IsRifle", false);
+        }
     }
 
     /// <summary>
@@ -343,13 +390,27 @@ public class HunterController : MonoBehaviour
         deathSequence.OnComplete(() => Destroy(gameObject));
     }
 
-    private void OnAnimatorMove()
+    /// <summary>
+    /// 武器を切り替える
+    /// </summary>
+    public void EquipWeapon(WeaponType weaponType)
     {
-        if (animator == null || _agent == null) return;
-        // ルートモーションのデルタを NavMeshAgent に反映
-        Vector3 delta = animator.deltaPosition;
-        _agent.nextPosition += delta;
-        transform.position = _agent.nextPosition;
-        transform.rotation = animator.rootRotation;
+        _equippedWeapon = weaponType;
+        Debug.Log($"ハンター: {weaponType}に切り替えました。");
+
+        // 既に射撃中なら射撃間隔を更新
+        if (_attackStream != null && _targetBear != null)
+        {
+            StopShooting();
+            StartShooting();
+        }
+    }
+
+    /// <summary>
+    /// 現在装備している武器を取得
+    /// </summary>
+    public WeaponType GetEquippedWeapon()
+    {
+        return _equippedWeapon;
     }
 }
