@@ -22,7 +22,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -196,7 +196,102 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: hunter Animation(Clone)
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Bone
+      parentName: hunter Animation(Clone)
+      position: {x: -0, y: 0, z: -0.017126486}
+      rotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Steve.004
+      parentName: Bone
+      position: {x: -0, y: 0.017126486, z: -1.00891595e-11}
+      rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Bone.001
+      parentName: Bone
+      position: {x: -0, y: 0.05425297, z: 0}
+      rotation: {x: 0.0000000037252903, y: -0, z: 0.9978552, w: 0.065460235}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: Bone.003
+      parentName: Bone.001
+      position: {x: -0.0000000011269002, y: 0.030000266, z: -5.8286706e-17}
+      rotation: {x: -0.014027025, y: -0.1315744, z: -0.115923636, w: 0.98440504}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: Steve.003
+      parentName: Bone.003
+      position: {x: -0.03, y: 0.037, z: -4.4703483e-10}
+      rotation: {x: -0.21954846, y: 0.7052082, z: -0.6732331, w: 0.035171818}
+      scale: {x: 1.0000002, y: 1, z: 1.0000002}
+    - name: Bone.005
+      parentName: Bone
+      position: {x: -0, y: 0.05425297, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Steve.001
+      parentName: Bone.005
+      position: {x: -0, y: -0.037126485, z: -1.00891595e-11}
+      rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Bone.006
+      parentName: Bone
+      position: {x: -0, y: 0.05425297, z: 0}
+      rotation: {x: 0.000000029802326, y: -0, z: -0.2214073, w: 0.97518146}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: Bone.007
+      parentName: Bone.006
+      position: {x: 0.0000000019371509, y: 0.030012714, z: 1.0658141e-16}
+      rotation: {x: -0.49265325, y: 0.5072065, z: 0.50724137, w: -0.49268705}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: Cube
+      parentName: Bone.007
+      position: {x: 0.007836308, y: 0.07106488, z: 0.015076106}
+      rotation: {x: 0.0074855923, y: -0.009080935, z: 0.77157116, w: 0.6360342}
+      scale: {x: 2.0999994, y: 2.0999994, z: 2.0999994}
+    - name: Steve.002
+      parentName: Bone.007
+      position: {x: 0.03, y: 0.038000003, z: 0.00000000286891}
+      rotation: {x: 0.000000027578103, y: 0.7071068, z: -0.7071067, w: 0.00000013434827}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u5186\u67F1"
+      parentName: Bone.007
+      position: {x: -0, y: 0.06799999, z: -0.003999999}
+      rotation: {x: -0.000000030909565, y: -5.645692e-13, z: 0.7071069, w: 0.7071067}
+      scale: {x: 0.3, y: 0.3, z: 0.3}
+    - name: Bone.002
+      parentName: hunter Animation(Clone)
+      position: {x: -0, y: 0, z: -0.017126486}
+      rotation: {x: -0.12991525, y: -0.12991528, z: 0.69506985, w: 0.69506973}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+    - name: Bone.004
+      parentName: Bone.002
+      position: {x: -7.105427e-17, y: 0.010723997, z: -2.9802322e-10}
+      rotation: {x: -0.5622256, y: -0.057463694, z: -0.08388278, w: 0.82070947}
+      scale: {x: 1, y: 1, z: 0.99999994}
+    - name: Steve.006
+      parentName: Bone.004
+      position: {x: 0.0000000011920929, y: -0.021000009, z: -0.01}
+      rotation: {x: 0.50000006, y: 0.49999994, z: -0.49999997, w: 0.50000006}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Bone.008
+      parentName: hunter Animation(Clone)
+      position: {x: -0, y: 0, z: -0.017126486}
+      rotation: {x: -0.12991525, y: 0.12991528, z: -0.69506985, w: 0.69506973}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+    - name: Bone.009
+      parentName: Bone.008
+      position: {x: 7.105427e-17, y: 0.010723997, z: -2.9802322e-10}
+      rotation: {x: -0.5625088, y: -0.054622706, z: -0.07973592, w: 0.8211227}
+      scale: {x: 1, y: 1, z: 0.99999994}
+    - name: Steve.005
+      parentName: Bone.009
+      position: {x: 0.0000000047683715, y: -0.020999998, z: -0.009999999}
+      rotation: {x: 0.5000001, y: -0.49999988, z: 0.4999999, w: 0.5000001}
+      scale: {x: 0.99999994, y: 1, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -213,7 +308,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
