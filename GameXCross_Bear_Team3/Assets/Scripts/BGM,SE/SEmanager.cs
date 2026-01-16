@@ -4,34 +4,34 @@ using System.Collections.Generic;
 [RequireComponent(typeof(AudioSource))]
 public class SEmanager : MonoBehaviour
 {
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‰»i‚Ç‚±‚©‚ç‚Å‚àŒÄ‚×‚é‚æ‚¤‚É‚·‚éj
+    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³åŒ–ï¼ˆã©ã“ã‹ã‚‰ã§ã‚‚å‘¼ã¹ã‚‹ã‚ˆã†ã«ã™ã‚‹ï¼‰
     public static SEmanager Instance { get; private set; }
 
     [SerializeField] private AudioSource audioSource;
 
-    // ƒCƒ“ƒXƒyƒNƒ^[‚ÅŠÇ—‚·‚é‚½‚ß‚Ìƒf[ƒ^ƒNƒ‰ƒX
+    // ã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã§ç®¡ç†ã™ã‚‹ãŸã‚ã®ãƒ‡ãƒ¼ã‚¿ã‚¯ãƒ©ã‚¹
     [System.Serializable]
     public class SEData
     {
-        public string key;        // ŒÄ‚Ño‚·‚Ì–¼‘Oi—á: "Jump", "Attack"j
-        public AudioClip clip;    // ‰¹Œ¹ƒtƒ@ƒCƒ‹
-        [Range(0f, 1f)] public float volume = 1.0f; // ŒÂ•Ê‚Ì‰¹—Ê’²®—p
+        public string key;        // å‘¼ã³å‡ºã™æ™‚ã®åå‰ï¼ˆä¾‹: "Jump", "Attack"ï¼‰
+        public AudioClip clip;    // éŸ³æºãƒ•ã‚¡ã‚¤ãƒ«
+        [Range(0f, 1f)] public float volume = 1.0f; // å€‹åˆ¥ã®éŸ³é‡èª¿æ•´ç”¨
     }
 
-    // ‚±‚ê‚ªƒCƒ“ƒXƒyƒNƒ^[‚É•\¦‚³‚ê‚éƒŠƒXƒg
+    // ã“ã‚ŒãŒã‚¤ãƒ³ã‚¹ãƒšã‚¯ã‚¿ãƒ¼ã«è¡¨ç¤ºã•ã‚Œã‚‹ãƒªã‚¹ãƒˆ
     [SerializeField]
     private List<SEData> seList = new List<SEData>();
 
-    // ‚‘¬ŒŸõ—p‚Ì«‘iƒQ[ƒ€ŠJn‚ÉƒŠƒXƒg‚©‚ç©“®ì¬j
+    // é«˜é€Ÿæ¤œç´¢ç”¨ã®è¾æ›¸ï¼ˆã‚²ãƒ¼ãƒ é–‹å§‹æ™‚ã«ãƒªã‚¹ãƒˆã‹ã‚‰è‡ªå‹•ä½œæˆï¼‰
     private Dictionary<string, SEData> _seDictionary = new Dictionary<string, SEData>();
 
     private void Awake()
     {
-        // ƒVƒ“ƒOƒ‹ƒgƒ“‚Ìİ’è
+        // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®è¨­å®š
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // ƒV[ƒ“‘JˆÚ‚µ‚Ä‚àÁ‚³‚È‚¢
+            DontDestroyOnLoad(gameObject); // ã‚·ãƒ¼ãƒ³é·ç§»ã—ã¦ã‚‚æ¶ˆã•ãªã„
         }
         else
         {
@@ -39,13 +39,13 @@ public class SEmanager : MonoBehaviour
             return;
         }
 
-        // AudioSource‚ªƒAƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î©“®‚Åæ“¾
+        // AudioSourceãŒã‚¢ã‚¿ãƒƒãƒã•ã‚Œã¦ã„ãªã‘ã‚Œã°è‡ªå‹•ã§å–å¾—
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
         }
 
-        // ƒŠƒXƒg‚ğ«‘‚É•ÏŠ·iŒŸõ‚ğ‘¬‚­‚·‚é‚½‚ßj
+        // ãƒªã‚¹ãƒˆã‚’è¾æ›¸ã«å¤‰æ›ï¼ˆæ¤œç´¢ã‚’é€Ÿãã™ã‚‹ãŸã‚ï¼‰
         foreach (var se in seList)
         {
             if (!_seDictionary.ContainsKey(se.key))
@@ -54,32 +54,32 @@ public class SEmanager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"SEmanager: ƒL[ '{se.key}' ‚ªd•¡‚µ‚Ä‚¢‚Ü‚·B");
+                Debug.LogWarning($"SEmanager: ã‚­ãƒ¼ '{se.key}' ãŒé‡è¤‡ã—ã¦ã„ã¾ã™ã€‚");
             }
         }
     }
 
     /// <summary>
-    /// SE‚ğÄ¶‚·‚é
+    /// SEã‚’å†ç”Ÿã™ã‚‹
     /// </summary>
-    /// <param name="key">“o˜^‚µ‚½ƒL[–¼</param>
+    /// <param name="key">ç™»éŒ²ã—ãŸã‚­ãƒ¼å</param>
     public void Play(string key)
     {
         if (_seDictionary.TryGetValue(key, out var data))
         {
             if (data.clip != null)
             {
-                // PlayOneShot‚ÍSE‚ğd‚Ë‚ÄÄ¶‚Å‚«‚é
-                audioSource.PlayOneShot(data.clip, data.volume);
+                // PlayOneShotã¯SEã‚’é‡ã­ã¦å†ç”Ÿã§ãã‚‹
+                audioSource.PlayOneShot(data.clip, data.volume * VolumeSettings.SEVolume);
             }
             else
             {
-                Debug.LogWarning($"SEmanager: ƒL[ '{key}' ‚ÉAudioClip‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+                Debug.LogWarning($"SEmanager: ã‚­ãƒ¼ '{key}' ã«AudioClipãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
             }
         }
         else
         {
-            Debug.LogWarning($"SEmanager: ƒL[ '{key}' ‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB");
+            Debug.LogWarning($"SEmanager: ã‚­ãƒ¼ '{key}' ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
         }
     }
 }

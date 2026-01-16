@@ -102,12 +102,21 @@ public class BGMManager : MonoBehaviour
             _audioSource.clip = clip;
             _audioSource.volume = 0f; // 音量0から開始
             _audioSource.Play();
-            _audioSource.DOFade(maxVolume, fadeDuration); // フェードイン
+            _audioSource.DOFade(maxVolume * VolumeSettings.BGMVolume, fadeDuration); // フェードイン
         }
         else
         {
             _audioSource.Stop();
             _audioSource.clip = null;
+        }
+    }
+
+    private void Update()
+    {
+        // 設定シーンでのスライダー操作をリアルタイムに反映
+        if (_audioSource != null && _audioSource.isPlaying)
+        {
+            _audioSource.volume = maxVolume * VolumeSettings.BGMVolume;
         }
     }
 }
