@@ -137095,7 +137095,11 @@ PrefabInstance:
       objectReference: {fileID: 9021353950298865750}
     - target: {fileID: 1689205242346586791, guid: bfd3cddd7c230ba47988931e86189752, type: 3}
       propertyPath: attackRange
-      value: 50
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1689205242346586791, guid: bfd3cddd7c230ba47988931e86189752, type: 3}
+      propertyPath: attackInterval
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1689205242346586791, guid: bfd3cddd7c230ba47988931e86189752, type: 3}
       propertyPath: detectionRadius
@@ -137165,9 +137169,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 6936060391267771281, guid: bfd3cddd7c230ba47988931e86189752, type: 3}
+      propertyPath: m_Radius
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8423498618031210344, guid: bfd3cddd7c230ba47988931e86189752, type: 3}
       propertyPath: m_Name
       value: hunter AddWalk
+      objectReference: {fileID: 0}
+    - target: {fileID: 8423498618031210344, guid: bfd3cddd7c230ba47988931e86189752, type: 3}
+      propertyPath: m_TagString
+      value: Hunter
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

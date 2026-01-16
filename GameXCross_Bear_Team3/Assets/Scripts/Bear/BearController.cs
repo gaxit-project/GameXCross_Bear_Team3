@@ -14,8 +14,8 @@ public class BearController : MonoBehaviour, TrapTarget
     [SerializeField] private float maxHealth = 100f; // HP初期値
     [SerializeField] private float attackDamage = 20f;
     [SerializeField] private float attackInterval = 1.0f;
-    [SerializeField] private float attackRange = 5.0f;
-    [SerializeField] private float detectionRadius = 15.0f; // ハンター検出範囲
+    [SerializeField] private float attackRange = 15.0f;
+    [SerializeField] private float detectionRadius = 20.0f;
     [SerializeField] private int captureReward = 30000; // 捕獲時の報酬
     [SerializeField] private int defeatReward = 30000;  // 倒した時の報酬
 
@@ -206,7 +206,7 @@ public class BearController : MonoBehaviour, TrapTarget
         }
 
         Debug.Log("熊を捕獲しました！");
-        PublicOpinionManager.Instance.POchanging(0.5f);//世論値をプラス0.5します．
+        PublicOpinionManager.Instance.POchanging(0.5f);//世論値をプラス0.5する
     }
 
     // 自身を現在拘束している罠の参照を取得する
@@ -215,13 +215,21 @@ public class BearController : MonoBehaviour, TrapTarget
     // アニメーションイベントから呼ばれる攻撃処理
     public void OnAttackHit()
     {
+        Debug.Log("OnAttackHit() が呼ばれました！");
+
         // 1. ハンター優先判定
         if (_targetHunter != null && _targetHunter.gameObject.activeSelf && !_targetHunter.IsDead())
         {
             float dist = Vector3.Distance(transform.position, _targetHunter.transform.position);
-            if (dist <= attackRange + 1.0f) // 1.0fの猶予
+
+            if (dist <= attackRange)
             {
+                Debug.Log($"熊: ハンターに {attackDamage} ダメージを与えた！");
                 _targetHunter.TakeDamage(attackDamage);
+            }
+            else
+            {
+                Debug.LogWarning($"熊: ハンターが範囲外です。");
             }
             return;
         }
@@ -238,14 +246,14 @@ public class BearController : MonoBehaviour, TrapTarget
             );
 
             // 停止距離(attackRange)よりも少し広い判定（遊び）を持たせる
-            if (dist <= attackRange + 2.0f)
+            if (dist <= attackRange)
             {
-                Debug.Log($"熊: 家への攻撃ヒット！ 距離: {dist:F2}");
+                Debug.Log($"熊: 家への攻撃ヒット！");
                 _targetHouse.TakeDamage(attackDamage);
             }
             else
             {
-                Debug.LogWarning($"熊: 攻撃アニメーションが再生されましたが、家が遠すぎます。 距離: {dist:F2}");
+                Debug.LogWarning($"熊: 攻撃アニメーションが再生されましたが、家が遠すぎます。");
             }
         }
     }
@@ -287,9 +295,11 @@ public class BearController : MonoBehaviour, TrapTarget
                 // 優先度1: ハンターをターゲットしている場合
                 if (_targetHunter != null)
                 {
+
                     // ハンターが死んだ、または無効になったらターゲット解除して次を探す
                     if (_targetHunter == null || !_targetHunter.gameObject.activeSelf || _targetHunter.IsDead())
                     {
+                        Debug.Log("熊: ハンターが死亡/無効。ターゲット解除");
                         _targetHunter = null;
                         FindNextTarget();
                         return;
@@ -314,19 +324,48 @@ public class BearController : MonoBehaviour, TrapTarget
     /// 周囲のハンターを検出する
     private void DetectNearestHunter()
     {
-        var hunters = Physics.OverlapSphere(detectionPoint.position, detectionRadius)
-            .Select(c => c.GetComponent<HunterController>())
-            .Where(h => h != null && h.isActiveAndEnabled) // 有効なターゲットのみ
-            .OrderBy(h => Vector3.Distance(detectionPoint.position, h.transform.position))
-            .FirstOrDefault();
+        // 範囲内のコライダーを取得
+        Collider[] colliders = Physics.OverlapSphere(detectionPoint.position, detectionRadius);
+        
+        HunterController nearestHunter = null;
+        float nearestDistance = float.MaxValue;
 
-        if (hunters != null)
+        // 全てのコライダーをチェック
+        foreach (Collider col in colliders)
         {
-            _targetHunter = hunters;
+            // ハンターのタグをチェック
+            if (col.CompareTag("Hunter"))
+            {
+                HunterController hunter = col.GetComponent<HunterController>();
+                
+                // 有効なハンターかチェック
+                if (hunter != null && hunter.isActiveAndEnabled && !hunter.IsDead())
+                {
+                    float distance = Vector3.Distance(detectionPoint.position, col.transform.position);
+                    
+                    // より近いハンターを記録
+                    if (distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        nearestHunter = hunter;
+                    }
+                    
+                    Debug.Log($"ハンター検出: {col.gameObject.name}, 距離: {distance}");
+                }
+            }
+        }
+
+        if (nearestHunter != null)
+        {
+            _targetHunter = nearestHunter;
             _targetHouse = null; // 家へのターゲットを解除
             StopAttacking();
             if (_agent.isActiveAndEnabled) _agent.isStopped = false;
-            Debug.Log("熊: ハンターを発見！ターゲットをハンターに変更します。");
+            Debug.Log($"熊: ハンターを発見！ターゲット: {nearestHunter.gameObject.name}, 距離: {nearestDistance}");
+        }
+        else
+        {
+            Debug.Log("検出結果: なし (範囲内にハンターがいません)");
         }
     }
 
@@ -340,25 +379,17 @@ public class BearController : MonoBehaviour, TrapTarget
             return;
         }
 
-        Vector3 attackPosition = (detectionPoint != null) ? detectionPoint.position : transform.position;
-        float dist = Vector3.Distance(attackPosition, _targetHunter.transform.position);
+        // シンプルに距離だけ測る
+        float dist = Vector3.Distance(transform.position, _targetHunter.transform.position);
 
-        // 判定の遊びを作る
-        float effectiveRange = (_attackStream != null) ? attackRange + 2.0f : attackRange;
-
-        if (animator && enableAnimation) animator.SetBool("IsMoving", dist > attackRange - 1.0f);
-
-        // 攻撃範囲内
-        if (dist <= effectiveRange)
+        // attackRange以内なら攻撃、それ以外は追跡
+        if (dist <= attackRange)
         {
-            if (!_agent.isStopped)
-            {
-                _agent.isStopped = true;
-                _agent.velocity = Vector3.zero;
-            }
-            _agent.updateRotation = false;
-
-            // ハンターの方を向く
+            // 攻撃モード：停止して攻撃
+            _agent.isStopped = true;
+            _agent.velocity = Vector3.zero;
+            
+            // ハンターを向く
             Vector3 lookTarget = _targetHunter.transform.position;
             lookTarget.y = transform.position.y;
             transform.LookAt(lookTarget);
@@ -367,10 +398,9 @@ public class BearController : MonoBehaviour, TrapTarget
         }
         else
         {
-            // 追跡
+            // 追跡モード
             StopAttacking();
-            if (_agent.isStopped) _agent.isStopped = false;
-            _agent.updateRotation = true;
+            _agent.isStopped = false;
             _agent.SetDestination(_targetHunter.transform.position);
         }
     }
@@ -387,7 +417,7 @@ public class BearController : MonoBehaviour, TrapTarget
         Vector3 bearPos = transform.position;
         Vector3 closestPointOnHouse = _targetHouse.HouseCollider.ClosestPoint(bearPos);
 
-        // Y軸を無視して水平距離を出す（高さの差で空振りするのを防ぐ）
+        // Y軸を無視して水平距離を出す
         float horizontalDist = Vector3.Distance(
             new Vector3(bearPos.x, 0, bearPos.z),
             new Vector3(closestPointOnHouse.x, 0, closestPointOnHouse.z)
@@ -395,8 +425,7 @@ public class BearController : MonoBehaviour, TrapTarget
 
         if (animator && enableAnimation) animator.SetBool("IsMoving", horizontalDist > 5.0f);
 
-        // 攻撃開始距離を少し広げて、壁に密着しすぎる前に足を止める
-        float stopThreshold = attackRange + 2.0f; // 余裕を持たせる
+        float stopThreshold = attackRange;
 
         if (horizontalDist <= stopThreshold)
         {
@@ -433,7 +462,7 @@ public class BearController : MonoBehaviour, TrapTarget
     {
         StopAttacking();
         
-        // まずハンターを検出する（優先度が高いため）
+        // まずハンターを検出する
         DetectNearestHunter();
         
         // ハンターが見つかった場合は、家へのターゲットを解除
@@ -444,7 +473,7 @@ public class BearController : MonoBehaviour, TrapTarget
         }
 
         // ハンターが見つからない場合、家を探す
-        _targetHunter = null; // ハンターゲット解除
+        _targetHunter = null; // ターゲット解除
 
         var houses = GameObject.FindGameObjectsWithTag("House");
         if (houses.Length == 0) return;
@@ -479,15 +508,16 @@ public class BearController : MonoBehaviour, TrapTarget
         _attackStream = Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(attackInterval))
             .Subscribe(_ =>
             {
-                // ハンター・家、どちらを狙っている場合でも、OnAttackHitで判定してダメージを与える
-                // アニメーションがある場合はTriggerセット
-                if (animator != null && enableAnimation) animator.SetTrigger("Attack");
+                if (animator != null && enableAnimation)
+                {
+                    animator.SetTrigger("Attack");
+                    Debug.Log("熊: 攻撃アニメーション開始");
+                }
 
-                // 攻撃演出
-                transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
-
-                // アニメーションイベントを使わない場合はここで直接呼ぶ
+                // 直接攻撃を実行
                 OnAttackHit();
+
+                transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
             })
             .AddTo(this);
     }

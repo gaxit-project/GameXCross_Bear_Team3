@@ -6,6 +6,7 @@ TagManager:
   tags:
   - House
   - Ground
+  - Hunter
   layers:
   - Default
   - TransparentFX

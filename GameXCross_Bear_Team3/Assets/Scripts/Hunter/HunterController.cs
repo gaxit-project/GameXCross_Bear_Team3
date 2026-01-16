@@ -78,6 +78,9 @@ public class HunterController : MonoBehaviour
     {
         StopMovement();
 
+        // ★ 初期武器を装備
+        EquipWeapon(WeaponType.Rifle);
+
         // GameManagerの状態を監視し、フェーズに合わせて挙動を制御
         if (GameManager.Instance != null)
         {
@@ -149,11 +152,12 @@ public class HunterController : MonoBehaviour
                             StartShooting();
                         }
 
-                        // クマが非常に近い場合は後退
-                        if (dist < attackRange * 0.3f)
+                        // クマが極めて近い場合のみ後退（条件を厳しくする）
+                        // 3.0f 以下の時だけ後退
+                        if (dist < 3.0f)  // attackRange * 0.3f から 3.0f に変更
                         {
                             Vector3 awayDirection = (transform.position - _targetBear.transform.position).normalized;
-                            Vector3 backupTarget = transform.position + awayDirection * (attackRange * 0.5f);
+                            Vector3 backupTarget = transform.position + awayDirection * 2.0f;  // 後退距離を減らす
                             _agent.isStopped = false;
                             _agent.SetDestination(backupTarget);
                         }
