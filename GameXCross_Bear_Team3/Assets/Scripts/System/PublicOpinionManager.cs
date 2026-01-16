@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PublicOpinionManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class PublicOpinionManager : MonoBehaviour
 
     [Header("UI参照")]
     [SerializeField] private Image faceImage; // 顔を表示するImageコンポーネント
+    [SerializeField] private TextMeshProUGUI text; // 世論値をパーセントで表示するtextコンポーネント
 
     [Header("白いスプライト画像")]
     [SerializeField] private Sprite sadSprite;    // 悲しい顔（白）
@@ -41,26 +43,39 @@ public class PublicOpinionManager : MonoBehaviour
 
     private void Start()
     {
-        pos = faceImage.rectTransform.anchoredPosition;
+        //pos = faceImage.rectTransform.anchoredPosition;
     }
 
     private void Update()
     {
         PublicOpinion = Mathf.Lerp(PublicOpinion,POvalue,POchangeSpeed * Time.deltaTime);
-        faceImage.rectTransform.anchoredPosition = new Vector3(pos.x,pos.y + PublicOpinion * 100,pos.z);
+        //faceImage.rectTransform.anchoredPosition = new Vector3(pos.x,pos.y + PublicOpinion * 100,pos.z);
         faceColor();
         faceSplite();
+        Text();
+    }
+
+    private void Text()
+    {
+        int percent;
+        float normalizedValue = (PublicOpinion + 1f) / 2f;
+
+        // 0 ~ 1 を 0 ~ 100% に変換
+        percent = (int)((normalizedValue * 100f) + 0.1f);
+        text.text = "支持率:" + percent + "％";
     }
 
     private void faceColor()
     {
         Color currentColor;
+        Color currentColor_text;
         if (POvalue < 0)
         {
             // マイナスエリア (-1 ～ 0)
             // -1(赤) から 0(黄) へ変化させる
             // t + 1 をすることで、入力「-1～0」を「0～1」の割合に変換できる
             currentColor = Color.Lerp(badColor, midColor, PublicOpinion + 1f);
+            currentColor_text = Color.Lerp(badColor, midColor, PublicOpinion + 1f);
         }
         else
         {
@@ -68,10 +83,12 @@ public class PublicOpinionManager : MonoBehaviour
             // 0(黄) から 1(緑) へ変化させる
             // t はそのまま「0～1」の割合として使える
             currentColor = Color.Lerp(midColor, goodColor, PublicOpinion);
+            currentColor_text = Color.Lerp(midColor, goodColor, PublicOpinion);
         }
 
         // 色を適用
         faceImage.color = currentColor;
+        text.color = currentColor_text;
     }
 
     private void faceSplite()
