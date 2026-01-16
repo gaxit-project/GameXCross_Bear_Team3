@@ -22,7 +22,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -80,7 +80,107 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: kuma Animation(Clone)
+      parentName: 
+      position: {x: -0, y: 3.2600002, z: -1.8}
+      rotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3"
+      parentName: kuma Animation(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.001"
+      parentName: "\u30DC\u30FC\u30F3"
+      position: {x: -0, y: 1, z: 0}
+      rotation: {x: -0.5336146, y: -0, z: -0, w: 0.8457278}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.002"
+      parentName: "\u30DC\u30FC\u30F3.001"
+      position: {x: -0, y: 1.2, z: -3.5527137e-15}
+      rotation: {x: 1.7763568e-15, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.003"
+      parentName: "\u30DC\u30FC\u30F3.002"
+      position: {x: -0, y: 1, z: 3.5527137e-15}
+      rotation: {x: -1.0658141e-14, y: 0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.004"
+      parentName: "\u30DC\u30FC\u30F3.003"
+      position: {x: -0, y: 0.99999976, z: 0}
+      rotation: {x: -0.6128256, y: -0.22552197, z: -0.47281653, w: 0.5916327}
+      scale: {x: 1, y: 1, z: 1}
+    - name: head
+      parentName: "\u30DC\u30FC\u30F3.004"
+      position: {x: -2, y: -1.3999999, z: 3.2600002}
+      rotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.006"
+      parentName: "\u30DC\u30FC\u30F3.002"
+      position: {x: -0, y: 1, z: 3.5527137e-15}
+      rotation: {x: -0.000000011238233, y: -0.000000011238232, z: -0.7071068, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.011"
+      parentName: "\u30DC\u30FC\u30F3.006"
+      position: {x: -7.1054274e-15, y: 0.8, z: 0}
+      rotation: {x: -0.3409097, y: 0.07818891, z: 0.07818902, w: 0.9335704}
+      scale: {x: 1, y: 1, z: 1}
+    - name: front legs R
+      parentName: "\u30DC\u30FC\u30F3.011"
+      position: {x: 0.39999974, y: 3.26, z: 2.8000002}
+      rotation: {x: 0.7071068, y: -0.000000053385072, z: -0.7071067, w: -0.000000053385083}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.005"
+      parentName: "\u30DC\u30FC\u30F3.002"
+      position: {x: -0, y: 1, z: 3.5527137e-15}
+      rotation: {x: -0.000000011238233, y: 0.000000011238232, z: 0.7071068, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: body
+      parentName: "\u30DC\u30FC\u30F3.005"
+      position: {x: -0.4000002, y: 2, z: 3.26}
+      rotation: {x: -0.5, y: 0.5, z: -0.5, w: 0.49999997}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.009"
+      parentName: "\u30DC\u30FC\u30F3.005"
+      position: {x: 7.1054274e-15, y: 0.8, z: 0}
+      rotation: {x: 0.19011536, y: -0.0484205, z: -0.04842073, w: 0.9793708}
+      scale: {x: 1, y: 1, z: 1}
+    - name: front legs L
+      parentName: "\u30DC\u30FC\u30F3.009"
+      position: {x: -0.4000002, y: 3.26, z: -1.2}
+      rotation: {x: 0.7071068, y: 0.000000053385076, z: 0.70710677, w: -0.00000005338508}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.007"
+      parentName: kuma Animation(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.010"
+      parentName: "\u30DC\u30FC\u30F3.007"
+      position: {x: -0, y: 0.8, z: 0}
+      rotation: {x: 0.000000015454312, y: 0.000000015454313, z: 0.7071068, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hind legs L
+      parentName: "\u30DC\u30FC\u30F3.010"
+      position: {x: 1.2, y: 3.2600002, z: 2.8}
+      rotation: {x: -2.087968e-23, y: -9.126798e-31, z: 1, w: -0.00000004371139}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.008"
+      parentName: kuma Animation(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: "\u30DC\u30FC\u30F3.012"
+      parentName: "\u30DC\u30FC\u30F3.008"
+      position: {x: -0, y: 0.8, z: 0}
+      rotation: {x: 0.000000015454312, y: -0.000000015454313, z: -0.7071068, w: 0.7071067}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hind legs R
+      parentName: "\u30DC\u30FC\u30F3.012"
+      position: {x: 2.8, y: 3.2600002, z: 2.8}
+      rotation: {x: 2.087968e-23, y: -9.126798e-31, z: 1, w: 0.00000004371139}
+      scale: {x: 1, y: 1, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -97,7 +197,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0
