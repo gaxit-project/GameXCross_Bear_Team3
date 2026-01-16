@@ -31,7 +31,7 @@ public class SoundManager : MonoBehaviour
             {
                 if (clip == null) return Observable.ReturnUnit();
 
-                seSource.PlayOneShot(clip, volume);
+                seSource.PlayOneShot(clip, volume * VolumeSettings.SEVolume);
                 // 再生が終わるまで待機するストリーム
                 return Observable.Timer(TimeSpan.FromSeconds(clip.length)).AsUnitObservable();
             });

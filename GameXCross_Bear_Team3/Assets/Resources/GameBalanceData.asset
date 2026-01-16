@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c424d5e7729791468ac89794c57174f, type: 3}
   m_Name: GameBalanceData
   m_EditorClassIdentifier: 
-  setupTime: 5
+  setupTime: 30
   maxWaves: 3
   enemiesPerWave: 010000000200000004000000
   hunterMaxHealth: 50
