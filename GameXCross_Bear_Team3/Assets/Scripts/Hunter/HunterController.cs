@@ -54,6 +54,7 @@ public class HunterController : MonoBehaviour
 
     private IDisposable _attackStream;
     private IDisposable _patrolStream;
+    private IDisposable _observeStream; // 監視ストリームを追跡
 
     private WeaponType _equippedWeapon = WeaponType.None;
 
@@ -61,46 +62,129 @@ public class HunterController : MonoBehaviour
     {
         _agent = GetComponent<NavMeshAgent>();
         _agent.speed = moveSpeed;
-        _agent.stoppingDistance = attackRange * 0.8f;
-        
+        _agent.stoppingDistance = attackRange * 0.2f;
+
         // ★ NavMeshAgent に移動・回転を任せる
         _agent.updatePosition = true;
         _agent.updateRotation = true;
-        
+
         _currentHealth = maxHealth;
         _spawnPosition = transform.position;
         _equippedWeapon = currentWeapon; // 初期武器を設定
 
         if (!isDebugMode && animator == null) animator = GetComponentInChildren<Animator>();
+
+        Debug.Log($"ハンター({gameObject.name}): Awake完了");
     }
 
     private void Start()
     {
-        StopMovement();
+        Debug.Log($"ハンター({gameObject.name}): Start開始");
+        Initialize();
+    }
 
-        // ★ 初期武器を装備
+    /// <summary>
+    /// ハンターを初期化して動作を開始する
+    /// </summary>
+    public void Initialize()
+    {
+        Debug.Log($"ハンター({gameObject.name}): Initialize開始 - CurrentState = {GameManager.Instance?.CurrentState.Value}");
+
+        // エージェントが無効化されている場合は有効化
+        if (_agent != null)
+        {
+            _agent.enabled = true;
+        }
+
+        // 初期武器を装備
         EquipWeapon(WeaponType.Rifle);
 
         // GameManagerの状態を監視し、フェーズに合わせて挙動を制御
         if (GameManager.Instance != null)
         {
+            // 現在の状態を確認
+            GameState currentState = GameManager.Instance.CurrentState.Value;
+
+            // Setup フェーズなら待機状態にする
+            if (currentState == GameState.Setup)
+            {
+                Debug.Log("ハンター: 準備フェーズのため待機します。");
+                StopMovement();
+            }
+            // Battleフェーズなら即座に行動開始
+            else if (currentState == GameState.Battle)
+            {
+                Debug.Log("ハンター: バトルフェーズ中に配置されました。行動を開始します。");
+                if (_agent != null && !_agent.enabled)
+                {
+                    _agent.enabled = true;
+                }
+                // 監視を開始
+                ObserveSurroundings();
+            }
+
+            // 状態変更を監視
             GameManager.Instance.CurrentState
                 .Subscribe(state =>
                 {
+                    Debug.Log($"ハンター({gameObject.name}): GameState変更 -> {state}");
+                    
                     if (state == GameState.Setup)
                     {
                         Debug.Log("ハンター: 準備フェーズ。待機します。");
                         ReturnToWait(); // ターゲットを解除し、パスをクリアして停止
+                        // 監視ストリームをクリーンアップ
+                        CleanupObserveStream();
+                    }
+                    else if (state == GameState.Battle)
+                    {
+                        Debug.Log("ハンター: バトルフェーズ開始。行動を開始します。");
+                        // バトル開始時にエージェントを明示的に有効化
+                        if (_agent != null && !_agent.enabled)
+                        {
+                            _agent.enabled = true;
+                        }
+                        // 監視が始まっていなければ開始
+                        if (_observeStream == null)
+                        {
+                            ObserveSurroundings();
+                        }
                     }
                 })
                 .AddTo(this);
         }
+        else
+        {
+            Debug.LogWarning("ハンター: GameManagerが見つかりません！");
+        }
+    }
 
-        ObserveSurroundings();
+    /// <summary>
+    /// 監視ストリームをクリーンアップする
+    /// </summary>
+    private void CleanupObserveStream()
+    {
+        if (_observeStream != null)
+        {
+            _observeStream.Dispose();
+            _observeStream = null;
+            Debug.Log($"ハンター({gameObject.name}): 監視ストリームをクリーンアップしました。");
+        }
     }
 
     private void ObserveSurroundings()
     {
+        // 既に監視が始まっている場合は重複を防ぐ
+        if (_observeStream != null)
+        {
+            Debug.LogWarning("ハンター: ObserveSurroundings は既に実行中です。");
+            return;
+        }
+
+        Debug.Log($"ハンター({gameObject.name}): ObserveSurroundings 開始");
+
+        CompositeDisposable disposables = new CompositeDisposable();
+
         // 準備フェーズ中は強制停止ロック
         this.UpdateAsObservable()
         .Where(_ => GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Setup)
@@ -111,7 +195,7 @@ public class HunterController : MonoBehaviour
                 StopMovement(); // 準備中は毎フレーム停止を保証
             }
         })
-        .AddTo(this);
+        .AddTo(disposables);
 
         // 定期的に周囲を探索（ターゲットが見つかるまで）
         Observable.Interval(TimeSpan.FromSeconds(0.5f))
@@ -121,7 +205,7 @@ public class HunterController : MonoBehaviour
             {
                 DetectNearestBear();
             })
-            .AddTo(this);
+            .AddTo(disposables);
 
         // 毎フレーム更新
         this.UpdateAsObservable()
@@ -168,7 +252,7 @@ public class HunterController : MonoBehaviour
                         _agent.isStopped = false;
                         Vector3 directionToBear = (_targetBear.transform.position - transform.position).normalized;
                         Vector3 stoppingPoint = _targetBear.transform.position - directionToBear * (attackRange * 0.8f);
-                        
+
                         _agent.SetDestination(stoppingPoint);
 
                         if (!isDebugMode && animator)
@@ -195,7 +279,10 @@ public class HunterController : MonoBehaviour
                     }
                 }
             })
-            .AddTo(this);
+            .AddTo(disposables);
+
+        // CompositeDisposableを_observeStreamとして保持
+        _observeStream = disposables;
     }
 
     private void DetectNearestBear()
@@ -272,7 +359,7 @@ public class HunterController : MonoBehaviour
                 if (!isDebugMode && animator) animator.SetBool("IsWalking", _agent.velocity.magnitude > 0.1f);
 
                 if (!_agent.isOnNavMesh || !_agent.isActiveAndEnabled) return;
-                
+
                 if (!_agent.pathPending && _agent.remainingDistance < 0.5f)
                 {
                     // 到着後は設定時間待ってから次のポイントへ
@@ -329,6 +416,7 @@ public class HunterController : MonoBehaviour
 
     private void StopMovement()
     {
+        Debug.Log($"ハンター({gameObject.name}): StopMovement呼び出し");
         if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
         {
             _agent.isStopped = true;
@@ -382,7 +470,7 @@ public class HunterController : MonoBehaviour
         // 横に倒れて消えるアニメーション
         Vector3 currentRotation = transform.eulerAngles;
         Vector3 fallRotation = new Vector3(currentRotation.x + 90f, currentRotation.y, currentRotation.z);
-        
+
         Sequence deathSequence = DOTween.Sequence();
         // 横に倒れる（0.5秒）
         deathSequence.Append(transform.DORotate(fallRotation, 0.5f).SetEase(Ease.OutQuad));

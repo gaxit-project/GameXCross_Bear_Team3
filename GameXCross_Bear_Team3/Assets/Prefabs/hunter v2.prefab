@@ -1232,11 +1232,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 50
   moveSpeed: 3.5
-  attackRange: 15
+  attackRange: 20
   attackInterval: 1.5
   damage: 10
-  detectionRadius: 20
-  currentWeapon: 0
+  detectionRadius: 200
+  currentWeapon: 1
   rifleAttackInterval: 1.5
   revolverAttackInterval: 0.8
   patrolRadius: 20
@@ -1245,7 +1245,7 @@ MonoBehaviour:
   muzzleFlash: {fileID: 0}
   bearLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   isDebugMode: 0
 --- !u!195 &6936060391267771281
 NavMeshAgent:
@@ -1256,7 +1256,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 8423498618031210344}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 5
+  m_Radius: 6
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50

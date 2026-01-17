@@ -50,7 +50,7 @@ public class BearController : MonoBehaviour, TrapTarget
         _agent = GetComponent<NavMeshAgent>();
         _rb = GetComponent<Rigidbody>();
 
-        _agent.stoppingDistance = attackRange - 0.5f;
+        _agent.stoppingDistance = attackRange;
         _currentHealth = maxHealth; // 初期化
 
         if (detectionPoint == null) detectionPoint = transform;
