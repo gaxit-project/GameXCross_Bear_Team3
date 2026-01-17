@@ -276,7 +276,7 @@ public class BearSpawner : MonoBehaviour
                 var controller = bearObj.GetComponent<BearController>();
                 if (controller != null)
                 {
-                    controller.Initialize(moveSpeed);
+                    controller.Initialize();
                 }
             }
             else
