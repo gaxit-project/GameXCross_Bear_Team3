@@ -71,6 +71,8 @@ public class PauseManager : MonoBehaviour
 
     public void PauseGame()
     {
+        SEmanager.Instance.Play("UIpopup");
+
         selectUI.SetActive(false);
         isPaused = true;
 
@@ -90,6 +92,7 @@ public class PauseManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        SEmanager.Instance.Play("UIpopup");
         selectUI.SetActive(true);
         isPaused = false;
 
