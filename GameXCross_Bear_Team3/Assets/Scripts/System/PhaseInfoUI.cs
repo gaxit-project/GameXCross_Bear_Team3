@@ -23,6 +23,7 @@ public class PhaseInfoUI : MonoBehaviour
                 {
                     case GameState.Setup:
                         phaseText.text = "準備フェーズ";
+                        phaseText.color = Color.white; // 白くする
                         timerText.gameObject.SetActive(true);
                         break;
                     case GameState.Battle:

@@ -11,12 +11,15 @@ public class PauseManager : MonoBehaviour
 
     [Header("コンポーネント")]
     [SerializeField] private CameraController cameraController;
+    [SerializeField] private CanvasGroup canvasGroup;
 
     private CameraControls controles;
     private bool isPaused = false;
 
     private void Awake()
     {
+        //canvasGroup = pausePanel.GetComponent<CanvasGroup>();
+        
         controles = new CameraControls();
         pausePanel.SetActive(false);
         if (EventSystem.current == null)
@@ -71,7 +74,7 @@ public class PauseManager : MonoBehaviour
 
     public void TitleBack()
     {
-        SEmanager.Instance.Play("UIconfirm");
+        SEmanager.Instance.Play("deside");
         Time.timeScale = 1f;
         UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
     }
@@ -80,7 +83,8 @@ public class PauseManager : MonoBehaviour
     {
         SEmanager.Instance.Play("UIpopup");
 
-        selectUI.SetActive(false);
+        Time.timeScale = 0f;
+        canvasGroup.interactable = false;
         isPaused = true;
 
         if (pausePanel != null) pausePanel.SetActive(true);
@@ -92,7 +96,7 @@ public class PauseManager : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(firstSelectedOnPause);
         }
 
-        Time.timeScale = 0f;
+        
 
         if(cameraController != null) cameraController.SetRotationEnabled(false);
     }
@@ -100,7 +104,7 @@ public class PauseManager : MonoBehaviour
     public void ResumeGame()
     {
         SEmanager.Instance.Play("UIpopup");
-        selectUI.SetActive(true);
+        canvasGroup.interactable = true;
         isPaused = false;
 
         if(pausePanel != null) pausePanel.SetActive(false);

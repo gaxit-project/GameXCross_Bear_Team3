@@ -11559,6 +11559,7 @@ MonoBehaviour:
   firstSelectedOnPause: {fileID: 626345239}
   lastSelectedOnPause: {fileID: 0}
   cameraController: {fileID: 67419635}
+  canvasGroup: {fileID: 7249335416971573201}
 --- !u!114 &165155368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66854,9 +66855,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 629653269}
-        m_TargetAssemblyTypeName: ButtonController, Assembly-CSharp
-        m_MethodName: SwithToTitle
+      - m_Target: {fileID: 165155367}
+        m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
+        m_MethodName: TitleBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -137671,7 +137672,10 @@ PrefabInstance:
     - {fileID: 173072851515777204, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
     - {fileID: 2241102507817835711, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5078503951804648783, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7249335416971573201}
   m_SourcePrefab: {fileID: 100100000, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
 --- !u!1001 &6813236647279283256
 PrefabInstance:
@@ -137739,6 +137743,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5078503951804648783, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
   m_PrefabInstance: {fileID: 6780996128269707379}
   m_PrefabAsset: {fileID: 0}
+--- !u!225 &7249335416971573201
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249335416971573198}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!95 &9021353950298865750 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 4842002860065892134, guid: bfd3cddd7c230ba47988931e86189752, type: 3}
