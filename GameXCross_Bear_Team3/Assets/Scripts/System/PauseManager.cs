@@ -69,6 +69,13 @@ public class PauseManager : MonoBehaviour
         }
     }
 
+    public void TitleBack()
+    {
+        SEmanager.Instance.Play("UIconfirm");
+        Time.timeScale = 1f;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
+    }
+
     public void PauseGame()
     {
         SEmanager.Instance.Play("UIpopup");
