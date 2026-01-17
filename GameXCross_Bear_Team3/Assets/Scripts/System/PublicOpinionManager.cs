@@ -23,6 +23,8 @@ public class PublicOpinionManager : MonoBehaviour
 
     public float POchangeSpeed = 1f;
 
+    public int POpercent;
+
     [Range(-1, 1)] public float POvalue;   //値を参照するときはこれを参照して下さい
     public static PublicOpinionManager Instance { get; private set; }
 
@@ -30,6 +32,8 @@ public class PublicOpinionManager : MonoBehaviour
 
     private void Awake()
     {
+        POvalue = 0;
+        PublicOpinion = 0;
         // これがないと他から呼べません！
         if (Instance == null)
         {
@@ -63,6 +67,7 @@ public class PublicOpinionManager : MonoBehaviour
         // 0 ~ 1 を 0 ~ 100% に変換
         percent = (int)((normalizedValue * 100f) + 0.1f);
         text.text = "支持率:" + percent + "％";
+        POpercent = percent;
     }
 
     private void faceColor()
@@ -121,6 +126,15 @@ public class PublicOpinionManager : MonoBehaviour
     public bool JudgePO(float judgementValue)
     {
         return POvalue >= judgementValue;
+    }
+
+    /// <summary>
+    /// PO値をパーセント表示で返します．
+    /// </summary>
+    /// <returns></returns>
+    public int GetPOpercent()
+    {
+        return POpercent;
     }
 
 }
