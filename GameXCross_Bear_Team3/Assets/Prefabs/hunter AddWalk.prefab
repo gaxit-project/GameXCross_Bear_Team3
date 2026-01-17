@@ -1148,8 +1148,8 @@ GameObject:
   - component: {fileID: 6936060391267771281}
   - component: {fileID: 4842002860065892134}
   m_Layer: 0
-  m_Name: hunter v2
-  m_TagString: Hunter
+  m_Name: hunter AddWalk
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1236,9 +1236,6 @@ MonoBehaviour:
   attackInterval: 1.5
   damage: 10
   detectionRadius: 20
-  currentWeapon: 0
-  rifleAttackInterval: 1.5
-  revolverAttackInterval: 0.8
   patrolRadius: 20
   waitTimeAtPatrolPoint: 3
   animator: {fileID: 0}
