@@ -62,13 +62,16 @@ public class PauseManager : MonoBehaviour
 
     public void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
-        if(isPaused)
+        if (GameManager.Instance.CurrentState.Value != GameState.Result)
         {
-            ResumeGame();
-        }
-        else
-        {
-            PauseGame();
+            if (isPaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
         }
     }
 
