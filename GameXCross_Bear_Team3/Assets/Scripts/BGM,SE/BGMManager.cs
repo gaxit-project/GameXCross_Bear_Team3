@@ -22,18 +22,28 @@ public class BGMManager : MonoBehaviour
         _audioSource.loop = true;       // ループ再生にする
         _audioSource.volume = 0f;       // 最初は無音からスタート
 
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.CurrentState
-                .DistinctUntilChanged()
-                .Subscribe(state => SwitchBGM(state))
-                .AddTo(this);
-        }
-        else
-        {
-            Debug.LogError("BGMManager: GameManagerが見つかりません！");
-        }
+        // GameManagerが初期化されるまで待機してからサブスクライブ
+        WaitForGameManagerAndSubscribe();
     }
+
+    private void WaitForGameManagerAndSubscribe()
+    {
+        // GameManager.Instanceがnullの場合、毎フレームチェックして待機
+        Observable.EveryUpdate()
+            .Where(_ => GameManager.Instance != null)
+            .First() // 最初に見つかったら1回だけ実行
+            .Subscribe(_ =>
+            {
+                Debug.Log("BGMManager: GameManagerを検出しました。BGM監視を開始します。");
+                
+                GameManager.Instance.CurrentState
+                    .DistinctUntilChanged()
+                    .Subscribe(state => SwitchBGM(state))
+                    .AddTo(this);
+            })
+            .AddTo(this);
+    }
+
 
     private void SwitchBGM(GameState state)
     {

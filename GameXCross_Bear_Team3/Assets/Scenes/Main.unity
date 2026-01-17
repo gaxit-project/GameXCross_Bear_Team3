@@ -37771,6 +37771,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seSource: {fileID: 624825559}
+  seList:
+  - key: SE_Click
+    clip: {fileID: 8300000, guid: e11bbe4f481b18742bfad49cedd2506c, type: 3}
+    volume: 1
 --- !u!1 &625788043
 GameObject:
   m_ObjectHideFlags: 0
