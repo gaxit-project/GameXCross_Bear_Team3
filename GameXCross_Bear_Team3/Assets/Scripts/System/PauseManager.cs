@@ -5,7 +5,9 @@ public class PauseManager : MonoBehaviour
 {
     [Header("UIコンポーネント")]
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject selectUI;
     [SerializeField] private GameObject firstSelectedOnPause; // 追加: 最初に選択するUI
+    [SerializeField] private GameObject lastSelectedOnPause; // 追加: ポーズ前に選択していたUI
 
     [Header("コンポーネント")]
     [SerializeField] private CameraController cameraController;
@@ -21,10 +23,6 @@ public class PauseManager : MonoBehaviour
         {
             Debug.LogWarning("EventSystem がシーンにありません。UI入力が動きません。");
         }
-    }
-    void Start()
-    {
-        
     }
 
     private void OnEnable()
@@ -73,6 +71,7 @@ public class PauseManager : MonoBehaviour
 
     public void PauseGame()
     {
+        selectUI.SetActive(false);
         isPaused = true;
 
         if (pausePanel != null) pausePanel.SetActive(true);
@@ -80,6 +79,7 @@ public class PauseManager : MonoBehaviour
         // コントローラー選択先を設定
         if (EventSystem.current != null && firstSelectedOnPause != null)
         {
+            lastSelectedOnPause = EventSystem.current.currentSelectedGameObject;
             EventSystem.current.SetSelectedGameObject(firstSelectedOnPause);
         }
 
@@ -90,6 +90,7 @@ public class PauseManager : MonoBehaviour
 
     public void ResumeGame()
     {
+        selectUI.SetActive(true);
         isPaused = false;
 
         if(pausePanel != null) pausePanel.SetActive(false);
@@ -101,7 +102,7 @@ public class PauseManager : MonoBehaviour
         // ポーズ解除時に選択をクリア
         if (EventSystem.current != null)
         {
-            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(lastSelectedOnPause);
         }
     }
 }
