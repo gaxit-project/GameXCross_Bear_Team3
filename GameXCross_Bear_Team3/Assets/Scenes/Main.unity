@@ -11743,6 +11743,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   phaseResult: {fileID: 1476353518}
+  button: {fileID: 1892270908}
+  selectUIbutton: {fileID: 5994922789081639359}
 --- !u!1 &166808094
 GameObject:
   m_ObjectHideFlags: 0
@@ -120779,7 +120781,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1892270911}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 165155374}
+        m_TargetAssemblyTypeName: PhaseResult, Assembly-CSharp
+        m_MethodName: NextDay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1892270911
 MonoBehaviour:
   m_ObjectHideFlags: 0

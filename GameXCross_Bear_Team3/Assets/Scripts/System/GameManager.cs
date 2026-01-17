@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
     // ---------------------------------------------------------
     // フェーズ管理
     // ---------------------------------------------------------
-    private void StartSetupPhase()
+    public void StartSetupPhase()
     {
         CurrentState.Value = GameState.Setup;
         TimeRemaining.Value = setupTime;
@@ -215,7 +215,8 @@ public class GameManager : MonoBehaviour
         if (CurrentWave.Value < maxWaves)
         {
             CurrentWave.Value++;
-            StartSetupPhase();
+            CurrentState.Value = GameState.Result;
+            PhaseResult.Instance.Result();
         }
         else
         {
