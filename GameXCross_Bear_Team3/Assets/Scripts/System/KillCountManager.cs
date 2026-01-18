@@ -1,16 +1,11 @@
-<<<<<<< HEAD
 using System;
 using System.Linq;
-=======
-using TMPro;
->>>>>>> parent of 58fa75f (Merge branch 'develop' of https://github.com/gaxit-project/GameXCross_Bear_Team3 into develop)
 using UnityEngine;
 
 public class KillCountManager : MonoBehaviour
 {
     public static KillCountManager Instance { get; private set; }
 
-<<<<<<< HEAD
     [SerializeField] int killcount = 0;
     [SerializeField] int capturecount = 0;
     [SerializeField] int damagecount = 0;  // 被害件数（家の破壊数）
@@ -20,13 +15,6 @@ public class KillCountManager : MonoBehaviour
     [SerializeField] static int[] finalcapture = new int[3];
     [SerializeField] static int[] finaldamage = new int[3];  // 被害件数（家の破壊数）
     [SerializeField] static int[] finalPO = new int[3];
-=======
-    [SerializeField] int killcount;
-    [SerializeField] int victimcount;
-
-    [SerializeField] TextMeshProUGUI killtext;
-    [SerializeField] TextMeshProUGUI victimtext;
->>>>>>> parent of 58fa75f (Merge branch 'develop' of https://github.com/gaxit-project/GameXCross_Bear_Team3 into develop)
 
     private void Awake()
     {
@@ -41,7 +29,6 @@ public class KillCountManager : MonoBehaviour
         }
     }
 
-<<<<<<< HEAD
     #region カウント操作
     /// <summary>
     /// 駆除数を1増やす
@@ -55,17 +42,9 @@ public class KillCountManager : MonoBehaviour
     /// 被害件数（家の破壊数）を1増やす
     /// </summary>
     public void DamageCounterplus()
-=======
-    public void killCounterplus()
-    {
-        killcount++;
-    }
-    public void victimconterplus()
->>>>>>> parent of 58fa75f (Merge branch 'develop' of https://github.com/gaxit-project/GameXCross_Bear_Team3 into develop)
     {
         damagecount++;
     }
-<<<<<<< HEAD
 
     /// <summary>
     /// 捕獲数を1増やす
@@ -113,15 +92,6 @@ public class KillCountManager : MonoBehaviour
         finaldamage[day - 1] = damagecount;
         if (PublicOpinionManager.Instance != null)
             finalPO[day - 1] = PublicOpinionManager.Instance.GetPOpercent();
-=======
-
-    public void Counttype()
-    {
-        killtext.text = ""+ killcount;
-        victimtext.text = ""+ victimcount;
-        killcount= 0;
-        victimcount = 0;
->>>>>>> parent of 58fa75f (Merge branch 'develop' of https://github.com/gaxit-project/GameXCross_Bear_Team3 into develop)
     }
     #endregion
 

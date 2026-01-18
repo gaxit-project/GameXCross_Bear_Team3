@@ -4,33 +4,33 @@ using TMPro;
 
 public class PublicOpinionManager : MonoBehaviour
 {
-    [SerializeField,Header("•\¦ã‚Ì¢˜_‚Ì”’l")]
+    [SerializeField,Header("è¡¨ç¤ºä¸Šã®ä¸–è«–ã®æ•°å€¤")]
     [Range(-1,1)]private float PublicOpinion;
 
-    [Header("UIQÆ")]
-    [SerializeField] private Image faceImage; // Šç‚ğ•\¦‚·‚éImageƒRƒ“ƒ|[ƒlƒ“ƒg
-    [SerializeField] private TextMeshProUGUI text; // ¢˜_’l‚ğƒp[ƒZƒ“ƒg‚Å•\¦‚·‚étextƒRƒ“ƒ|[ƒlƒ“ƒg
+    [Header("UIå‚ç…§")]
+    [SerializeField] private Image faceImage; // é¡”ã‚’è¡¨ç¤ºã™ã‚‹Imageã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+    [SerializeField] private TextMeshProUGUI text; // ä¸–è«–å€¤ã‚’ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆã§è¡¨ç¤ºã™ã‚‹textã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 
-    [Header("”’‚¢ƒXƒvƒ‰ƒCƒg‰æ‘œ")]
-    [SerializeField] private Sprite sadSprite;    // ”ß‚µ‚¢Šçi”’j
-    [SerializeField] private Sprite normalSprite; // •’Ê‚ÌŠçi”’j
-    [SerializeField] private Sprite smileSprite;  // ÎŠçi”’j
+    [Header("ç™½ã„ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”»åƒ")]
+    [SerializeField] private Sprite sadSprite;    // æ‚²ã—ã„é¡”ï¼ˆç™½ï¼‰
+    [SerializeField] private Sprite normalSprite; // æ™®é€šã®é¡”ï¼ˆç™½ï¼‰
+    [SerializeField] private Sprite smileSprite;  // ç¬‘é¡”ï¼ˆç™½ï¼‰
 
-    [Header("F‚Ìİ’è")]
-    [SerializeField] private Color badColor = Color.red;    // -1‚É‹ß‚¢‚Æ‚«‚ÌFiÔj
-    [SerializeField] private Color midColor = Color.yellow; // 0•t‹ß‚ÌFi‰©j
-    [SerializeField] private Color goodColor = Color.green; // 1‚É‹ß‚¢‚Æ‚«‚ÌFi—Îj
+    [Header("è‰²ã®è¨­å®š")]
+    [SerializeField] private Color badColor = Color.red;    // -1ã«è¿‘ã„ã¨ãã®è‰²ï¼ˆèµ¤ï¼‰
+    [SerializeField] private Color midColor = Color.yellow; // 0ä»˜è¿‘ã®è‰²ï¼ˆé»„ï¼‰
+    [SerializeField] private Color goodColor = Color.green; // 1ã«è¿‘ã„ã¨ãã®è‰²ï¼ˆç·‘ï¼‰
 
     public float POchangeSpeed = 1f;
 
-    [Range(-1, 1)] public float POvalue;   //’l‚ğQÆ‚·‚é‚Æ‚«‚Í‚±‚ê‚ğQÆ‚µ‚Ä‰º‚³‚¢
+    [Range(-1, 1)] public float POvalue;   //å€¤ã‚’å‚ç…§ã™ã‚‹ã¨ãã¯ã“ã‚Œã‚’å‚ç…§ã—ã¦ä¸‹ã•ã„
     public static PublicOpinionManager Instance { get; private set; }
 
     private Vector3 pos;
 
     private void Awake()
     {
-        // ‚±‚ê‚ª‚È‚¢‚Æ‘¼‚©‚çŒÄ‚×‚Ü‚¹‚ñI
+        // ã“ã‚ŒãŒãªã„ã¨ä»–ã‹ã‚‰å‘¼ã¹ã¾ã›ã‚“ï¼
         if (Instance == null)
         {
             Instance = this;
@@ -60,9 +60,9 @@ public class PublicOpinionManager : MonoBehaviour
         int percent;
         float normalizedValue = (PublicOpinion + 1f) / 2f;
 
-        // 0 ~ 1 ‚ğ 0 ~ 100% ‚É•ÏŠ·
+        // 0 ~ 1 ã‚’ 0 ~ 100% ã«å¤‰æ›
         percent = (int)((normalizedValue * 100f) + 0.1f);
-        text.text = "x—¦:" + percent + "“";
+        text.text = "æ”¯æŒç‡:" + percent + "ï¼…";
     }
 
     private void faceColor()
@@ -71,22 +71,22 @@ public class PublicOpinionManager : MonoBehaviour
         Color currentColor_text;
         if (POvalue < 0)
         {
-            // ƒ}ƒCƒiƒXƒGƒŠƒA (-1 ` 0)
-            // -1(Ô) ‚©‚ç 0(‰©) ‚Ö•Ï‰»‚³‚¹‚é
-            // t + 1 ‚ğ‚·‚é‚±‚Æ‚ÅA“ü—Íu-1`0v‚ğu0`1v‚ÌŠ„‡‚É•ÏŠ·‚Å‚«‚é
+            // ãƒã‚¤ãƒŠã‚¹ã‚¨ãƒªã‚¢ (-1 ï½ 0)
+            // -1(èµ¤) ã‹ã‚‰ 0(é»„) ã¸å¤‰åŒ–ã•ã›ã‚‹
+            // t + 1 ã‚’ã™ã‚‹ã“ã¨ã§ã€å…¥åŠ›ã€Œ-1ï½0ã€ã‚’ã€Œ0ï½1ã€ã®å‰²åˆã«å¤‰æ›ã§ãã‚‹
             currentColor = Color.Lerp(badColor, midColor, PublicOpinion + 1f);
             currentColor_text = Color.Lerp(badColor, midColor, PublicOpinion + 1f);
         }
         else
         {
-            // ƒvƒ‰ƒXƒGƒŠƒA (0 ` 1)
-            // 0(‰©) ‚©‚ç 1(—Î) ‚Ö•Ï‰»‚³‚¹‚é
-            // t ‚Í‚»‚Ì‚Ü‚Üu0`1v‚ÌŠ„‡‚Æ‚µ‚Äg‚¦‚é
+            // ãƒ—ãƒ©ã‚¹ã‚¨ãƒªã‚¢ (0 ï½ 1)
+            // 0(é»„) ã‹ã‚‰ 1(ç·‘) ã¸å¤‰åŒ–ã•ã›ã‚‹
+            // t ã¯ãã®ã¾ã¾ã€Œ0ï½1ã€ã®å‰²åˆã¨ã—ã¦ä½¿ãˆã‚‹
             currentColor = Color.Lerp(midColor, goodColor, PublicOpinion);
             currentColor_text = Color.Lerp(midColor, goodColor, PublicOpinion);
         }
 
-        // F‚ğ“K—p
+        // è‰²ã‚’é©ç”¨
         faceImage.color = currentColor;
         text.color = currentColor_text;
     }
@@ -103,9 +103,9 @@ public class PublicOpinionManager : MonoBehaviour
 
 
     /// <summary>
-    /// ¢˜_‚Ì•Ï‰»Bˆø”‚Í‘Œ¸‚³‚¹‚é—Ê(-2f~+2f)B¢˜_‚Ì”ÍˆÍ‚Í-1f~+1f‚Æ‚·‚éB
+    /// ä¸–è«–ã®å¤‰åŒ–ã€‚å¼•æ•°ã¯å¢—æ¸›ã•ã›ã‚‹é‡(-2f~+2f)ã€‚ä¸–è«–ã®ç¯„å›²ã¯-1f~+1fã¨ã™ã‚‹ã€‚
     /// </summary>
-    /// <param name="value">‚±‚±‚É‹L“ü‚µ‚½’l‚¾‚¯•Ï‰»‚·‚é</param>
+    /// <param name="value">ã“ã“ã«è¨˜å…¥ã—ãŸå€¤ã ã‘å¤‰åŒ–ã™ã‚‹</param>
     public void POchanging(float value)
     {
         value = Mathf.Clamp(value,-2,2);
@@ -114,13 +114,23 @@ public class PublicOpinionManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Œ»İ‚ÌPO’l‚ª”CˆÓ‚Ìˆø”ˆÈã‚©‚©‚Ç‚¤‚©’²‚×‚éB
+    /// ç¾åœ¨ã®POå€¤ãŒä»»æ„ã®å¼•æ•°ä»¥ä¸Šã‹ã‹ã©ã†ã‹èª¿ã¹ã‚‹ã€‚
     /// </summary>
-    /// <param name="judgementValue">”»’fŠî€‚Æ‚È‚é’l</param>
-    /// <returns>ˆø”ˆÈã‚Å‚ ‚ê‚ÎtrueA‚»‚¤‚Å‚È‚¯‚ê‚Îfalse‚ğ•Ô‚·B</returns>
+    /// <param name="judgementValue">åˆ¤æ–­åŸºæº–ã¨ãªã‚‹å€¤</param>
+    /// <returns>å¼•æ•°ä»¥ä¸Šã§ã‚ã‚Œã°trueã€ãã†ã§ãªã‘ã‚Œã°falseã‚’è¿”ã™ã€‚</returns>
     public bool JudgePO(float judgementValue)
     {
         return POvalue >= judgementValue;
+    }
+
+    /// <summary>
+    /// ä¸–è«–å€¤ã‚’ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆï¼ˆ0ã€œ100ï¼‰ã§å–å¾—ã™ã‚‹
+    /// </summary>
+    /// <returns>0ã€œ100ã®ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆå€¤</returns>
+    public int GetPOpercent()
+    {
+        float normalizedValue = (POvalue + 1f) / 2f;
+        return (int)((normalizedValue * 100f) + 0.1f);
     }
 
 }
