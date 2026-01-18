@@ -80,6 +80,9 @@ public class GameManager : MonoBehaviour
             maxWaves = balanceData.maxWaves;
         }
 
+        // ゲーム開始時に統計データをリセット
+        KillCountManager.Instance?.AlldataReset();
+
         StartSetupPhase();
     }
 
@@ -212,6 +215,10 @@ public class GameManager : MonoBehaviour
 
     private void FinishWave()
     {
+        // ウェーブ終了時にデータを保存
+        KillCountManager.Instance?.DataSet(CurrentWave.Value);
+        KillCountManager.Instance?.CountReset();
+
         if (CurrentWave.Value < maxWaves)
         {
             CurrentWave.Value++;
@@ -242,6 +249,9 @@ public class GameManager : MonoBehaviour
     {
         if (CurrentState.Value == GameState.Result) return;
         CurrentState.Value = GameState.Result;
+
+        // リザルト画面遷移前に現在のウェーブのデータを保存
+        KillCountManager.Instance?.DataSet(CurrentWave.Value);
 
         Observable.Timer(TimeSpan.FromSeconds(sceneTransitionDelay))
             .Subscribe(_ => SceneManager.LoadScene(resultSceneName))
