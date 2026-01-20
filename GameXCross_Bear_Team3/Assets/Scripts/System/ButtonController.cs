@@ -19,10 +19,6 @@ public class ButtonController : MonoBehaviour
     {
         // DontDestroyOnLoadオブジェクトをリセット
         KillCountManager.Instance?.AlldataReset();
-        if (PhaseResult.Instance != null)
-        {
-            PhaseResult.Instance.ResetForNewGame();
-        }
         TransitionWithSE("Title");
     }
     public void SwithToMain() => TransitionWithSE("Main");

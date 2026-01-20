@@ -85,10 +85,6 @@ public class PauseManager : MonoBehaviour
 
         // DontDestroyOnLoadオブジェクトをリセット
         KillCountManager.Instance?.AlldataReset();
-        if (PhaseResult.Instance != null)
-        {
-            PhaseResult.Instance.ResetForNewGame();
-        }
 
         UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
     }
