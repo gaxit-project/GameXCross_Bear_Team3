@@ -30,15 +30,11 @@ public class PublicOpinionManager : MonoBehaviour
 
     private void Awake()
     {
-        // これがないと他から呼べません！
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
+            
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Instance = this;
     }
 
     private void Start()
@@ -48,6 +44,13 @@ public class PublicOpinionManager : MonoBehaviour
 
     private void Update()
     {
+        // null チェックを追加
+        if (faceImage == null || text == null)
+        {
+            Debug.LogWarning("PublicOpinionManager: UI参照が設定されていません");
+            return;
+        }
+
         PublicOpinion = Mathf.Lerp(PublicOpinion,POvalue,POchangeSpeed * Time.deltaTime);
         //faceImage.rectTransform.anchoredPosition = new Vector3(pos.x,pos.y + PublicOpinion * 100,pos.z);
         faceColor();
@@ -57,6 +60,8 @@ public class PublicOpinionManager : MonoBehaviour
 
     private void Text()
     {
+        if (text == null) return;
+        
         int percent;
         float normalizedValue = (PublicOpinion + 1f) / 2f;
 
@@ -67,6 +72,8 @@ public class PublicOpinionManager : MonoBehaviour
 
     private void faceColor()
     {
+        if (faceImage == null || text == null) return; // null チェック追加
+        
         Color currentColor;
         Color currentColor_text;
         if (POvalue < 0)
@@ -93,6 +100,8 @@ public class PublicOpinionManager : MonoBehaviour
 
     private void faceSplite()
     {
+        if (faceImage == null) return;
+        
         if (PublicOpinion >= 0.35 && faceImage.sprite != smileSprite)
             faceImage.sprite = smileSprite;
         else if(PublicOpinion <= -0.35 && faceImage.sprite != sadSprite)

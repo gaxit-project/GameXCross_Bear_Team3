@@ -25,7 +25,7 @@ MonoBehaviour:
   bearMoveSpeed: 10
   bearAttackDamage: 20
   bearAttackInterval: 2
-  bearAttackRange: 50
+  bearAttackRange: 10
   bearDetectionRadius: 200
   houseMaxHp: 100
   fenceDamage: 10
