@@ -15,7 +15,16 @@ public class ButtonController : MonoBehaviour
         }
     }
 
-    public void SwithToTitle() => TransitionWithSE("Title");
+    public void SwithToTitle()
+    {
+        // DontDestroyOnLoadオブジェクトをリセット
+        KillCountManager.Instance?.AlldataReset();
+        if (PhaseResult.Instance != null)
+        {
+            PhaseResult.Instance.ResetForNewGame();
+        }
+        TransitionWithSE("Title");
+    }
     public void SwithToMain() => TransitionWithSE("Main");
     public void SwithToSetting() => TransitionWithSE("Setting");
 

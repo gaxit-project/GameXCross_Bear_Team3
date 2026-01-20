@@ -62,6 +62,9 @@ public class PauseManager : MonoBehaviour
 
     public void OnPausePerformed(UnityEngine.InputSystem.InputAction.CallbackContext context)
     {
+        // GameManagerが存在しない場合は何もしない（タイトルシーンなど）
+        if (GameManager.Instance == null) return;
+
         if (GameManager.Instance.CurrentState.Value != GameState.Result)
         {
             if (isPaused)
@@ -79,6 +82,14 @@ public class PauseManager : MonoBehaviour
     {
         SEmanager.Instance.Play("deside");
         Time.timeScale = 1f;
+
+        // DontDestroyOnLoadオブジェクトをリセット
+        KillCountManager.Instance?.AlldataReset();
+        if (PhaseResult.Instance != null)
+        {
+            PhaseResult.Instance.ResetForNewGame();
+        }
+
         UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
     }
 

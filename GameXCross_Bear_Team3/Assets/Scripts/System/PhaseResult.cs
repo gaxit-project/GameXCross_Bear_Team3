@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
@@ -9,7 +9,7 @@ public class PhaseResult : MonoBehaviour
     [SerializeField] private GameObject button;
     [SerializeField] private GameObject selectUIbutton;
 
-    [Header("�\��")]
+    [Header("表示")]
     [SerializeField] private TextMeshProUGUI day;
     [SerializeField] private TextMeshProUGUI kill;
     [SerializeField] private TextMeshProUGUI capture;
@@ -52,7 +52,7 @@ public class PhaseResult : MonoBehaviour
 
     private void resulttype()
     {
-        day.text = daycount + "���ڒ��ԕ�"; 
+        day.text = daycount + "日目報告"; 
         kill.text = "" + killcount;
         capture.text = "" + capturecount;
         damage.text = "" + damagecount;
@@ -64,5 +64,21 @@ public class PhaseResult : MonoBehaviour
         daycount++;
         GameManager.Instance.StartSetupPhase();
         EventSystem.current.SetSelectedGameObject(selectUIbutton);
+    }
+
+    /// <summary>
+    /// 新しいゲーム開始時に状態をリセットする
+    /// タイトルシーンへ戻る際に呼び出される
+    /// </summary>
+    public void ResetForNewGame()
+    {
+        daycount = 1;
+        killcount = 0;
+        capturecount = 0;
+        damagecount = 0;
+        if (phaseResult != null)
+        {
+            phaseResult.SetActive(false);
+        }
     }
 }
