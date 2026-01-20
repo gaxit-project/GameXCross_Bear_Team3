@@ -19,17 +19,19 @@ public class PhaseInfoUI : MonoBehaviour
         GameManager.Instance.CurrentState
             .Subscribe(state =>
             {
+                if (phaseText == null) return;
+                
                 switch (state)
                 {
                     case GameState.Setup:
                         phaseText.text = "準備フェーズ";
                         phaseText.color = Color.white; // 白くする
-                        timerText.gameObject.SetActive(true);
+                        if (timerText != null) timerText.gameObject.SetActive(true);
                         break;
                     case GameState.Battle:
                         phaseText.text = "襲撃開始！！";
                         phaseText.color = Color.red; // 赤くする
-                        timerText.gameObject.SetActive(false); // タイマーを消す
+                        if (timerText != null) timerText.gameObject.SetActive(false); // タイマーを消す
                         break;
                     case GameState.Result:
                         phaseText.text = "";
@@ -42,6 +44,7 @@ public class PhaseInfoUI : MonoBehaviour
         GameManager.Instance.TimeRemaining
             .Subscribe(time =>
             {
+                if (timerText == null) return;
                 timerText.text = $"残り時間: {time:F0}";
             })
             .AddTo(this);

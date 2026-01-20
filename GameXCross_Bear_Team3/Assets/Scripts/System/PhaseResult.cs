@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
@@ -9,60 +9,71 @@ public class PhaseResult : MonoBehaviour
     [SerializeField] private GameObject button;
     [SerializeField] private GameObject selectUIbutton;
 
-    [Header("�\��")]
+    [Header("表示")]
     [SerializeField] private TextMeshProUGUI day;
     [SerializeField] private TextMeshProUGUI kill;
     [SerializeField] private TextMeshProUGUI capture;
     [SerializeField] private TextMeshProUGUI damage;
 
-
-    private int daycount = 1;
-    private int killcount = 0;
-    private int capturecount = 0;
-    private int damagecount = 0;
-
-
+    // シーン内で使用するためのInstance（DontDestroyOnLoadは使わない）
     public static PhaseResult Instance { get; private set; }
 
     private void Awake()
     {
-        if (Instance == null)
+        // シーン内でのみ有効なシングルトン（DontDestroyOnLoadなし）
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        // シーン破棄時にInstanceをクリア
+        if (Instance == this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
+            Instance = null;
         }
     }
+
+    /// <summary>
+    /// 現在の日数を取得（GameManagerから参照）
+    /// </summary>
+    private int CurrentDay => GameManager.Instance != null ? GameManager.Instance.CurrentWave.Value : 1;
 
     public void Result()
     {
+        if (phaseResult == null)
+        {
+            Debug.LogWarning("PhaseResult: phaseResultパネルが設定されていません");
+            return;
+        }
         
         phaseResult.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(button);
+        if (button != null)
+        {
+            EventSystem.current.SetSelectedGameObject(button);
+        }
 
-        killcount = KillCountManager.Instance.GetKillCount(daycount);
-        capturecount = KillCountManager.Instance.GetCaptureCount(daycount);
-        damagecount = KillCountManager.Instance.GetDamageCount(daycount);
-        resulttype();
-
-    }
-
-    private void resulttype()
-    {
-        day.text = daycount + "���ڒ��ԕ�"; 
-        kill.text = "" + killcount;
-        capture.text = "" + capturecount;
-        damage.text = "" + damagecount;
+        int daycount = CurrentDay;
+        int killcount = KillCountManager.Instance != null ? KillCountManager.Instance.GetKillCount(daycount) : 0;
+        int capturecount = KillCountManager.Instance != null ? KillCountManager.Instance.GetCaptureCount(daycount) : 0;
+        int damagecount = KillCountManager.Instance != null ? KillCountManager.Instance.GetDamageCount(daycount) : 0;
+        
+        // 結果表示
+        if (day != null) day.text = daycount + "日目報告";
+        if (kill != null) kill.text = "" + killcount;
+        if (capture != null) capture.text = "" + capturecount;
+        if (damage != null) damage.text = "" + damagecount;
     }
 
     public void NextDay()
     {
-        phaseResult.SetActive(false);
-        daycount++;
-        GameManager.Instance.StartSetupPhase();
-        EventSystem.current.SetSelectedGameObject(selectUIbutton);
+        if (phaseResult != null)
+        {
+            phaseResult.SetActive(false);
+        }
+        GameManager.Instance?.StartSetupPhase();
+        if (selectUIbutton != null)
+        {
+            EventSystem.current.SetSelectedGameObject(selectUIbutton);
+        }
     }
 }

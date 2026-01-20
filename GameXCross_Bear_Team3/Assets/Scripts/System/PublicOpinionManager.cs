@@ -44,10 +44,15 @@ public class PublicOpinionManager : MonoBehaviour
 
     private void Update()
     {
+        // メインシーン以外では処理をスキップ
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Main")
+        {
+            return;
+        }
+
         // null チェックを追加
         if (faceImage == null || text == null)
         {
-            Debug.LogWarning("PublicOpinionManager: UI参照が設定されていません");
             return;
         }
 
