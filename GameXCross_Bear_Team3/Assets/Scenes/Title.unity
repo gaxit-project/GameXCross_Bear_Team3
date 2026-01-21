@@ -303,6 +303,8 @@ MonoBehaviour:
   setupBGM: {fileID: 8300000, guid: 97fcb538fdc2ff240bc6733fcbfa9439, type: 3}
   battleBGM: {fileID: 8300000, guid: de7f98d415c532241936e9fbd0e8ad72, type: 3}
   resultBGM: {fileID: 8300000, guid: 745f1824ac8f17c40adb6837f332d898, type: 3}
+  titleBGM: {fileID: 8300000, guid: 3a1f798373b6aae4da46f5533fda0484, type: 3}
+  titleSceneName: Title
   maxVolume: 0.5
   fadeDuration: 1
 --- !u!82 &203819901
@@ -316,7 +318,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 3a1f798373b6aae4da46f5533fda0484, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

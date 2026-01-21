@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UniRx;
 using DG.Tweening; // フェード処理にDOTweenを使用
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(AudioSource))]
 public class BGMManager : MonoBehaviour
@@ -9,21 +10,67 @@ public class BGMManager : MonoBehaviour
     [SerializeField] private AudioClip setupBGM;  // 準備フェーズ
     [SerializeField] private AudioClip battleBGM; // 襲撃フェーズ
     [SerializeField] private AudioClip resultBGM; // リザルト
+    [SerializeField] private AudioClip titleBGM;  // タイトル用BGMを追加
+
+    [Header("シーン名設定")]
+    [SerializeField] private string titleSceneName = "Title"; // タイトルシーン名
 
     [Header("音量・フェード設定")]
     [SerializeField] private float maxVolume = 0.5f;    // BGMの音量
     [SerializeField] private float fadeDuration = 1.0f; // 切り替えにかかる時間
 
     private AudioSource _audioSource;
+    private bool _isTitleScene = false;
 
     void Start()
     {
         _audioSource = GetComponent<AudioSource>();
-        _audioSource.loop = true;       // ループ再生にする
-        _audioSource.volume = 0f;       // 最初は無音からスタート
+        _audioSource.loop = true;
+        _audioSource.volume = 0f;
 
-        // GameManagerが初期化されるまで待機してからサブスクライブ
-        WaitForGameManagerAndSubscribe();
+        // 現在シーンがタイトルなら即再生
+        _isTitleScene = SceneManager.GetActiveScene().name == titleSceneName;
+        if (_isTitleScene)
+        {
+            PlayNewClip(titleBGM);
+        }
+        else
+        {
+            // GameManagerが初期化されるまで待機してからサブスクライブ
+            WaitForGameManagerAndSubscribe();
+        }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.activeSceneChanged += OnSceneChanged;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.activeSceneChanged -= OnSceneChanged;
+    }
+
+    private void OnSceneChanged(Scene prev, Scene next)
+    {
+        _isTitleScene = next.name == titleSceneName;
+
+        if (_isTitleScene)
+        {
+            PlayNewClip(titleBGM); // タイトルBGM再生
+        }
+        else
+        {
+            // タイトルから出たら状態監視を始める（未登録なら登録）
+            if (GameManager.Instance != null)
+            {
+                SwitchBGM(GameManager.Instance.CurrentState.Value);
+            }
+            else
+            {
+                WaitForGameManagerAndSubscribe();
+            }
+        }
     }
 
     private void WaitForGameManagerAndSubscribe()
@@ -35,7 +82,7 @@ public class BGMManager : MonoBehaviour
             .Subscribe(_ =>
             {
                 Debug.Log("BGMManager: GameManagerを検出しました。BGM監視を開始します。");
-                
+
                 GameManager.Instance.CurrentState
                     .DistinctUntilChanged()
                     .Subscribe(state => SwitchBGM(state))
@@ -47,6 +94,8 @@ public class BGMManager : MonoBehaviour
 
     private void SwitchBGM(GameState state)
     {
+        if (_isTitleScene) return; // タイトル中はステート再生しない
+
         Debug.Log($"BGMManager: 状態が {state} になりました。曲を選定します。");
 
         AudioClip nextClip = null;
@@ -79,30 +128,6 @@ public class BGMManager : MonoBehaviour
             PlayNewClip(nextClip);
         }
     }
-
-    /*private void PlayNextBGM(AudioClip nextClip)
-    {
-        // 1. フェードアウト
-        _audioSource.DOFade(0f, fadeDuration).OnComplete(() =>
-        {
-            if (nextClip != null)
-            {
-                // 2. BGMを入れ替えて再生
-                _audioSource.clip = nextClip;
-                _audioSource.Play();
-
-                // 3. フェードイン
-                _audioSource.DOFade(maxVolume, fadeDuration);
-            }
-            else
-            {
-                // 次の曲がない場合は停止
-                _audioSource.Stop();
-                _audioSource.clip = null;
-            }
-        });
-    }*/
-  
 
     private void PlayNewClip(AudioClip clip)
     {
