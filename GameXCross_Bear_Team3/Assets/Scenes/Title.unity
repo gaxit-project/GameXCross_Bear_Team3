@@ -287,6 +287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seSource: {fileID: 203819901}
+  seList: []
 --- !u!114 &203819900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,7 +316,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 3a1f798373b6aae4da46f5533fda0484, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
