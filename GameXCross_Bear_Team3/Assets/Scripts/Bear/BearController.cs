@@ -481,9 +481,11 @@ public class BearController : MonoBehaviour, TrapTarget
                     animator.SetTrigger("Attack");
                     Debug.Log("熊: 攻撃アニメーション開始");
                 }
-
-                // 直接攻撃を実行
-                OnAttackHit();
+                else
+                {
+                    // アニメーションが無効な場合のみ直接実行
+                    OnAttackHit();
+                }
 
                 transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
             })

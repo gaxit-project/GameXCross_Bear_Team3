@@ -51,13 +51,19 @@ public class PhaseResult : MonoBehaviour
             return;
         }
         
+        // 結果表示前に現在の日のデータを保存
+        int daycount = CurrentDay;
+        if (KillCountManager.Instance != null)
+        {
+            KillCountManager.Instance.DataSet(daycount);
+        }
+        
         phaseResult.SetActive(true);
         if (button != null)
         {
             EventSystem.current.SetSelectedGameObject(button);
         }
 
-        int daycount = CurrentDay;
         int killcount = KillCountManager.Instance != null ? KillCountManager.Instance.GetKillCount(daycount) : 0;
         int capturecount = KillCountManager.Instance != null ? KillCountManager.Instance.GetCaptureCount(daycount) : 0;
         int damagecount = KillCountManager.Instance != null ? KillCountManager.Instance.GetDamageCount(daycount) : 0;

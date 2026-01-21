@@ -221,9 +221,9 @@ public class GameManager : MonoBehaviour
 
         if (CurrentWave.Value < maxWaves)
         {
-            CurrentWave.Value++;
             CurrentState.Value = GameState.Result;
             PhaseResult.Instance.Result();
+            CurrentWave.Value++;
         }
         else
         {
