@@ -53,10 +53,10 @@ public class PhaseResult : MonoBehaviour
         
         // 結果表示前に現在の日のデータを保存
         int daycount = CurrentDay;
-        if (KillCountManager.Instance != null)
-        {
-            KillCountManager.Instance.DataSet(daycount);
-        }
+        //if (KillCountManager.Instance != null)
+        //{
+        //    KillCountManager.Instance.DataSet(daycount);
+        //}
         
         phaseResult.SetActive(true);
         if (button != null)

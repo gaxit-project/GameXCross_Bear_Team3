@@ -251,7 +251,7 @@ public class GameManager : MonoBehaviour
         CurrentState.Value = GameState.Result;
 
         // リザルト画面遷移前に現在のウェーブのデータを保存
-        KillCountManager.Instance?.DataSet(CurrentWave.Value);
+        //KillCountManager.Instance?.DataSet(CurrentWave.Value);(一つ前の工程ですでに済ませてます．)
 
         Observable.Timer(TimeSpan.FromSeconds(sceneTransitionDelay))
             .Subscribe(_ => SceneManager.LoadScene(resultSceneName))
