@@ -199,7 +199,10 @@ public class BearController : MonoBehaviour, TrapTarget
 
         Debug.Log($"{name}が罠にかかりました。");
         transform.DOShakeScale(0.5f, 0.5f);
-        
+
+        // 捕獲数をカウント
+        KillCountManager.Instance?.Capturecounterplus();
+
         // 捕獲時点で報酬を確定させ、Dead状態にする（二重支払い防止）
         TryProcessReward();
         _isDead = true;
@@ -212,8 +215,6 @@ public class BearController : MonoBehaviour, TrapTarget
         Debug.Log("熊を捕獲しました！");
         PublicOpinionManager.Instance.POchanging(0.5f);//世論値をプラス0.5する
 
-        // 捕獲数をカウント
-        KillCountManager.Instance?.Capturecounterplus();
     }
 
     // 自身を現在拘束している罠の参照を取得する
@@ -532,6 +533,9 @@ public class BearController : MonoBehaviour, TrapTarget
 
         TryProcessReward();
 
+        // 駆除数をカウント
+        KillCountManager.Instance?.KillCounterplus();
+
         // GameManagerに死亡を報告
         if (GameManager.Instance != null)
         {
@@ -540,9 +544,6 @@ public class BearController : MonoBehaviour, TrapTarget
         }
 
         PublicOpinionManager.Instance.POchanging(0.2f);//世論値を0.2上昇させる
-
-        // 駆除数をカウント
-        KillCountManager.Instance?.KillCounterplus();
 
         // アニメーション処理
         Vector3 currentRotation = transform.eulerAngles;

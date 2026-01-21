@@ -11,10 +11,10 @@ public class KillCountManager : MonoBehaviour
     [SerializeField] int damagecount = 0;  // 被害件数（家の破壊数）
 
     [Header("データ")]
-    [SerializeField] static int[] finalkill = new int[3];
-    [SerializeField] static int[] finalcapture = new int[3];
-    [SerializeField] static int[] finaldamage = new int[3];  // 被害件数（家の破壊数）
-    [SerializeField] static int[] finalPO = new int[3];
+    [SerializeField] public int[] finalkill = new int[3];
+    [SerializeField] public int[] finalcapture = new int[3];
+    [SerializeField] public int[] finaldamage = new int[3];  // 被害件数（家の破壊数）
+    [SerializeField] public int[] finalPO = new int[3];
 
     private void Awake()
     {
