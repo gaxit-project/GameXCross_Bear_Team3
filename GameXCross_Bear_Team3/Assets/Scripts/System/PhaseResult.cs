@@ -24,6 +24,11 @@ public class PhaseResult : MonoBehaviour
         Instance = this;
     }
 
+    void Start()
+    {
+        phaseResult.SetActive(false); 
+    }
+
     private void OnDestroy()
     {
         // シーン破棄時にInstanceをクリア
