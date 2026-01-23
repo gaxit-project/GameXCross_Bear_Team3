@@ -14,14 +14,19 @@ public class PhaseResult : MonoBehaviour
     [SerializeField] private TextMeshProUGUI kill;
     [SerializeField] private TextMeshProUGUI capture;
     [SerializeField] private TextMeshProUGUI damage;
+    [SerializeField] private TextMeshProUGUI PO;
+    [SerializeField] private TextMeshProUGUI money;
+
+    [Header("参照")]
+    [SerializeField] private money m;
 
     // シーン内で使用するためのInstance（DontDestroyOnLoadは使わない）
     public static PhaseResult Instance { get; private set; }
 
     private void Awake()
     {
-        // シーン内でのみ有効なシングルトン（DontDestroyOnLoadなし）
-        Instance = this;
+        if (Instance != null) Destroy(gameObject);
+        if (Instance == null) Instance = this;
     }
 
     void Start()
@@ -67,12 +72,15 @@ public class PhaseResult : MonoBehaviour
         int killcount = KillCountManager.Instance != null ? KillCountManager.Instance.GetKillCount(daycount) : 0;
         int capturecount = KillCountManager.Instance != null ? KillCountManager.Instance.GetCaptureCount(daycount) : 0;
         int damagecount = KillCountManager.Instance != null ? KillCountManager.Instance.GetDamageCount(daycount) : 0;
+        int POcount = PublicOpinionManager.Instance != null ? PublicOpinionManager.Instance.GetPOpercent() : 0;
         
         // 結果表示
-        if (day != null) day.text = daycount + "日目報告";
-        if (kill != null) kill.text = "" + killcount;
-        if (capture != null) capture.text = "" + capturecount;
-        if (damage != null) damage.text = "" + damagecount;
+        if (day != null) day.text = daycount + "日目の報告";
+        if (kill != null) kill.text = "駆除数：" + killcount + "体";
+        if (capture != null) capture.text = "捕獲数：" + capturecount + "体";
+        if (damage != null) damage.text = "被害件数：" + damagecount + "件";
+        if (PO != null) PO.text = "支持率：" + POcount + "％";
+        if (money != null) money.text = "資金：" + m.moneycount.ToString("N0") + "円";
     }
 
     public void NextDay()

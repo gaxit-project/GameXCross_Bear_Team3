@@ -18,15 +18,8 @@ public class KillCountManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance != null) Destroy(gameObject);
+        if (Instance == null) Instance = this;
     }
 
     #region カウント操作
