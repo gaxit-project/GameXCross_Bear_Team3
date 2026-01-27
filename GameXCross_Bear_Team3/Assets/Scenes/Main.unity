@@ -11485,6 +11485,7 @@ GameObject:
   - component: {fileID: 165155372}
   - component: {fileID: 165155374}
   - component: {fileID: 165155373}
+  - component: {fileID: 165155375}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -11755,6 +11756,19 @@ MonoBehaviour:
   PO: {fileID: 1225352092}
   money: {fileID: 893633452}
   m: {fileID: 1768288982}
+--- !u!114 &165155375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165155364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28fa162faa73b06488394668c7b451ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: 1
 --- !u!1 &166808094
 GameObject:
   m_ObjectHideFlags: 0
@@ -92009,7 +92023,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1476353519
 RectTransform:
   m_ObjectHideFlags: 0
@@ -138336,6 +138350,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 848974977}
     - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: PriceMoveManager
+      value: 
+      objectReference: {fileID: 165155375}
+    - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: necessaryPOvalue
       value: -0.5
       objectReference: {fileID: 0}
@@ -138375,6 +138393,10 @@ PrefabInstance:
       propertyPath: POchangevalue
       value: -0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: PriceMoveManager
+      value: 
+      objectReference: {fileID: 165155375}
     - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: necessaryPOvalue
       value: -1
@@ -138595,6 +138617,10 @@ PrefabInstance:
       propertyPath: POchangevalue
       value: -0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 8944863643874766821, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: PriceMoveManager
+      value: 
+      objectReference: {fileID: 165155375}
     - target: {fileID: 8944863643874766821, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: necessaryPOvalue
       value: -1
