@@ -368,7 +368,7 @@ MonoBehaviour:
   captureReward: 200000
   defeatReward: 100000
   detectionPoint: {fileID: 0}
-  enableAnimation: 0
+  enableAnimation: 1
   animator: {fileID: 975201996841167052}
 --- !u!195 &3062740189718313125
 NavMeshAgent:

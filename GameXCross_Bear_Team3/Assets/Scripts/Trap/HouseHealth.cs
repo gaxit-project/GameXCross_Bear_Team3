@@ -39,7 +39,7 @@ public class HouseHealth : MonoBehaviour
 
         CurrentHealth.Value -= amount;
 
-        transform.DOShakePosition(0.2f, 0.5f);
+        transform.DOShakePosition(0.2f, 2.0f).SetDelay(0.8f);
 
         if (IsDestroyed)
         {
@@ -61,7 +61,7 @@ public class HouseHealth : MonoBehaviour
         transform.DOKill();
         transform.SetParent(null);
 
-        var seq = DOTween.Sequence();
+        var seq = DOTween.Sequence().SetDelay(0.8f);
         // seq.Append(transform.DOShakePosition(1.0f, 0.5f));
         // seq.Append(transform.DOMoveY(-5.0f, 2.0f).SetRelative(true).SetEase(Ease.InBack));
         // seq.Join(transform.DOScale(Vector3.zero, 2.0f));

@@ -11505,7 +11505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc806a31c35b9f843baf11886f413003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bearPrefabAddress: Assets/Prefabs/kuma.prefab
+  bearPrefab: {fileID: 3986576584590739013, guid: 7c52a7987e71bb14ba5198cbb84d1639, type: 3}
   spawnPoints:
   - {fileID: 804136613}
   - {fileID: 1430926011}

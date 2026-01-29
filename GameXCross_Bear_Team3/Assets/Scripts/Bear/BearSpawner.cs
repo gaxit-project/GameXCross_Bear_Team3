@@ -7,7 +7,7 @@ using DG.Tweening;
 
 public class BearSpawner : MonoBehaviour
 {
-    [SerializeField] private string bearPrefabAddress = "Bear.prefab";
+    [SerializeField] private GameObject bearPrefab;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private float moveSpeed = 5.0f;
 
@@ -270,8 +270,7 @@ public class BearSpawner : MonoBehaviour
     {
         try
         {
-            var op = Addressables.InstantiateAsync(bearPrefabAddress, spawnPos, Quaternion.identity);
-            var bearObj = await op.Task;
+            GameObject bearObj = Instantiate(bearPrefab, spawnPos, Quaternion.identity);
 
             if (bearObj != null)
             {
@@ -291,5 +290,7 @@ public class BearSpawner : MonoBehaviour
         {
             GameManager.Instance.ReportEnemyDefeated();
         }
+
+        await Task.CompletedTask;
     }
 }
