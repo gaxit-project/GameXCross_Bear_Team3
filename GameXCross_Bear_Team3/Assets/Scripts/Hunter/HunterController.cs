@@ -90,11 +90,26 @@ public class HunterController : MonoBehaviour
     {
         Debug.Log($"ハンター({gameObject.name}): Initialize開始 - CurrentState = {GameManager.Instance?.CurrentState.Value}");
 
+        if (GameManager.Instance != null && GameManager.Instance.Balance != null)
+    {
+        var data = GameManager.Instance.Balance;
+        this.maxHealth = data.hunterMaxHealth;
+        this.moveSpeed = data.hunterMoveSpeed;
+        this.damage = data.hunterAttackDamage;
+        this.attackRange = data.hunterAttackRange;
+        this.attackInterval = data.hunterAttackInterval;
+        this.detectionRadius = data.hunterDetectionRadius;
+    }
+
         // エージェントが無効化されている場合は有効化
         if (_agent != null)
         {
             _agent.enabled = true;
+            _agent.speed = moveSpeed;
+            _agent.stoppingDistance = attackRange * 0.2f;
         }
+
+        _currentHealth = maxHealth;
 
         // 初期武器を装備
         EquipWeapon(WeaponType.Rifle);

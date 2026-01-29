@@ -219,6 +219,8 @@ public class BearSpawner : MonoBehaviour
 
     private async void SpawnWaveEnemies()
     {
+        var balance = GameManager.Instance.Balance;
+
         Debug.Log($"[Marker] バトル開始: {_spawnMarkers.Count}個のマーカーをフェードアウト");
         // マーカーをフェードアウトして削除
         foreach (var marker in _spawnMarkers)
@@ -235,9 +237,9 @@ public class BearSpawner : MonoBehaviour
         int currentWaveIndex = GameManager.Instance.CurrentWave.Value - 1;
 
         // 設定値が足りない場合は最後の設定を使う
-        int count = (currentWaveIndex < enemiesPerWave.Length)
-            ? enemiesPerWave[currentWaveIndex]
-            : enemiesPerWave[enemiesPerWave.Length - 1];
+        int count = (currentWaveIndex < balance.enemiesPerWave.Length)
+            ? balance.enemiesPerWave[currentWaveIndex]
+            : balance.enemiesPerWave[balance.enemiesPerWave.Length - 1];
 
         Debug.Log($"Spawner: ウェーブ{currentWaveIndex + 1}開始。{count}体のクマを生成します。");
 

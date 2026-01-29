@@ -86,6 +86,10 @@ public class PauseManager : MonoBehaviour
         // DontDestroyOnLoadオブジェクトをリセット
         KillCountManager.Instance?.AlldataReset();
 
+        // ポーズ状態をリセット
+        isPaused = false;
+        if (pausePanel != null) pausePanel.SetActive(false);
+
         UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
     }
 

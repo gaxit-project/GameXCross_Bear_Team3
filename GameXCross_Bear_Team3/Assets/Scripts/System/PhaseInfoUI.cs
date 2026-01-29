@@ -9,6 +9,12 @@ public class PhaseInfoUI : MonoBehaviour
 
     void Start()
     {
+        // UIが見つからない場合は自動取得
+        if (phaseText == null || timerText == null)
+        {
+            FindUIComponents();
+        }
+
         if (GameManager.Instance == null)
         {
             Debug.LogError("【エラー】GameManagerが見つかりません！HierarchyにGameManagerがあるか確認してください。");
@@ -56,5 +62,38 @@ public class PhaseInfoUI : MonoBehaviour
                 Debug.Log($"UI更新: Wave {wave}");
             })
             .AddTo(this);
+    }
+
+    /// <summary>
+    /// UIコンポーネントを自動取得
+    /// </summary>
+    private void FindUIComponents()
+    {
+        Debug.LogWarning("PhaseInfoUI: UIコンポーネントが見つかりません。自動取得を試みます。");
+
+        // 同じCanvasの子要素から検索
+        if (phaseText == null)
+        {
+            phaseText = GetComponentInChildren<TextMeshProUGUI>();
+            if (phaseText != null)
+            {
+                Debug.Log($"phaseText を自動取得しました: {phaseText.gameObject.name}");
+            }
+        }
+
+        if (timerText == null)
+        {
+            var allTexts = GetComponentsInChildren<TextMeshProUGUI>();
+            if (allTexts.Length > 1)
+            {
+                timerText = allTexts[1]; // 2番目のテキストを取得
+                Debug.Log($"timerText を自動取得しました: {timerText.gameObject.name}");
+            }
+            else if (allTexts.Length == 1)
+            {
+                // 1つしかない場合は警告のみ
+                Debug.LogWarning("PhaseInfoUI: timerTextが見つかりません。");
+            }
+        }
     }
 }

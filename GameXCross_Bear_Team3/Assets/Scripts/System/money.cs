@@ -12,7 +12,7 @@ public class money : MonoBehaviour
 
     private void Awake()
     {
-        // ‚±‚ê‚ª‚È‚¢‚Æ‘¼‚©‚çŒÄ‚×‚Ü‚¹‚ñI
+        // ï¿½ï¿½ï¿½ê‚ªï¿½È‚ï¿½ï¿½Æ‘ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚×‚Ü‚ï¿½ï¿½ï¿½I
         if (Instance == null)
         {
             Instance = this;
@@ -24,6 +24,7 @@ public class money : MonoBehaviour
     }
     void Start()
     {
+        moneycount = GameManager.Instance.Balance.initialMoney;
         Text.text = moneycount.ToString("N0");
     }
 

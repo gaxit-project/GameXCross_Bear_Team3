@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameBalanceData balanceData;
     public GameBalanceData Balance => balanceData;
 
+
     // 公開プロパティ
     public ReactiveProperty<GameState> CurrentState { get; private set; }
         = new ReactiveProperty<GameState>(GameState.Setup);

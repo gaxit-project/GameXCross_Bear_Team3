@@ -63,10 +63,19 @@ public class BearController : MonoBehaviour, TrapTarget
     public void Initialize()
     {
         var balance = GameManager.Instance.Balance;
-        attackRange = Mathf.Max(0.01f, balance.bearAttackRange); // 負値対策
+        this.maxHealth = balance.bearMaxHealth;
+        this.attackDamage = balance.bearAttackDamage;
+        this.attackInterval = balance.bearAttackInterval;
+        this.attackRange = balance.bearAttackRange;
+        this.detectionRadius = balance.bearDetectionRadius;
+        this.captureReward = balance.bearCaptureReward;
+        this.defeatReward = balance.bearDefeatReward;
+
+        _currentHealth = maxHealth;
 
         // NavMeshAgent が手前で止まらないよう調整
         _agent.enabled = true;
+        _agent.speed = balance.bearMoveSpeed;
         _agent.stoppingDistance = 0f;                 // 攻撃対象へ食い込む
         _agent.autoBraking = false;                   // 手前で減速しない
         _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance; // 回避を弱める

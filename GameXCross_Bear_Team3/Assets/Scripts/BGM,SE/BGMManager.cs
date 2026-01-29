@@ -96,6 +96,18 @@ public class BGMManager : MonoBehaviour
     {
         if (_isTitleScene) return; // タイトル中はステート再生しない
 
+        // _audioSourceがnullの場合は取得
+        if (_audioSource == null)
+        {
+            _audioSource = GetComponent<AudioSource>();
+        }
+
+        if (_audioSource == null)
+        {
+            Debug.LogError("BGMManager: AudioSourceが見つかりません。");
+            return;
+        }
+
         Debug.Log($"BGMManager: 状態が {state} になりました。曲を選定します。");
 
         AudioClip nextClip = null;
@@ -131,6 +143,18 @@ public class BGMManager : MonoBehaviour
 
     private void PlayNewClip(AudioClip clip)
     {
+        // _audioSourceがnullの場合は取得
+        if (_audioSource == null)
+        {
+            _audioSource = GetComponent<AudioSource>();
+        }
+
+        if (_audioSource == null)
+        {
+            Debug.LogError("BGMManager: AudioSourceが見つかりません。");
+            return;
+        }
+
         if (clip != null)
         {
             Debug.Log($"BGMManager: 再生開始 -> {clip.name}");

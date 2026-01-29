@@ -11,21 +11,24 @@ public class HouseHealth : MonoBehaviour
     [SerializeField] private float shakeDuration = 1.5f; // 揺れの時間
     [SerializeField] private float ruinsYPosition = 3f; // 廃墟を配置するY座標
     
-    public FloatReactiveProperty CurrentHp { get; private set; }
+    public FloatReactiveProperty CurrentHealth { get; private set; }
 
-    public bool IsDestroyed => CurrentHp.Value <= 0f;
+    public bool IsDestroyed => CurrentHealth.Value <= 0f;
 
     public Collider HouseCollider { get; private set; }
 
     private void Awake()
     {
-        CurrentHp = new FloatReactiveProperty(maxHp);
-
         HouseCollider = GetComponent<Collider>();
     }
 
     private void Start()
     {
+        if(GameManager.Instance != null && GameManager.Instance.Balance != null)
+        {
+            this.maxHp = GameManager.Instance.Balance.houseMaxHp;
+        }
+        CurrentHealth = new FloatReactiveProperty(maxHp);
         // GameManagerに家を登録
         GameManager.Instance.RegisterHouse(this);
     }
@@ -34,7 +37,7 @@ public class HouseHealth : MonoBehaviour
     {
         if(IsDestroyed) return;
 
-        CurrentHp.Value -= amount;
+        CurrentHealth.Value -= amount;
 
         transform.DOShakePosition(0.2f, 0.5f);
 

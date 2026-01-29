@@ -34,4 +34,25 @@ public class GameBalanceData : ScriptableObject
     [Header("--- ギミック (電気柵) ---")]
     public float fenceDamage = 10f;
     public float fenceParalysisDuration = 3.0f;
+
+    [Header("--- 金額設定 ---")]
+    [Tooltip("初期所持金")]
+    public int initialMoney = 1000000;
+
+    [Tooltip("クマ討伐時の報酬")]
+    public int bearDefeatReward = 30000;
+    
+    [Tooltip("クマ捕獲時の報酬")]
+    public int bearCaptureReward = 45000;
+
+    /*
+    [Tooltip("ハンターの雇用コスト")]
+    public int hunterCost = 300000;
+
+    [Tooltip("ケージの建設コスト")]
+    public int cageCost = 100000;
+    
+    [Tooltip("電気柵の建設コスト")]
+    public int fenceCost = 50000;
+    */
 }
