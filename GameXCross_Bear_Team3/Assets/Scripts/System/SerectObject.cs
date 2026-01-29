@@ -19,6 +19,11 @@ public class SerectObject : MonoBehaviour
     [SerializeField, Header("ポインター")]
     public PointerContoroller p;
 
+    [SerializeField, Header("PriceMoveManager")]
+    public PriceMoveManager PriceMoveManager;
+
+    public int currentcost;
+
     public Image Image;
     private Color canpush;
     private Color cantpush;
@@ -35,15 +40,17 @@ public class SerectObject : MonoBehaviour
 
     private void Update()
     {
-        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue)&&money.Instance.moneycount >= cost)
+        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue)&&money.Instance.moneycount >= currentcost)
             Image.color = canpush;
-        else 
+        else
             Image.color = cantpush;
+        currentcost = PriceMoveManager.PriceMove(cost);
+        Text.text = currentcost.ToString("N0");
     }
 
     public void Onclick()
     {
-        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue) && money.Instance.moneycount >= cost)
+        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue) && money.Instance.moneycount >= currentcost)
         {
             changeUI();
             SEmanager.Instance.Play("deside");
@@ -61,7 +68,7 @@ public class SerectObject : MonoBehaviour
         pointer.SetActive(true);
         ghost.SetActive(true);
         p.obj = obj;
-        p.cost = cost;
+        p.cost = currentcost;//今の状態では設置中に価格が変動した際に決定時の価格で設置できてしまう．
         p.ghost = ghost;
         p.POchangevalue = POchangevalue;
         p.necessaryPOvalue = necessaryPOvalue;
