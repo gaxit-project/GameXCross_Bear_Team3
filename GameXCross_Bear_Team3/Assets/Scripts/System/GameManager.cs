@@ -20,9 +20,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string resultSceneName = "Result";
     [SerializeField] private float sceneTransitionDelay = 2.0f;
 
-    [Header("ゲームバランス")]
-    [SerializeField] private float setupTime = 30.0f;
-    [SerializeField] private int maxWaves = 3;
+    // [Header("ゲームバランス")]
+    public int SetupTime => Balance != null ? Balance.setupTime : 20;
+    public int MaxWaves => Balance != null ? Balance.maxWaves : 3;
 
     [Header("参照")]
     [SerializeField] private money moneyScript;
@@ -35,13 +35,10 @@ public class GameManager : MonoBehaviour
 
     // 公開プロパティ
     public ReactiveProperty<GameState> CurrentState { get; private set; }
-        = new ReactiveProperty<GameState>(GameState.Setup);
 
-    public ReactiveProperty<float> TimeRemaining { get; private set; }
-        = new ReactiveProperty<float>();
+    public ReactiveProperty<int> TimeRemaining { get; private set; }
 
     public ReactiveProperty<int> CurrentWave { get; private set; }
-        = new ReactiveProperty<int>(1);
 
     // シーン内の実体を管理するコレクション
     private readonly ReactiveCollection<BearController> _activeEnemies = new();
@@ -57,6 +54,20 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null) Destroy(gameObject);
         if (Instance == null) Instance = this;
+
+        if (Balance == null)
+    {
+        Debug.LogError("Balance が null です！");
+    }
+    else
+    {
+        Debug.Log($"Balance はセットされています。アセット内の値: {Balance.setupTime}");
+    }
+
+        TimeRemaining = new ReactiveProperty<int>(SetupTime);
+        CurrentState = new ReactiveProperty<GameState>(GameState.Setup);
+        CurrentWave = new ReactiveProperty<int>(1);
+
 
         InitializeObservables();
 
@@ -75,11 +86,11 @@ public class GameManager : MonoBehaviour
             pointerController = FindFirstObjectByType<PointerContoroller>();
         }
 
-        if (balanceData != null)
+        /* if (balanceData != null)
         {
-            setupTime = balanceData.setupTime;
-            maxWaves = balanceData.maxWaves;
-        }
+            setupTime = Balance.setupTime;
+            maxWaves = Balance.maxWaves;
+        } */
 
         // ゲーム開始時に統計データをリセット
         KillCountManager.Instance?.AlldataReset();
@@ -122,7 +133,7 @@ public class GameManager : MonoBehaviour
     public void StartSetupPhase()
     {
         CurrentState.Value = GameState.Setup;
-        TimeRemaining.Value = setupTime;
+        TimeRemaining.Value = SetupTime;
         pointerController.UIsettrue();
 
         // 報酬の支払い
@@ -220,7 +231,7 @@ public class GameManager : MonoBehaviour
         KillCountManager.Instance?.DataSet(CurrentWave.Value);
         KillCountManager.Instance?.CountReset();
 
-        if (CurrentWave.Value < maxWaves)
+        if (CurrentWave.Value < MaxWaves)
         {
             CurrentState.Value = GameState.Result;
             PhaseResult.Instance.Result();

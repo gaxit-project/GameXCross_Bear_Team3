@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+﻿/* #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -96,4 +96,4 @@ public class GameBalanceWindow : EditorWindow
         Debug.Log($"[GameBalanceWindow] データを作成しました: {AssetPath}");
     }
 }
-#endif
+#endif */

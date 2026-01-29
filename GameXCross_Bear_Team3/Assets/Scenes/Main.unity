@@ -11590,11 +11590,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resultSceneName: Result
   sceneTransitionDelay: 2
-  setupTime: 60
-  maxWaves: 3
   moneyScript: {fileID: 0}
   pointerController: {fileID: 0}
-  balanceData: {fileID: 11400000, guid: 87d94968c11bb904f9112be71ea2bfc7, type: 2}
+  balanceData: {fileID: 11400000, guid: e40b2fa916c541c49a3421ad5295d742, type: 2}
 --- !u!114 &165155370
 MonoBehaviour:
   m_ObjectHideFlags: 0

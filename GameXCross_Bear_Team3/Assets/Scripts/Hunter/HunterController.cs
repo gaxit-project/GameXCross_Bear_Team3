@@ -165,6 +165,13 @@ public class HunterController : MonoBehaviour
                             ObserveSurroundings();
                         }
                     }
+                    else if( state == GameState.Result)
+                    {
+                        Debug.Log("ハンター: リザルトフェーズ。行動を停止します。");
+                        StopMovement();
+                        StopShooting();
+                        CleanupObserveStream();
+                    }
                 })
                 .AddTo(this);
         }

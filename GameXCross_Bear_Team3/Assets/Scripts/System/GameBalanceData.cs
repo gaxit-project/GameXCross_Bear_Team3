@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "GameBalanceData", menuName = "Game/GameBalanceData")]
+// [CreateAssetMenu(fileName = "GameBalanceData", menuName = "Game/GameBalanceData")]
 public class GameBalanceData : ScriptableObject
 {
     [Header("--- ゲーム全体設定 ---")]
     [Tooltip("準備時間の長さ（秒）")]
-    public float setupTime = 30.0f;
+    public int setupTime = 30;
     [Tooltip("最大ウェーブ数")]
     public int maxWaves = 3;
 
