@@ -12,22 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c424d5e7729791468ac89794c57174f, type: 3}
   m_Name: GameBalance
   m_EditorClassIdentifier: 
-  setupTime: 30
+  setupTime: 10
   maxWaves: 3
   enemiesPerWave: 010000000200000004000000
   hunterMaxHealth: 50
   hunterMoveSpeed: 10
-  hunterAttackDamage: 20
+  hunterAttackDamage: 5
   hunterAttackRange: 100
   hunterAttackInterval: 1.5
   hunterDetectionRadius: 300
   bearMaxHealth: 100
   bearMoveSpeed: 10
   bearAttackDamage: 20
-  bearAttackInterval: 2
-  bearAttackRange: 10
+  bearAttackInterval: 3
+  bearHouseAttackRange: 5
+  bearHunterAttackRange: 15
   bearDetectionRadius: 200
-  houseMaxHp: 100
+  houseMaxHp: 200
   fenceDamage: 10
   fenceParalysisDuration: 3
   initialMoney: 1000000

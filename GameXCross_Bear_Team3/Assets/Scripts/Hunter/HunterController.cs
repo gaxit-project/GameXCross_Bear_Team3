@@ -438,7 +438,7 @@ public class HunterController : MonoBehaviour
 
     private void StopMovement()
     {
-        Debug.Log($"ハンター({gameObject.name}): StopMovement呼び出し");
+        // Debug.Log($"ハンター({gameObject.name}): StopMovement呼び出し");
         if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
         {
             _agent.isStopped = true;

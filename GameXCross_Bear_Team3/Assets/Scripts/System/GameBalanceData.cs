@@ -25,7 +25,8 @@ public class GameBalanceData : ScriptableObject
     public float bearMoveSpeed = 5.0f;
     public float bearAttackDamage = 20f;
     public float bearAttackInterval = 1.0f;
-    public float bearAttackRange = 5.0f;
+    public float bearHouseAttackRange = 5.0f;
+    public float bearHunterAttackRange = 10.0f;
     public float bearDetectionRadius = 15.0f;
 
     [Header("--- 環境 (家・設備) ---")]

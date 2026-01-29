@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using NUnit.Framework;
 using System;
 using System.Linq;
 using UniRx;
@@ -14,7 +15,8 @@ public class BearController : MonoBehaviour, TrapTarget
     [SerializeField] private float maxHealth = 100f; // HP初期値
     [SerializeField] private float attackDamage = 20f;
     [SerializeField] private float attackInterval = 1.0f;
-    [SerializeField] private float attackRange = 15.0f;
+    [SerializeField] private float houseAttackRange = 15.0f;
+    [SerializeField] private float hunterAttackRange = 15.0f;
     [SerializeField] private float detectionRadius = 20.0f;
     [SerializeField] private int captureReward = 30000; // 捕獲時の報酬
     [SerializeField] private int defeatReward = 30000;  // 倒した時の報酬
@@ -45,12 +47,14 @@ public class BearController : MonoBehaviour, TrapTarget
 
     public bool IsParalyzed => _isTrapped; // 麻痺・行動不能状態であるかを判定する
 
+    private float _lastAttackTime = -999f; // 最後に攻撃した時間
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
         _rb = GetComponent<Rigidbody>();
 
-        _agent.stoppingDistance = attackRange;
+        _agent.stoppingDistance = houseAttackRange;
         _currentHealth = maxHealth; // 初期化
 
         if (detectionPoint == null) detectionPoint = transform;
@@ -66,7 +70,8 @@ public class BearController : MonoBehaviour, TrapTarget
         this.maxHealth = balance.bearMaxHealth;
         this.attackDamage = balance.bearAttackDamage;
         this.attackInterval = balance.bearAttackInterval;
-        this.attackRange = balance.bearAttackRange;
+        this.houseAttackRange = balance.bearHouseAttackRange;
+        this.hunterAttackRange = balance.bearHunterAttackRange;
         this.detectionRadius = balance.bearDetectionRadius;
         this.captureReward = balance.bearCaptureReward;
         this.defeatReward = balance.bearDefeatReward;
@@ -154,11 +159,12 @@ public class BearController : MonoBehaviour, TrapTarget
                 .SetLink(gameObject);
 
         // アニメーション
-        if (animator != null && enableAnimation)
+        /* if (animator != null && enableAnimation)
         {
             animator.SetTrigger("Damage"); // ダメージモーション等を再生
             animator.speed = 0; // 一時的にアニメーションを止める場合
-        }
+            Debug.Log("熊: Damageアニメーション再生");
+        }*/
 
         // 4. 指定時間後に復帰
         Observable.Timer(TimeSpan.FromSeconds(duration))
@@ -239,7 +245,7 @@ public class BearController : MonoBehaviour, TrapTarget
         {
             float dist = Vector3.Distance(transform.position, _targetHunter.transform.position);
 
-            if (dist <= attackRange)
+            if (dist <= hunterAttackRange)
             {
                 Debug.Log($"熊: ハンターに {attackDamage} ダメージを与えた！");
                 _targetHunter.TakeDamage(attackDamage);
@@ -263,7 +269,7 @@ public class BearController : MonoBehaviour, TrapTarget
             );
 
             // 停止距離(attackRange)よりも少し広い判定（遊び）を持たせる
-            if (dist <= attackRange)
+            if (dist <= houseAttackRange)
             {
                 Debug.Log($"熊: 家への攻撃ヒット！");
                 _targetHouse.TakeDamage(attackDamage);
@@ -364,22 +370,48 @@ public class BearController : MonoBehaviour, TrapTarget
         float dist = Vector3.Distance(transform.position, _targetHunter.transform.position);
 
         // 常に追従し続ける（攻撃中でも止めない）
-        _agent.isStopped = false;
-        _agent.SetDestination(_targetHunter.transform.position);
+        // _agent.isStopped = false;
+        // _agent.SetDestination(_targetHunter.transform.position);
 
-        if (dist <= attackRange)
+        if (animator && enableAnimation)
         {
+            bool isMoving = dist > hunterAttackRange || _agent.velocity.sqrMagnitude > 0.1f;
+            animator.SetBool("IsMoving", isMoving);
+            //Debug.Log("熊: 移動アニメーション再生");
+        }
+
+        if (dist <= hunterAttackRange)
+        {
+            if(!_agent.isStopped)
+            {
+                _agent.isStopped = true;
+                _agent.velocity = Vector3.zero;
+            }
+
+            if (animator && enableAnimation)
+            {
+                animator.SetBool("IsMoving", false);
+            }
+
+            var lookTarget = _targetHunter.transform.position;
+            lookTarget.y = transform.position.y;
+            transform.LookAt(lookTarget);
+
             StartAttacking();
-            var look = _targetHunter.transform.position;
-            look.y = transform.position.y;
-            transform.LookAt(look);
         }
         else
         {
             // 追跡モード
             StopAttacking();
-            _agent.isStopped = false;
+
+            if(_agent.isStopped) _agent.isStopped = false;
             _agent.SetDestination(_targetHunter.transform.position);
+
+            if (animator && enableAnimation)
+            {
+                bool isMoving = _agent.velocity.sqrMagnitude > 0.1f;
+                animator.SetBool("IsMoving", isMoving);
+            }
         }
     }
 
@@ -401,9 +433,13 @@ public class BearController : MonoBehaviour, TrapTarget
             new Vector3(closestPointOnHouse.x, 0, closestPointOnHouse.z)
         );
 
-        if (animator && enableAnimation) animator.SetBool("IsMoving", horizontalDist > 5.0f);
+        if (animator && enableAnimation)
+        {
+            animator.SetBool("IsMoving", horizontalDist > houseAttackRange);
+            // Debug.Log("熊: 移動アニメーション再生");
+        }
 
-        float stopThreshold = attackRange;
+        float stopThreshold = houseAttackRange;
 
         if (horizontalDist <= stopThreshold)
         {
@@ -431,7 +467,11 @@ public class BearController : MonoBehaviour, TrapTarget
             _agent.updateRotation = true;
             _agent.SetDestination(closestPointOnHouse);
 
-            if (animator && enableAnimation) animator.SetBool("IsMoving", true);
+            if (animator && enableAnimation)
+            {
+                animator.SetBool("IsMoving", true);
+                // Debug.Log("熊: 移動アニメーション再生");
+            }    
         }
     }
 
@@ -488,8 +528,11 @@ public class BearController : MonoBehaviour, TrapTarget
             {
                 if (animator != null && enableAnimation)
                 {
+                    if (Time.time < _lastAttackTime + attackInterval) return;
+                    _lastAttackTime = Time.time;
                     animator.SetTrigger("Attack");
-                    Debug.Log("熊: 攻撃アニメーション開始");
+                    OnAttackHit();
+                    Debug.Log("熊: 攻撃アニメーション再生");
                 }
                 else
                 {
@@ -497,7 +540,7 @@ public class BearController : MonoBehaviour, TrapTarget
                     OnAttackHit();
                 }
 
-                transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
+                // transform.DOPunchScale(Vector3.one * 0.2f, 0.2f);
             })
             .AddTo(this);
     }
@@ -536,8 +579,11 @@ public class BearController : MonoBehaviour, TrapTarget
         _isDead = true;
         _agent.enabled = false;
         StopAttacking();
-        if (animator && enableAnimation) animator.SetTrigger("Die");
-
+        if (animator && enableAnimation) 
+        {
+            // animator.SetTrigger("Die");
+            Debug.Log("熊: 死亡アニメーション再生");
+        }
         GetComponent<Collider>().enabled = false;
 
         TryProcessReward();
