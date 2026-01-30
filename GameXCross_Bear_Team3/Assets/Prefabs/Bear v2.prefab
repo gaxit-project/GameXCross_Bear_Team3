@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7800301833328233798}
   m_Layer: 0
   m_Name: Bear v2
-  m_TagString: Untagged
+  m_TagString: Bear
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

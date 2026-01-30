@@ -33,6 +33,11 @@ public class HunterController : MonoBehaviour
     [SerializeField] private float rifleAttackInterval = 1.5f;
     [SerializeField] private float revolverAttackInterval = 0.8f;
 
+    [Header("弾の設定")]
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private float bulletSpeed = 20f;
+
     [Header("パトロール設定")]
     [SerializeField] private float patrolRadius = 20f;
     [SerializeField] private float waitTimeAtPatrolPoint = 3.0f; // パトロール地点での待機時間
@@ -252,7 +257,7 @@ public class HunterController : MonoBehaviour
                             animator.SetBool("IsWalking", false);
                         }
 
-                        // ★ 武器がある場合のみ射撃開始
+                        // 武器がある場合のみ射撃開始
                         if (_equippedWeapon != WeaponType.None && _attackStream == null)
                         {
                             StartShooting();
@@ -260,7 +265,7 @@ public class HunterController : MonoBehaviour
 
                         // クマが極めて近い場合のみ後退（条件を厳しくする）
                         // 3.0f 以下の時だけ後退
-                        if (dist < 3.0f)  // attackRange * 0.3f から 3.0f に変更
+                        if (dist < 3.0f)
                         {
                             Vector3 awayDirection = (transform.position - _targetBear.transform.position).normalized;
                             Vector3 backupTarget = transform.position + awayDirection * 2.0f;  // 後退距離を減らす
@@ -347,6 +352,17 @@ public class HunterController : MonoBehaviour
     {
         if (!isDebugMode && animator) animator.SetTrigger("Fire");
         if (muzzleFlash) muzzleFlash.Play();
+
+        // 弾を生成して発射
+        if(bulletPrefab != null && firePoint != null && _targetBear != null)
+        {
+            GameObject bulletObj = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+            HunterBullet bullet = bulletObj.GetComponent<HunterBullet>();
+            if (bullet != null)
+            {
+                bullet.Launch(_targetBear.transform, bulletSpeed);
+            }
+        }
 
         if (_targetBear != null)
         {
