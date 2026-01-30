@@ -142,6 +142,8 @@ public class BearController : MonoBehaviour, TrapTarget
 
         Debug.Log("熊: 感電しました！麻痺状態になります。");
 
+        animator.SetBool("IsMoving", false);
+
         // 1. ダメージ処理
         TakeDamage(damage, null);
         if (_isDead) return;
@@ -186,7 +188,11 @@ public class BearController : MonoBehaviour, TrapTarget
         Debug.Log("熊: 麻痺から回復しました。");
         _isTrapped = false;
 
-        if (animator != null && enableAnimation) animator.speed = 1.0f;
+        if (animator != null && enableAnimation)
+        {
+            animator.speed = 1.0f;
+            animator.SetBool("IsMoving", true);
+        }
 
         if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
         {
@@ -345,7 +351,7 @@ public class BearController : MonoBehaviour, TrapTarget
     }
 
     /// <summary>
-    /// 周囲のハンターを検出する（シンプル版）
+    /// 周囲のハンターを検出する
     /// </summary>
     private void DetectNearestHunter()
     {
