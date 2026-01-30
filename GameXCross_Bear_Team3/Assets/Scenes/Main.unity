@@ -11725,13 +11725,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b2242da63f6eef4ba9182de8920b006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  killcount: 0
-  capturecount: 0
-  damagecount: 0
-  finalkill: 000000000000000000000000
-  finalcapture: 000000000000000000000000
-  finaldamage: 000000000000000000000000
-  finalPO: 000000000000000000000000
 --- !u!114 &165155374
 MonoBehaviour:
   m_ObjectHideFlags: 0

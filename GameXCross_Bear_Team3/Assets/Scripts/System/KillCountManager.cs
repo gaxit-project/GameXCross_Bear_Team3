@@ -6,46 +6,44 @@ public class KillCountManager : MonoBehaviour
 {
     public static KillCountManager Instance { get; private set; }
 
-    [SerializeField] int killcount = 0;
-    [SerializeField] int capturecount = 0;
-    [SerializeField] int damagecount = 0;  // 被害件数（家の破壊数）
+    private static int killcount = 0;
+    private static int capturecount = 0;
+    private static int damagecount = 0;  // 被害件数（家の破壊数）
 
     [Header("データ")]
-    [SerializeField] public int[] finalkill = new int[3];
-    [SerializeField] public int[] finalcapture = new int[3];
-    [SerializeField] public int[] finaldamage = new int[3];  // 被害件数（家の破壊数）
-    [SerializeField] public int[] finalPO = new int[3];
+    public static int[] finalkill = new int[3];
+    public static int[] finalcapture = new int[3];
+    public static int[] finaldamage = new int[3];  // 被害件数（家の破壊数）
+    public static int[] finalPO = new int[3];
 
     private void Awake()
     {
-        if (Instance != null) Destroy(gameObject);
-        if (Instance == null) Instance = this;
+        // if (Instance != null) Destroy(gameObject);
+        if (Instance == null) 
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     #region カウント操作
     /// <summary>
     /// 駆除数を1増やす
     /// </summary>
-    public void KillCounterplus()
-    {
-        killcount++;
-    }
+    public void KillCounterplus() => killcount++;
 
     /// <summary>
     /// 被害件数（家の破壊数）を1増やす
     /// </summary>
-    public void DamageCounterplus()
-    {
-        damagecount++;
-    }
+    public void DamageCounterplus() => damagecount++;
 
     /// <summary>
     /// 捕獲数を1増やす
     /// </summary>
-    public void Capturecounterplus()
-    {
-        capturecount++;
-    }
+    public void Capturecounterplus() => capturecount++;
     #endregion
 
     #region データリセット
