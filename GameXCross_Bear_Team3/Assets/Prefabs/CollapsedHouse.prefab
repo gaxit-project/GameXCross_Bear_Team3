@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6015782576510116279}
   - component: {fileID: 7125603199597437692}
   - component: {fileID: 3750971047866853771}
+  - component: {fileID: 8585925319594054354}
   m_Layer: 0
   m_Name: CollapsedHouse
   m_TagString: Untagged
@@ -112,3 +113,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 25.541958, y: 10.261646, z: 25.126701}
   m_Center: {x: -0.35270214, y: -0.19205737, z: 0.3502121}
+--- !u!208 &8585925319594054354
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4130877111849740007}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 12.771001, y: 5.131, z: 12.563001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.35300002, y: -0.192, z: 0.35000002}
+  m_TimeToStationary: 0.5

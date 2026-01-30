@@ -38167,7 +38167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &624825558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54096,27 +54096,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 73144b56fade3c94595900056728ed9a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 67.95
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 73144b56fade3c94595900056728ed9a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 67.95
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 73144b56fade3c94595900056728ed9a, type: 3}
       propertyPath: m_LocalScale.z
-      value: 67.95
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 73144b56fade3c94595900056728ed9a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 902
+      value: 900
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 73144b56fade3c94595900056728ed9a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.36000034
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 73144b56fade3c94595900056728ed9a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 503.1319
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 73144b56fade3c94595900056728ed9a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -54153,6 +54153,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 73144b56fade3c94595900056728ed9a, type: 3}
       propertyPath: m_Name
       value: Gerden
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 73144b56fade3c94595900056728ed9a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -110068,7 +110072,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1713470426
 MonoBehaviour:
   m_ObjectHideFlags: 0
