@@ -8,7 +8,7 @@ public class CageTrap : MonoBehaviour
     private void Start()
     {
         this.OnTriggerEnterAsObservable()
-            .Select(other => other.GetComponent<TrapTarget>())
+            .Select(other => other.GetComponentInParent<TrapTarget>())
             .Where(target => target != null)
             .Subscribe(target =>
             {

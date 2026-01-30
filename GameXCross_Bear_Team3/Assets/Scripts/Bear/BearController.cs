@@ -96,7 +96,7 @@ public class BearController : MonoBehaviour, TrapTarget
         // GameManagerに自分を登録する
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.RegisterEnemy();
+            GameManager.Instance.RegisterEnemy(this);
         }
 
         FindNextTarget();
@@ -224,7 +224,7 @@ public class BearController : MonoBehaviour, TrapTarget
 
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.ReportEnemyDefeated();
+            GameManager.Instance.ReportEnemyDefeated(this);
         }
 
         Debug.Log("熊を捕獲しました！");
@@ -594,7 +594,7 @@ public class BearController : MonoBehaviour, TrapTarget
         // GameManagerに死亡を報告
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.ReportEnemyDefeated();
+            GameManager.Instance.ReportEnemyDefeated(this);
             Debug.Log($"熊を討伐！ {defeatReward}円 獲得");
         }
 

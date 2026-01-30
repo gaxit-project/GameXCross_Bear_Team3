@@ -170,7 +170,7 @@ public class GameManager : MonoBehaviour
         pointerController.UIsetfalse();
         CurrentState.Value = GameState.Battle;
         TimeRemaining.Value = 0;
-        _isWaveSpawningComplete = false;
+        _isWaveSpawningComplete = true;
         Debug.Log($"--- 第 {CurrentWave.Value} ウェーブ 襲撃開始 ---");
     }
 
@@ -181,19 +181,36 @@ public class GameManager : MonoBehaviour
     {
         activeEnemies++;
         if (bear != null && !_activeEnemies.Contains(bear)) _activeEnemies.Add(bear);
-        Debug.Log($"敵出現。残り敵数: {activeEnemies}");
+        Debug.Log($"熊出現。残り: {activeEnemies}体");
     }
 
     public void ReportEnemyDefeated(BearController bear = null)
     {
-        var enemies = FindObjectsByType<BearController>(FindObjectsSortMode.None);
+        /* var enemies = FindObjectsByType<BearController>(FindObjectsSortMode.None);
+
+        _activeEnemies.Remove(bear);
+        activeEnemies--;
+        Debug.Log($"熊撃退または捕獲。残り: {activeEnemies}体");
 
         // 「死んでいない」敵がまだいるかチェック（捕獲済みはIsDead=trueで判定）
         bool anyAlive = enemies.Any(e => !e.IsDead && e.gameObject.activeInHierarchy);
 
         if (!anyAlive && _isWaveSpawningComplete)
         {
-            Debug.Log("すべての敵を撃退または捕獲しました！");
+            Debug.Log("すべての熊を撃退または捕獲しました！");
+            FinishWave();
+        } */
+
+        if (bear != null)
+        {
+            _activeEnemies.Remove(bear);
+        }
+        activeEnemies--;
+        Debug.Log($"熊撃退または捕獲。残り: {activeEnemies}体");
+
+        if(_isWaveSpawningComplete && activeEnemies <= 0)
+        {
+            Debug.Log("すべての熊を撃退または捕獲しました！");
             FinishWave();
         }
     }
@@ -201,7 +218,7 @@ public class GameManager : MonoBehaviour
     public void NotifySpawningComplete()
     {
         _isWaveSpawningComplete = true;
-        Debug.Log("全ての敵の生成が完了しました。");
+        Debug.Log("全ての熊の生成が完了しました。");
         if (activeEnemies <= 0) FinishWave();
     }
 
