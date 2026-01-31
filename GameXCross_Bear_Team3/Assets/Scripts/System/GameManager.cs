@@ -25,8 +25,9 @@ public class GameManager : MonoBehaviour
     public int MaxWaves => Balance != null ? Balance.maxWaves : 3;
 
     [Header("参照")]
-    [SerializeField] private money moneyScript;
-    [SerializeField] private PointerContoroller pointerController;
+    private money moneyScript;
+    private PointerContoroller pointerController;
+    [SerializeField] private BGMManager bgmManager;
 
     [Header("バランスデータ参照")]
     [SerializeField] private GameBalanceData balanceData;
@@ -86,11 +87,21 @@ public class GameManager : MonoBehaviour
             pointerController = FindFirstObjectByType<PointerContoroller>();
         }
 
-        /* if (balanceData != null)
+        if (bgmManager == null)
         {
-            setupTime = Balance.setupTime;
-            maxWaves = Balance.maxWaves;
-        } */
+            bgmManager = FindFirstObjectByType<BGMManager>();
+        }
+
+        CurrentState
+        .DistinctUntilChanged()
+        .Subscribe(state =>
+        {
+            if (bgmManager != null)
+            {
+                bgmManager.SwitchBGM(state);
+            }
+        })
+        .AddTo(this);
 
         // ゲーム開始時に統計データをリセット
         KillCountManager.Instance?.AlldataReset();
