@@ -22,85 +22,41 @@ public class BGMManager : MonoBehaviour
     private AudioSource _audioSource;
     private bool _isTitleScene = false;
 
+    private bool _isFading = false; // フェード中かどうか
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == titleSceneName)
+        {
+            Debug.Log($"BGMManager: タイトルシーン検知 -> {scene.name}");
+            Time.timeScale = 1.0f;
+            PlayNewClip(titleBGM);
+        }
+    }
     void Start()
     {
         _audioSource = GetComponent<AudioSource>();
         _audioSource.loop = true;
         _audioSource.volume = 0f;
-
-        // 現在シーンがタイトルなら即再生
-        _isTitleScene = SceneManager.GetActiveScene().name == titleSceneName;
-        if (_isTitleScene)
-        {
-            PlayNewClip(titleBGM);
-        }
-        else
-        {
-            // GameManagerが初期化されるまで待機してからサブスクライブ
-            WaitForGameManagerAndSubscribe();
-        }
-    }
-
-    private void OnEnable()
-    {
-        SceneManager.activeSceneChanged += OnSceneChanged;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.activeSceneChanged -= OnSceneChanged;
-    }
-
-    private void OnSceneChanged(Scene prev, Scene next)
-    {
-        _isTitleScene = next.name == titleSceneName;
-
-        if (_isTitleScene)
-        {
-            PlayNewClip(titleBGM); // タイトルBGM再生
-        }
-        else
-        {
-            // タイトルから出たら状態監視を始める（未登録なら登録）
-            if (GameManager.Instance != null)
-            {
-                SwitchBGM(GameManager.Instance.CurrentState.Value);
-            }
-            else
-            {
-                WaitForGameManagerAndSubscribe();
-            }
-        }
-    }
-
-    private void WaitForGameManagerAndSubscribe()
-    {
-        // GameManager.Instanceがnullの場合、毎フレームチェックして待機
-        Observable.EveryUpdate()
-            .Where(_ => GameManager.Instance != null)
-            .First() // 最初に見つかったら1回だけ実行
-            .Subscribe(_ =>
-            {
-                Debug.Log("BGMManager: GameManagerを検出しました。BGM監視を開始します。");
-
-                GameManager.Instance.CurrentState
-                    .DistinctUntilChanged()
-                    .Subscribe(state => SwitchBGM(state))
-                    .AddTo(this);
-            })
-            .AddTo(this);
     }
 
 
-    private void SwitchBGM(GameState state)
+    public void SwitchBGM(GameState state)
     {
         if (_isTitleScene) return; // タイトル中はステート再生しない
 
         // _audioSourceがnullの場合は取得
-        if (_audioSource == null)
-        {
-            _audioSource = GetComponent<AudioSource>();
-        }
+        if (_audioSource == null) _audioSource = GetComponent<AudioSource>();
 
         if (_audioSource == null)
         {
@@ -108,7 +64,7 @@ public class BGMManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"BGMManager: 状態が {state} になりました。曲を選定します。");
+        Debug.Log($"BGMManager: 状態が {state} になりました。");
 
         AudioClip nextClip = null;
         // フェーズに応じて曲を選ぶ
@@ -128,16 +84,25 @@ public class BGMManager : MonoBehaviour
         // すでに流れている曲と同じなら何もしない
         if (_audioSource.clip == nextClip && _audioSource.isPlaying) return;
 
+        PlayWithFade(nextClip);
+    }
+
+    private void PlayWithFade(AudioClip newClip)
+    {
         if (_audioSource.isPlaying)
         {
-            _audioSource.DOFade(0f, fadeDuration).OnComplete(() =>
-            {
-                PlayNewClip(nextClip);
-            });
+            _isFading = true;
+            // フェードアウトしてから新しいクリップを再生
+            _audioSource.DOFade(0f, fadeDuration)
+                .OnComplete(() =>
+                {
+                    PlayNewClip(newClip);
+                });
         }
         else
         {
-            PlayNewClip(nextClip);
+            // すでに停止している場合は直接再生
+            PlayNewClip(newClip);
         }
     }
 
@@ -158,15 +123,19 @@ public class BGMManager : MonoBehaviour
         if (clip != null)
         {
             Debug.Log($"BGMManager: 再生開始 -> {clip.name}");
+            _isFading = true;
             _audioSource.clip = clip;
             _audioSource.volume = 0f; // 音量0から開始
             _audioSource.Play();
-            _audioSource.DOFade(maxVolume * VolumeSettings.BGMVolume, fadeDuration); // フェードイン
+
+            _audioSource.DOFade(maxVolume * VolumeSettings.BGMVolume, fadeDuration) // フェードイン
+                .OnComplete(() => { _isFading = false; });
         }
         else
         {
             _audioSource.Stop();
             _audioSource.clip = null;
+            _isFading = false;
         }
     }
 
