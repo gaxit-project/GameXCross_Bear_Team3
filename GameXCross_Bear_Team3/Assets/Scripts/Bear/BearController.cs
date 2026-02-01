@@ -25,6 +25,7 @@ public class BearController : MonoBehaviour, TrapTarget
     [SerializeField] private Transform detectionPoint;
     [SerializeField] private bool enableAnimation = true;
     [SerializeField] private Animator animator;
+    [SerializeField] private DamageFlash DamageFlash;
 
     private NavMeshAgent _agent;
     private Rigidbody _rb;
@@ -107,6 +108,7 @@ public class BearController : MonoBehaviour, TrapTarget
     /// ハンターからダメージを受けた際の処理
     public void TakeDamage(float damage, HunterController attacker)
     {
+        DamageFlash.Flash();
         if (_isDead || _isTrapped) return;
 
         _currentHealth -= damage;
