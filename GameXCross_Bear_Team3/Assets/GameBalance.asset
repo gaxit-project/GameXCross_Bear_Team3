@@ -17,10 +17,11 @@ MonoBehaviour:
   enemiesPerWave: 010000000200000004000000
   hunterMaxHealth: 50
   hunterMoveSpeed: 10
-  hunterAttackDamage: 20
+  hunterAttackDamage: 10
   hunterAttackRange: 100
-  hunterAttackInterval: 1.5
+  hunterAttackInterval: 1
   hunterDetectionRadius: 300
+  bulletSpeed: 2000
   bearMaxHealth: 100
   bearMoveSpeed: 10
   bearAttackDamage: 20

@@ -336,7 +336,8 @@ public class HunterController : MonoBehaviour
         if (_attackStream != null || _equippedWeapon == WeaponType.None) return;
 
         // ★ 武器に応じて射撃間隔を変更
-        float interval = _equippedWeapon == WeaponType.Rifle ? rifleAttackInterval : revolverAttackInterval;
+        //float interval = _equippedWeapon == WeaponType.Rifle ? rifleAttackInterval : revolverAttackInterval;
+        float interval = attackInterval;
 
         _attackStream = Observable.Interval(TimeSpan.FromSeconds(interval))
             .Subscribe(_ =>
