@@ -51748,18 +51748,6 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: 7564027917928265407, guid: 601a570d2621f82499b7021af269fa03, type: 3}
-  toggleMenuInput:
-    m_UseReference: 0
-    m_Action:
-      m_Name: 
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 354a3b97-6f19-4487-9584-d9c1276c4899
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 0}
 --- !u!114 &848974979
 MonoBehaviour:
   m_ObjectHideFlags: 0
