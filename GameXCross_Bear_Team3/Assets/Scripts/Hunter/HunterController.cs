@@ -104,6 +104,7 @@ public class HunterController : MonoBehaviour
         this.attackRange = data.hunterAttackRange;
         this.attackInterval = data.hunterAttackInterval;
         this.detectionRadius = data.hunterDetectionRadius;
+        this.bulletSpeed = data.bulletSpeed;
     }
 
         // エージェントが無効化されている場合は有効化

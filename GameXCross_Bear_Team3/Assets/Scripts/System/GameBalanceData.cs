@@ -19,6 +19,7 @@ public class GameBalanceData : ScriptableObject
     public float hunterAttackRange = 15.0f;
     public float hunterAttackInterval = 1.5f;
     public float hunterDetectionRadius = 20.0f;
+    public float bulletSpeed = 20f;
 
     [Header("--- クマ ---")]
     public float bearMaxHealth = 100f;
