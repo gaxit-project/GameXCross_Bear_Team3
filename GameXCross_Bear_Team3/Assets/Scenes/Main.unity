@@ -137828,7 +137828,7 @@ PrefabInstance:
     - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: obj
       value: 
-      objectReference: {fileID: 8423498618031210344, guid: bfd3cddd7c230ba47988931e86189752, type: 3}
+      objectReference: {fileID: 4104643566454902700, guid: 2c10bddce2d5f7e4e9979c602092bf44, type: 3}
     - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: cost
       value: 300000
