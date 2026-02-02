@@ -11552,6 +11552,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 8a8d5984-3bf4-4357-a03c-f3239dce0317
     m_ActionName: 'Map/ToggleMenu[/XInputControllerWindows/buttonWest]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d68d7871-7470-4dce-9c59-82f2f2f74d6a
+    m_ActionName: 'Map/Skip[/XInputControllerWindows/buttonNorth,/Keyboard/t]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Map
@@ -18944,7 +18948,7 @@ MonoBehaviour:
   groundTag: Ground
   validMaterial: {fileID: 2100000, guid: a9449cbc66dbc7946a7f62310bbd4552, type: 2}
   invalidMaterial: {fileID: 2100000, guid: b07f4449a79dc344b8d3a6be7a2c1cea, type: 2}
-  p: {fileID: 848974978}
+  p: {fileID: 848974984}
   sizeScale: 0.9
 --- !u!65 &311369885
 BoxCollider:
@@ -51697,7 +51701,7 @@ GameObject:
   - component: {fileID: 848974982}
   - component: {fileID: 848974981}
   - component: {fileID: 848974979}
-  - component: {fileID: 848974978}
+  - component: {fileID: 848974984}
   m_Layer: 0
   m_Name: pointer
   m_TagString: Untagged
@@ -51705,53 +51709,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &848974978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 848974977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b39f44a16332224689f0b199cfc644a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 50
-  ScrollUI: {fileID: 7249335416971573198}
-  pointer: {fileID: 848974977}
-  obj: {fileID: 5994922789081639359}
-  ghost: {fileID: 1124478299}
-  cost: 0
-  necessaryPOvalue: 0
-  POchangevalue: 0
-  canput: 0
-  rotationSpeed: 90
-  rotationAxis: {x: 0, y: 1, z: 0}
-  rotationrightInput:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Rotationright Input
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 4875ce0a-327b-46a9-a7ab-360f545cd55c
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 4518017496754520552, guid: 601a570d2621f82499b7021af269fa03, type: 3}
-  rotationleftInput:
-    m_UseReference: 1
-    m_Action:
-      m_Name: Rotationleft Input
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: 61536a28-df21-443f-9ab9-d83e389c088e
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings: []
-      m_Flags: 0
-    m_Reference: {fileID: 7564027917928265407, guid: 601a570d2621f82499b7021af269fa03, type: 3}
 --- !u!114 &848974979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51791,7 +51748,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 848974978}
+      - m_Target: {fileID: 848974984}
         m_TargetAssemblyTypeName: PointerContoroller, Assembly-CSharp
         m_MethodName: OnPerformed
         m_Mode: 0
@@ -51815,7 +51772,7 @@ MonoBehaviour:
     m_ActionName: 'Map/Elevate[/Keyboard/shift,/Keyboard/space]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 848974978}
+      - m_Target: {fileID: 848974984}
         m_TargetAssemblyTypeName: PointerContoroller, Assembly-CSharp
         m_MethodName: OnCancel
         m_Mode: 0
@@ -51835,7 +51792,7 @@ MonoBehaviour:
     m_ActionName: 'Game/Pause[/Keyboard/escape]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 848974978}
+      - m_Target: {fileID: 848974984}
         m_TargetAssemblyTypeName: PointerContoroller, Assembly-CSharp
         m_MethodName: OnPut
         m_Mode: 0
@@ -51851,7 +51808,7 @@ MonoBehaviour:
     m_ActionName: 'Map/put[/XInputControllerWindows/buttonSouth]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 848974978}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PointerContoroller, Assembly-CSharp
         m_MethodName: Onleft
         m_Mode: 0
@@ -51867,7 +51824,7 @@ MonoBehaviour:
     m_ActionName: 'Map/left[/XInputControllerWindows/leftShoulder]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 848974978}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PointerContoroller, Assembly-CSharp
         m_MethodName: Onright
         m_Mode: 0
@@ -51887,7 +51844,7 @@ MonoBehaviour:
     m_ActionName: 'Map/pause[/XInputControllerWindows/start]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 848974978}
+      - m_Target: {fileID: 848974984}
         m_TargetAssemblyTypeName: PointerContoroller, Assembly-CSharp
         m_MethodName: OnToggleMenu
         m_Mode: 0
@@ -51903,7 +51860,7 @@ MonoBehaviour:
     m_ActionName: 'Map/Menu[/XInputControllerWindows/buttonWest]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 848974978}
+      - m_Target: {fileID: 848974984}
         m_TargetAssemblyTypeName: PointerContoroller, Assembly-CSharp
         m_MethodName: OnSkip
         m_Mode: 0
@@ -51993,6 +51950,69 @@ Transform:
   - {fileID: 1683152858}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &848974984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848974977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7333da71f6a7eca4ba08e4d8e8344d58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 100
+  ScrollUI: {fileID: 7249335416971573198}
+  pointer: {fileID: 848974977}
+  obj: {fileID: 0}
+  ghost: {fileID: 0}
+  cost: 0
+  necessaryPOvalue: 0
+  POchangevalue: 0
+  canput: 0
+  rotationSpeed: 90
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationrightInput:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Rotationright Input
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: a2eb83dc-e443-4fec-a6ba-10a045325bf5
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings:
+      - m_Name: 
+        m_Id: e94416f9-c0e8-4360-92e8-7c08f1437d75
+        m_Path: <Gamepad>/rightShoulder
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Rotationright Input
+        m_Flags: 0
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  rotationleftInput:
+    m_UseReference: 0
+    m_Action:
+      m_Name: Rotationleft Input
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 28d909b8-c5a6-4170-bcc2-8012a29f06b6
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings:
+      - m_Name: 
+        m_Id: 77072541-def7-4792-8eee-39cfb125c216
+        m_Path: <Gamepad>/leftShoulder
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Rotationleft Input
+        m_Flags: 0
+      m_Flags: 0
+    m_Reference: {fileID: 0}
 --- !u!1 &849703043
 GameObject:
   m_ObjectHideFlags: 0
@@ -59243,7 +59263,7 @@ MonoBehaviour:
   groundTag: Ground
   validMaterial: {fileID: 2100000, guid: a9449cbc66dbc7946a7f62310bbd4552, type: 2}
   invalidMaterial: {fileID: 2100000, guid: b07f4449a79dc344b8d3a6be7a2c1cea, type: 2}
-  p: {fileID: 848974978}
+  p: {fileID: 848974984}
   sizeScale: 1
 --- !u!65 &977479335
 BoxCollider:
@@ -98907,7 +98927,7 @@ MonoBehaviour:
   groundTag: Ground
   validMaterial: {fileID: 2100000, guid: a9449cbc66dbc7946a7f62310bbd4552, type: 2}
   invalidMaterial: {fileID: 2100000, guid: b07f4449a79dc344b8d3a6be7a2c1cea, type: 2}
-  p: {fileID: 848974978}
+  p: {fileID: 848974984}
   sizeScale: 0.9
 --- !u!65 &1582916158
 BoxCollider:
@@ -137890,7 +137910,7 @@ PrefabInstance:
     - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: p
       value: 
-      objectReference: {fileID: 848974978}
+      objectReference: {fileID: 848974984}
     - target: {fileID: 1698951941071438944, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: obj
       value: 
@@ -137918,7 +137938,7 @@ PrefabInstance:
     - target: {fileID: 1709722381673178005, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: p
       value: 
-      objectReference: {fileID: 848974978}
+      objectReference: {fileID: 0}
     - target: {fileID: 1709722381673178005, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: ghost
       value: 
@@ -137934,7 +137954,7 @@ PrefabInstance:
     - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: p
       value: 
-      objectReference: {fileID: 848974978}
+      objectReference: {fileID: 848974984}
     - target: {fileID: 2355979561077045261, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: cost
       value: 50000
@@ -138158,7 +138178,7 @@ PrefabInstance:
     - target: {fileID: 8944863643874766821, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: p
       value: 
-      objectReference: {fileID: 848974978}
+      objectReference: {fileID: 848974984}
     - target: {fileID: 8944863643874766821, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: cost
       value: 100000
