@@ -199,6 +199,17 @@ public class PointerContoroller : MonoBehaviour
         }
     }
 
+    public void OnSkip(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+        Debug.Log("OnSkip呼び出し");
+
+        if (GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Setup)
+        {
+            GameManager.Instance.SkipSetupPhase();
+        }
+    }
+
     // オブジェクトが有効になったときに入力を有効化
     private void OnEnable()
     {

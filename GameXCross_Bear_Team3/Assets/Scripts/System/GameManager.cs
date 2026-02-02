@@ -176,6 +176,15 @@ public class GameManager : MonoBehaviour
             .AddTo(_disposables);
     }
 
+    public void SkipSetupPhase()
+    {
+        if (CurrentState.Value == GameState.Setup && TimeRemaining.Value > 0)
+        {
+            Debug.Log("準備フェーズをスキップ");
+            TimeRemaining.Value = 0;
+        }
+    }
+
     private void StartBattlePhase()
     {
         // pointerController.UIsetfalse();
