@@ -51881,6 +51881,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 2ff34b9c-81d4-440c-801e-ae8fb3726b1d
     m_ActionName: 'Map/pause[/XInputControllerWindows/start]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 848974978}
+        m_TargetAssemblyTypeName: PointerContoroller, Assembly-CSharp
+        m_MethodName: OnToggleMenu
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 8a8d5984-3bf4-4357-a03c-f3239dce0317
+    m_ActionName: 'Map/Menu[/XInputControllerWindows/buttonWest]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Map

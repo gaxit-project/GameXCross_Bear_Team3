@@ -34,7 +34,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "cansel",
+                    "name": "cancel",
                     "type": "Button",
                     "id": "b5d28ddb-16e5-4135-a7f7-c76913918f6e",
                     "expectedControlType": "",
@@ -73,6 +73,15 @@
                     "name": "pause",
                     "type": "Button",
                     "id": "2ff34b9c-81d4-440c-801e-ae8fb3726b1d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleMenu",
+                    "type": "Button",
+                    "id": "8a8d5984-3bf4-4357-a03c-f3239dce0317",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -208,18 +217,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "cansel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9a468930-55ab-4c06-a169-001ee9064dab",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "cansel",
+                    "action": "cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -264,6 +262,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b4ded1c5-af1d-4fdd-b313-43397436087b",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

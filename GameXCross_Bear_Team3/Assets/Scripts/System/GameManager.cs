@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
     {
         CurrentState.Value = GameState.Setup;
         TimeRemaining.Value = SetupTime;
-        pointerController.UIsettrue();
+        pointerController.UIsetTrue();
 
         // 報酬の支払い
         if (_pendingIncome > 0)
@@ -178,7 +178,7 @@ public class GameManager : MonoBehaviour
 
     private void StartBattlePhase()
     {
-        pointerController.UIsetfalse();
+        // pointerController.UIsetfalse();
         CurrentState.Value = GameState.Battle;
         TimeRemaining.Value = 0;
         _isWaveSpawningComplete = true;

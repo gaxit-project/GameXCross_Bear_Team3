@@ -120,7 +120,7 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""cansel"",
+                    ""name"": ""cancel"",
                     ""type"": ""Button"",
                     ""id"": ""b5d28ddb-16e5-4135-a7f7-c76913918f6e"",
                     ""expectedControlType"": """",
@@ -159,6 +159,15 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""name"": ""pause"",
                     ""type"": ""Button"",
                     ""id"": ""2ff34b9c-81d4-440c-801e-ae8fb3726b1d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""8a8d5984-3bf4-4357-a03c-f3239dce0317"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -294,18 +303,7 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""cansel"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9a468930-55ab-4c06-a169-001ee9064dab"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""cansel"",
+                    ""action"": ""cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -352,6 +350,17 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
                     ""action"": ""pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b4ded1c5-af1d-4fdd-b313-43397436087b"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -391,11 +400,12 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         m_Map_Move = m_Map.FindAction("Move", throwIfNotFound: true);
         m_Map_Look = m_Map.FindAction("Look", throwIfNotFound: true);
         m_Map_Elevate = m_Map.FindAction("Elevate", throwIfNotFound: true);
-        m_Map_cansel = m_Map.FindAction("cansel", throwIfNotFound: true);
+        m_Map_cancel = m_Map.FindAction("cancel", throwIfNotFound: true);
         m_Map_put = m_Map.FindAction("put", throwIfNotFound: true);
         m_Map_left = m_Map.FindAction("left", throwIfNotFound: true);
         m_Map_right = m_Map.FindAction("right", throwIfNotFound: true);
         m_Map_pause = m_Map.FindAction("pause", throwIfNotFound: true);
+        m_Map_ToggleMenu = m_Map.FindAction("ToggleMenu", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
@@ -483,11 +493,12 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Map_Move;
     private readonly InputAction m_Map_Look;
     private readonly InputAction m_Map_Elevate;
-    private readonly InputAction m_Map_cansel;
+    private readonly InputAction m_Map_cancel;
     private readonly InputAction m_Map_put;
     private readonly InputAction m_Map_left;
     private readonly InputAction m_Map_right;
     private readonly InputAction m_Map_pause;
+    private readonly InputAction m_Map_ToggleMenu;
     /// <summary>
     /// Provides access to input actions defined in input action map "Map".
     /// </summary>
@@ -512,9 +523,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Elevate => m_Wrapper.m_Map_Elevate;
         /// <summary>
-        /// Provides access to the underlying input action "Map/cansel".
+        /// Provides access to the underlying input action "Map/cancel".
         /// </summary>
-        public InputAction @cansel => m_Wrapper.m_Map_cansel;
+        public InputAction @cancel => m_Wrapper.m_Map_cancel;
         /// <summary>
         /// Provides access to the underlying input action "Map/put".
         /// </summary>
@@ -531,6 +542,10 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Map/pause".
         /// </summary>
         public InputAction @pause => m_Wrapper.m_Map_pause;
+        /// <summary>
+        /// Provides access to the underlying input action "Map/ToggleMenu".
+        /// </summary>
+        public InputAction @ToggleMenu => m_Wrapper.m_Map_ToggleMenu;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -566,9 +581,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @Elevate.started += instance.OnElevate;
             @Elevate.performed += instance.OnElevate;
             @Elevate.canceled += instance.OnElevate;
-            @cansel.started += instance.OnCansel;
-            @cansel.performed += instance.OnCansel;
-            @cansel.canceled += instance.OnCansel;
+            @cancel.started += instance.OnCancel;
+            @cancel.performed += instance.OnCancel;
+            @cancel.canceled += instance.OnCancel;
             @put.started += instance.OnPut;
             @put.performed += instance.OnPut;
             @put.canceled += instance.OnPut;
@@ -581,6 +596,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @pause.started += instance.OnPause;
             @pause.performed += instance.OnPause;
             @pause.canceled += instance.OnPause;
+            @ToggleMenu.started += instance.OnToggleMenu;
+            @ToggleMenu.performed += instance.OnToggleMenu;
+            @ToggleMenu.canceled += instance.OnToggleMenu;
         }
 
         /// <summary>
@@ -601,9 +619,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @Elevate.started -= instance.OnElevate;
             @Elevate.performed -= instance.OnElevate;
             @Elevate.canceled -= instance.OnElevate;
-            @cansel.started -= instance.OnCansel;
-            @cansel.performed -= instance.OnCansel;
-            @cansel.canceled -= instance.OnCansel;
+            @cancel.started -= instance.OnCancel;
+            @cancel.performed -= instance.OnCancel;
+            @cancel.canceled -= instance.OnCancel;
             @put.started -= instance.OnPut;
             @put.performed -= instance.OnPut;
             @put.canceled -= instance.OnPut;
@@ -616,6 +634,9 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
             @pause.started -= instance.OnPause;
             @pause.performed -= instance.OnPause;
             @pause.canceled -= instance.OnPause;
+            @ToggleMenu.started -= instance.OnToggleMenu;
+            @ToggleMenu.performed -= instance.OnToggleMenu;
+            @ToggleMenu.canceled -= instance.OnToggleMenu;
         }
 
         /// <summary>
@@ -774,12 +795,12 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnElevate(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "cansel" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "cancel" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnCansel(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "put" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
@@ -808,6 +829,13 @@ public partial class @CameraControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPause(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleMenu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleMenu(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Game" which allows adding and removing callbacks.
