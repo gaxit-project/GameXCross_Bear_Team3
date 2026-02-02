@@ -140,6 +140,7 @@ public class BearController : MonoBehaviour, TrapTarget
     /// <param name="damage">受けるダメージ</param>
     public void ApplyStun(float duration, float damage)
     {
+        SEmanager.Instance.Play("bear");
         if (_isDead || IsParalyzed) return;
 
         Debug.Log("熊: 感電しました！麻痺状態になります。");
@@ -583,7 +584,7 @@ public class BearController : MonoBehaviour, TrapTarget
     private void Die()
     {
         if (_isDead) return; // 二重呼び出し防止
-
+        SEmanager.Instance.Play("bear");
         _isDead = true;
         _agent.enabled = false;
         StopAttacking();
