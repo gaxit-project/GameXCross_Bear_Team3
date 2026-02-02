@@ -362,6 +362,7 @@ public class HunterController : MonoBehaviour
             HunterBullet bullet = bulletObj.GetComponent<HunterBullet>();
             if (bullet != null)
             {
+                SEmanager.Instance.Play("gun");
                 bullet.Launch(_targetBear.transform, bulletSpeed);
             }
         }
