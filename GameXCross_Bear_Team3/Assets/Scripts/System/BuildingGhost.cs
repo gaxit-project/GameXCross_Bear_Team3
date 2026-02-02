@@ -8,7 +8,7 @@ public class BuildingGhost : MonoBehaviour
     [SerializeField] private string groundTag = "Ground";
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material invalidMaterial;
-    [SerializeField] private PointerContoroller p; // コントローラーの名前はそのままにしています
+    [SerializeField] private PointerController p; // コントローラーの名前はそのままにしています
 
     [Header("判定調整")]
     [SerializeField] private float sizeScale = 0.9f;

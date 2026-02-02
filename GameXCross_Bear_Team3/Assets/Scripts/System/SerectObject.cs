@@ -17,7 +17,7 @@ public class SerectObject : MonoBehaviour
     [SerializeField, Header("置いたときの世論値の変化量")]
     public float POchangevalue;
     [SerializeField, Header("ポインター")]
-    public PointerContoroller p;
+    public PointerController p;
 
     [SerializeField, Header("PriceMoveManager")]
     public PriceMoveManager PriceMoveManager;

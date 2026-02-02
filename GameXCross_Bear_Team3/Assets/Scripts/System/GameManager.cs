@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     [Header("参照")]
     private money moneyScript;
-    private PointerContoroller pointerController;
+    private PointerController pointerController;
     [SerializeField] private BGMManager bgmManager;
 
     [Header("バランスデータ参照")]
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
         }
         if (pointerController == null)
         {
-            pointerController = FindFirstObjectByType<PointerContoroller>();
+            pointerController = FindFirstObjectByType<PointerController>();
         }
 
         if (bgmManager == null)

@@ -51965,8 +51965,8 @@ MonoBehaviour:
   Speed: 100
   ScrollUI: {fileID: 7249335416971573198}
   pointer: {fileID: 848974977}
-  obj: {fileID: 0}
-  ghost: {fileID: 0}
+  obj: {fileID: 5994922789081639359}
+  ghost: {fileID: 1124478299}
   cost: 0
   necessaryPOvalue: 0
   POchangevalue: 0

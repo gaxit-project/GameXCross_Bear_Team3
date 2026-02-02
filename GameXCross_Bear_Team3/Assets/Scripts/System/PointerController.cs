@@ -2,7 +2,7 @@
 using UnityEngine.InputSystem;
 using UniRx;
 
-public class PointerContoroller : MonoBehaviour
+public class PointerController : MonoBehaviour
 {
     [Header("移動速度")]
     [SerializeField] private float Speed = 1;
