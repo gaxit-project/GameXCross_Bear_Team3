@@ -11,7 +11,7 @@ public class FieldManager : MonoBehaviour
     [SerializeField] private float interval;
     [Header("各レベルの間隔当たりの資金増加量")]
     [SerializeField] private int[] value;
-    [Header("各レベルのレベルアップ必要資金")]
+    [Header("各レベル時のレベルアップ必要資金")]
     [SerializeField] private int[] cost;
     [Header("各レベルの見た目")]
     [SerializeField] private GameObject[] ob;
@@ -28,7 +28,7 @@ public class FieldManager : MonoBehaviour
         Array.Resize(ref cost, MAXlevel+1);
         Array.Resize(ref ob, MAXlevel + 1);
 
-        for (int i=1;i<MAXlevel;i++)//初期レベル以外全ての見た目を消しておく
+        for (int i=1;i<MAXlevel+1;i++)//初期レベル以外全ての見た目を消しておく
         {
             ob[i].SetActive(false);
         }

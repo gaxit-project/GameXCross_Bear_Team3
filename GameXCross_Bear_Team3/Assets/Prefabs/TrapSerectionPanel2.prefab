@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fcc722d56acca3042bb2f289b70aadfd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 95fa78c994676244a96e7c7540ae2670, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -152,7 +152,12 @@ MonoBehaviour:
   ghost: {fileID: 0}
   obj: {fileID: 4426026038796339423, guid: 655fec90e19f1804990216b291e5988b, type: 3}
   cost: 10000
+  necessaryPOvalue: 0
+  POchangevalue: 0
   p: {fileID: 0}
+  PriceMoveManager: {fileID: 0}
+  currentcost: 0
+  Image: {fileID: 0}
   Text: {fileID: 5931826632934852244}
 --- !u!1 &1298338224713973800
 GameObject:
@@ -365,7 +370,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 6726576856039341509}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.396
+  m_Size: 0.397875
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -474,7 +479,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fcc722d56acca3042bb2f289b70aadfd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 62343f61b43e10a4da9c9f44e2376957, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -557,7 +562,12 @@ MonoBehaviour:
   ghost: {fileID: 0}
   obj: {fileID: 5175117341105439888, guid: 880cfbcfb85b5b042babba3ff714589b, type: 3}
   cost: 10000
+  necessaryPOvalue: 0
+  POchangevalue: 0
   p: {fileID: 0}
+  PriceMoveManager: {fileID: 0}
+  currentcost: 0
+  Image: {fileID: 0}
   Text: {fileID: 9154696898717553629}
 --- !u!1 &3305970919369205904
 GameObject:
@@ -832,7 +842,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fcc722d56acca3042bb2f289b70aadfd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1c5bdbe927b284544975a7e374327eaf, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -915,7 +925,12 @@ MonoBehaviour:
   ghost: {fileID: 0}
   obj: {fileID: 2032409843701781769, guid: d408fb30a243291409f1d014e65fc912, type: 3}
   cost: 10000
+  necessaryPOvalue: 0
+  POchangevalue: 0
   p: {fileID: 0}
+  PriceMoveManager: {fileID: 0}
+  currentcost: 0
+  Image: {fileID: 0}
   Text: {fileID: 6468843977073860661}
 --- !u!1 &5078503951804648783
 GameObject:
@@ -1351,7 +1366,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: b95183411290c6e4c8611d7e1b0da0d9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0a63affbd340c5a469a5d8ba788b327b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1434,7 +1449,12 @@ MonoBehaviour:
   ghost: {fileID: 0}
   obj: {fileID: 4426026038796339423, guid: 655fec90e19f1804990216b291e5988b, type: 3}
   cost: 10000
+  necessaryPOvalue: 0
+  POchangevalue: 0
   p: {fileID: 0}
+  PriceMoveManager: {fileID: 0}
+  currentcost: 0
+  Image: {fileID: 0}
   Text: {fileID: 511076479239527402}
 --- !u!1 &7749573114078645140
 GameObject:
@@ -1662,6 +1682,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scrollSpeed: 10
   cursor: {fileID: 8130135219368254663}
+  moveSE: Select
 --- !u!1 &8766096415208915216
 GameObject:
   m_ObjectHideFlags: 0
