@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using System;
+using UniRx;
 
 public class PauseManager : MonoBehaviour
 {
@@ -19,7 +21,7 @@ public class PauseManager : MonoBehaviour
     private void Awake()
     {
         //canvasGroup = pausePanel.GetComponent<CanvasGroup>();
-        
+
         controles = new CameraControls();
         pausePanel.SetActive(false);
         if (EventSystem.current == null)
@@ -110,9 +112,9 @@ public class PauseManager : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(firstSelectedOnPause);
         }
 
-        
 
-        if(cameraController != null) cameraController.SetRotationEnabled(false);
+
+        if (cameraController != null) cameraController.SetRotationEnabled(false);
     }
 
     public void ResumeGame()
@@ -121,7 +123,7 @@ public class PauseManager : MonoBehaviour
         canvasGroup.interactable = true;
         isPaused = false;
 
-        if(pausePanel != null) pausePanel.SetActive(false);
+        if (pausePanel != null) pausePanel.SetActive(false);
 
         Time.timeScale = 1f;
 

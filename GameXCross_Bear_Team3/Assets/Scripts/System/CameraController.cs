@@ -209,7 +209,7 @@ public class CameraController : MonoBehaviour
 
         if (enableRotation)
         {
-            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = false;
         }
         else

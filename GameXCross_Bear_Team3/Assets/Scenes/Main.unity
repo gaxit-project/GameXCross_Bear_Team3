@@ -98280,7 +98280,7 @@ MonoBehaviour:
   m_ScrollWheelAction: {fileID: 0}
   m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
-  m_DeselectOnBackgroundClick: 1
+  m_DeselectOnBackgroundClick: 0
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
   m_ScrollDeltaPerTick: 6
@@ -134770,6 +134770,7 @@ GameObject:
   - component: {fileID: 2114402489}
   - component: {fileID: 2114402488}
   - component: {fileID: 2114402487}
+  - component: {fileID: 2114402490}
   m_Layer: 0
   m_Name: PointerController
   m_TagString: Untagged
@@ -134925,8 +134926,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2114402487}
         m_TargetAssemblyTypeName: PointerController, Assembly-CSharp
-        m_MethodName: OnPut
-        m_Mode: 0
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -135025,6 +135026,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2114402490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2114402486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42ae295b681182b4aaa5bf626e8649a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstSelectButton: {fileID: 5994922789081639359}
 --- !u!1001 &2114822448
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -138249,6 +138263,10 @@ PrefabInstance:
       propertyPath: m_Transition
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2827968702130379168, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3143367332833177030, guid: 4517e7bda4296834c91e12927881b4e7, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -138575,6 +138593,7 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 1570562312}
   - {fileID: 165155366}
+  - {fileID: 2114402489}
   - {fileID: 629653270}
   - {fileID: 1427307821}
   - {fileID: 2718096678611259428}
@@ -138596,4 +138615,3 @@ SceneRoots:
   - {fileID: 1739641461}
   - {fileID: 6372399925562743146}
   - {fileID: 2765966459750268043}
-  - {fileID: 2114402489}

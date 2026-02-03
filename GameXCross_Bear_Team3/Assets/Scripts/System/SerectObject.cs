@@ -6,17 +6,17 @@ public class SerectObject : MonoBehaviour
 {
     [SerializeField] public GameObject ScrollUI;
     [SerializeField] public GameObject pointer;
-    [SerializeField, Header("•\¦‚·‚éƒS[ƒXƒg")]
+    [SerializeField, Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½[ï¿½Xï¿½g")]
     public GameObject ghost;
-    [SerializeField,Header("İ’è‚·‚éİ’u•¨")]
+    [SerializeField,Header("ï¿½İ’è‚·ï¿½ï¿½İ’uï¿½ï¿½")]
     public GameObject obj;
-    [SerializeField, Header("‚»‚ÌƒRƒXƒg")]
+    [SerializeField, Header("ï¿½ï¿½ï¿½ÌƒRï¿½Xï¿½g")]
     public int cost;
-    [SerializeField, Header("•K—v‚È¢˜_’l")]
+    [SerializeField, Header("ï¿½Kï¿½vï¿½Èï¿½ï¿½_ï¿½l")]
     public float necessaryPOvalue;
-    [SerializeField, Header("’u‚¢‚½‚Æ‚«‚Ì¢˜_’l‚Ì•Ï‰»—Ê")]
+    [SerializeField, Header("ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½Ìï¿½ï¿½_ï¿½lï¿½Ì•Ï‰ï¿½ï¿½ï¿½")]
     public float POchangevalue;
-    [SerializeField, Header("ƒ|ƒCƒ“ƒ^[")]
+    [SerializeField, Header("ï¿½|ï¿½Cï¿½ï¿½ï¿½^ï¿½[")]
     public PointerController p;
 
     [SerializeField, Header("PriceMoveManager")]
@@ -52,12 +52,13 @@ public class SerectObject : MonoBehaviour
     {
         if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue) && money.Instance.moneycount >= currentcost)
         {
+            Debug.Log("OnclickãŒå®Ÿè¡Œã•ã‚Œã¾ã—ãŸ");
             changeUI();
             SEmanager.Instance.Play("deside");
         }
         else
         {
-            Debug.Log("‚¨‹à‚©¢˜_’l‚ª‘«‚è‚Ü‚¹‚ñI");
+            Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½I");
             SEmanager.Instance.Play("unable");
         }
     }
@@ -68,7 +69,7 @@ public class SerectObject : MonoBehaviour
         pointer.SetActive(true);
         ghost.SetActive(true);
         p.obj = obj;
-        p.cost = currentcost;//¡‚Ìó‘Ô‚Å‚Íİ’u’†‚É‰¿Ši‚ª•Ï“®‚µ‚½Û‚ÉŒˆ’è‚Ì‰¿Ši‚Åİ’u‚Å‚«‚Ä‚µ‚Ü‚¤D
+        p.cost = currentcost;//ï¿½ï¿½ï¿½Ìï¿½Ô‚Å‚Íİ’uï¿½ï¿½ï¿½É‰ï¿½ï¿½iï¿½ï¿½ï¿½Ï“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û‚ÉŒï¿½ï¿½èï¿½Ì‰ï¿½ï¿½iï¿½Åİ’uï¿½Å‚ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½D
         p.ghost = ghost;
         p.POchangevalue = POchangevalue;
         p.necessaryPOvalue = necessaryPOvalue;

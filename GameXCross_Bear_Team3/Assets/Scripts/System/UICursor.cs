@@ -4,47 +4,53 @@ using UnityEngine.UI;
 
 public class UICursor : MonoBehaviour
 {
-    [SerializeField] float scrollSpeed = 10f; // ƒXƒNƒ[ƒ‹‚Ì‘¬‚³
+    [SerializeField] float scrollSpeed = 10f; // ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ì‘ï¿½ï¿½ï¿½
     [SerializeField] public GameObject cursor;
 
-    [Header("SEİ’è")]
-    [SerializeField] private string moveSE = "Select"; // –Â‚ç‚µ‚½‚¢SE‚ÌƒL[–¼
-    private GameObject lastSelected; // u‚³‚Á‚«‚Ü‚Å‘I‘ğ‚³‚ê‚Ä‚¢‚½‚à‚Ìv‚ğŠo‚¦‚é•Ï”
+    [Header("SEï¿½İ’ï¿½")]
+    [SerializeField] private string moveSE = "Select"; // ï¿½Â‚ç‚µï¿½ï¿½ï¿½ï¿½SEï¿½ÌƒLï¿½[ï¿½ï¿½
+    private GameObject lastSelected; // ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚Å‘Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìvï¿½ï¿½ï¿½oï¿½ï¿½ï¿½ï¿½Ïï¿½
 
 
     void Start()
     {
-        // Å‰‚ÍŒ»İ‚Ì‘I‘ğó‘Ô‚ğ‰Šú’l‚Æ‚µ‚Ä“ü‚ê‚Ä‚¨‚­iŠJ–‹‚Å‰¹‚ª–Â‚é‚Ì‚ğ–h‚®‚½‚ßj
+        // ï¿½Åï¿½ï¿½ÍŒï¿½ï¿½İ‚Ì‘Iï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½lï¿½Æ‚ï¿½ï¿½Ä“ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½iï¿½Jï¿½ï¿½ï¿½Å‰ï¿½ï¿½ï¿½ï¿½Â‚ï¿½Ì‚ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ßj
         lastSelected = EventSystem.current.currentSelectedGameObject;
     }
 
 
     void Update()
     {
-        // ¡‘I‘ğ‚³‚ê‚Ä‚¢‚éƒIƒuƒWƒFƒNƒg‚ğæ“¾
+        // ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½æ“¾
         GameObject selected = EventSystem.current.currentSelectedGameObject;
 
-        // ‰½‚à‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢A‚Ü‚½‚Í‘I‘ğ‚³‚ê‚½‚à‚Ì‚ªScrollRect‚Ì’†g‚Å‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½Aï¿½Ü‚ï¿½ï¿½Í‘Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½Ì‚ï¿½ScrollRectï¿½Ì’ï¿½ï¿½gï¿½Å‚È‚ï¿½ï¿½ê‡ï¿½Í‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
         if (selected == null )
         {
             return;
         }
 
+        if (Time.timeScale <= 0)
+    {
+        lastSelected = selected; // é¸æŠçŠ¶æ…‹ã®åŒæœŸã ã‘è¡Œã£ã¦ãŠã
+        return;
+    }
+
         if (selected != lastSelected)
         {
-            // ‘I‘ğ‚³‚ê‚Ä‚¢‚é‚à‚Ì‚ªu‚³‚Á‚«v‚Æˆá‚¤‚È‚çAˆÚ“®‚µ‚½‚Æ‚¢‚¤‚±‚Æ‰¹‚ğ–Â‚ç‚·
+            // ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Æˆá‚¤ï¿½È‚ï¿½Aï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æï¿½ï¿½ï¿½ï¿½ï¿½Â‚ç‚·
             SEmanager.Instance.Play("cursor");
 
-            // u‚³‚Á‚«v‚ğu¡v‚Ìî•ñ‚Åã‘‚«XV
+            // ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½uï¿½ï¿½ï¿½vï¿½Ìï¿½ï¿½Åã‘ï¿½ï¿½ï¿½Xï¿½V
             lastSelected = selected;
         }
 
-        // ‘I‘ğ‚³‚ê‚½ƒ{ƒ^ƒ“‚ÌTransform‚ğæ“¾
+        // ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½Transformï¿½ï¿½ï¿½æ“¾
         Transform target = selected.GetComponent<Transform>();
 
         float targetX = target.position.x;
 
-        // Œ»İ‚ÌˆÊ’u‚Æ–Ú•WˆÊ’u‚ÌŠÔ‚ğƒXƒ€[ƒY‚ÉˆÚ“®iLerpj
+        // ï¿½ï¿½ï¿½İ‚ÌˆÊ’uï¿½Æ–Ú•Wï¿½Ê’uï¿½ÌŠÔ‚ï¿½ï¿½Xï¿½ï¿½ï¿½[ï¿½Yï¿½ÉˆÚ“ï¿½ï¿½iLerpï¿½j
         Vector3 newPos = cursor.transform.position;
         newPos.x = Mathf.Lerp(newPos.x, targetX, Time.deltaTime * scrollSpeed);
         cursor.transform.position = newPos;
