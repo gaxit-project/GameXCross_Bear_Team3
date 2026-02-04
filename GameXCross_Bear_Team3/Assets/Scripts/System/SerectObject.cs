@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class SerectObject : MonoBehaviour
 {
@@ -53,7 +54,7 @@ public class SerectObject : MonoBehaviour
         if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue) && money.Instance.moneycount >= currentcost)
         {
             Debug.Log("Onclickが実行されました");
-            changeUI();
+            StartCoroutine(ChangeUIAfterWait());
             SEmanager.Instance.Play("deside");
         }
         else
@@ -61,6 +62,17 @@ public class SerectObject : MonoBehaviour
             Debug.Log("���������_�l������܂���I");
             SEmanager.Instance.Play("unable");
         }
+    }
+
+    private IEnumerator ChangeUIAfterWait()
+    {
+        // ここで「今のフレームが終わる」まで待機する
+        // これにより、PointerControllerが同じボタン入力を検知しても、
+        // まだ ghost が false なので誤動作しなくなる
+        yield return null;
+
+        // 待ち終わったら変更処理を実行
+        changeUI();
     }
 
     private void changeUI()

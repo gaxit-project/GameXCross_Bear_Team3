@@ -46,7 +46,7 @@ public class PointerController : MonoBehaviour
     {
         _mainCamera = Camera.main;
 
-        UIsetFalse();
+        //UIsetFalse();
 
         if (GameManager.Instance != null)
         {
@@ -56,7 +56,7 @@ public class PointerController : MonoBehaviour
                     if (state == GameState.Setup)
                     {
                         // 準備フェーズになったらUIを表示（戦闘フェーズ中も表示）
-                        UIsetTrue();
+                        //UIsetTrue();
                     }
                     else if (state == GameState.Result)
                     {
