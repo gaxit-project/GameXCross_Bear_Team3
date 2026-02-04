@@ -16,6 +16,8 @@ public class KillCountManager : MonoBehaviour
     public static int[] finaldamage = new int[3];  // 被害件数（家の破壊数）
     public static int[] finalPO = new int[3];
 
+    public static bool IsGameClear = false;
+
     private void Awake()
     {
         // if (Instance != null) Destroy(gameObject);
@@ -66,6 +68,7 @@ public class KillCountManager : MonoBehaviour
         Array.Clear(finalcapture, 0, finalcapture.Length);
         Array.Clear(finaldamage, 0, finaldamage.Length);
         Array.Clear(finalPO, 0, finalPO.Length);
+        IsGameClear = false;
         CountReset();
     }
     #endregion

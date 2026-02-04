@@ -304,6 +304,8 @@ public class GameManager : MonoBehaviour
         // リザルト画面遷移前に現在のウェーブのデータを保存
         //KillCountManager.Instance?.DataSet(CurrentWave.Value);(一つ前の工程ですでに済ませてます．)
 
+        KillCountManager.IsGameClear = isClear;
+
         Observable.Timer(TimeSpan.FromSeconds(sceneTransitionDelay))
             .Subscribe(_ => SceneManager.LoadScene(resultSceneName))
             .AddTo(_disposables);

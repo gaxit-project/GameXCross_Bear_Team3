@@ -300,13 +300,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d76da1bc829a96548a836b72a4709b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setupBGM: {fileID: 8300000, guid: 97fcb538fdc2ff240bc6733fcbfa9439, type: 3}
-  battleBGM: {fileID: 8300000, guid: de7f98d415c532241936e9fbd0e8ad72, type: 3}
-  resultBGM: {fileID: 8300000, guid: 745f1824ac8f17c40adb6837f332d898, type: 3}
-  titleBGM: {fileID: 8300000, guid: 3a1f798373b6aae4da46f5533fda0484, type: 3}
+  useBGM1: 0
+  bgmSet1:
+    setup: {fileID: 8300000, guid: 97fcb538fdc2ff240bc6733fcbfa9439, type: 3}
+    battle: {fileID: 8300000, guid: de7f98d415c532241936e9fbd0e8ad72, type: 3}
+    phaseResult: {fileID: 8300000, guid: 745f1824ac8f17c40adb6837f332d898, type: 3}
+    gameClear: {fileID: 8300000, guid: 745f1824ac8f17c40adb6837f332d898, type: 3}
+    gameOver: {fileID: 8300000, guid: 745f1824ac8f17c40adb6837f332d898, type: 3}
+    title: {fileID: 8300000, guid: 3a1f798373b6aae4da46f5533fda0484, type: 3}
+  bgmSet2:
+    setup: {fileID: 8300000, guid: b9b4c99e5667ca447a252457917df314, type: 3}
+    battle: {fileID: 8300000, guid: c37f00200d6fc0540b6e30433f93c212, type: 3}
+    phaseResult: {fileID: 8300000, guid: b9b4c99e5667ca447a252457917df314, type: 3}
+    gameClear: {fileID: 8300000, guid: 058087fa62af04c458cbe5c77cb758a2, type: 3}
+    gameOver: {fileID: 8300000, guid: 4048dff304f730c4da4730b80fef7386, type: 3}
+    title: {fileID: 8300000, guid: 1f28710d88a4f2043be00c958e4d4990, type: 3}
   titleSceneName: Title
+  resultSceneName: Result
   maxVolume: 0.5
   fadeDuration: 1
+  roarInterval: 4
+  roarSEKey: bear
 --- !u!82 &203819901
 AudioSource:
   m_ObjectHideFlags: 0
