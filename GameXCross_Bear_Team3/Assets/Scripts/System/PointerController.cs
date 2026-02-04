@@ -113,7 +113,7 @@ public class PointerController : MonoBehaviour
         Debug.Log("OnToggleMenu呼び出し");
 
         // ゴーストが出てるなら、設置をキャンセルしてメニューを開く
-        if (ghost.activeSelf)
+        if (ghost != null)
         {
             pointerCancel();
             return;
@@ -121,12 +121,14 @@ public class PointerController : MonoBehaviour
         // メニューを開いているなら、メニューを閉じる
         else if(ScrollUI.activeSelf)
         {
+            Debug.Log("メニューを閉じます");
             SEmanager.Instance.Play("cancel");
             ScrollUI.SetActive(false);
         }
         // メニューを閉じているのでメニューを開く
         else
         {
+            Debug.Log("メニューを開きます");
             ScrollUI.SetActive(true);
         }
     }
@@ -148,7 +150,7 @@ public class PointerController : MonoBehaviour
         }
 
         // ポインターが出ている場合は、配置をキャンセルしてメニューを表示
-        if (ghost.activeSelf)
+        if (ghost != null)
         {
             Debug.Log("ルート1: ポインターキャンセルを実行（メニューは開いたままになります）");
             pointerCancel(); // メニューを表示
