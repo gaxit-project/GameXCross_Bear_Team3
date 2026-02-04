@@ -112,12 +112,11 @@ public class PointerController : MonoBehaviour
         if (!context.performed) return;
         Debug.Log("OnToggleMenu呼び出し");
 
-        // ポインターが出てるなら、設置をキャンセルしてメニューを開く
-        if (pointer.activeSelf)
+        // ゴーストが出てるなら、設置をキャンセルしてメニューを開く
+        if (ghost.activeSelf)
         {
-            ghost.SetActive(false);
-            pointer.SetActive(false);
-            ScrollUI.SetActive(true);
+            pointerCancel();
+            return;
         }
         // メニューを開いているなら、メニューを閉じる
         else if(ScrollUI.activeSelf)
