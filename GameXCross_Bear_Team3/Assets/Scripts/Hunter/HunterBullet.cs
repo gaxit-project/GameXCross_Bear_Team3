@@ -22,14 +22,15 @@ public class HunterBullet : MonoBehaviour
             return;
         }
 
-        Vector3 direction = (_target.position + Vector3.up - transform.position).normalized;
+        Vector3 direction = (_target.position + Vector3.up * 8.0f - transform.position).normalized;
+
         transform.position += direction * _speed * Time.deltaTime;
         transform.forward = direction;
     }
 
-    private void OiggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Bear"))
+        if(other.CompareTag("Bear") || other.CompareTag("Ground"))
         {
             Destroy(gameObject);
         }
