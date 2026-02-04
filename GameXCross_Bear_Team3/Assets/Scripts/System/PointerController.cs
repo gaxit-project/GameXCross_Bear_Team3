@@ -148,7 +148,7 @@ public class PointerController : MonoBehaviour
         }
 
         // ポインターが出ている場合は、配置をキャンセルしてメニューを表示
-        if (pointer.activeSelf)
+        if (ghost.activeSelf)
         {
             Debug.Log("ルート1: ポインターキャンセルを実行（メニューは開いたままになります）");
             pointerCancel(); // メニューを表示
@@ -175,6 +175,9 @@ public class PointerController : MonoBehaviour
         SEmanager.Instance.Play("cancel");
         ghost.SetActive(false);
         pointer.SetActive(false);
+
+        obj = null;
+        ghost = null;
 
         ScrollUI.SetActive(true);
     }
