@@ -231,7 +231,9 @@ public class GameManager : MonoBehaviour
         if(_isWaveSpawningComplete && activeEnemies <= 0)
         {
             Debug.Log("すべての熊を撃退または捕獲しました！");
-            FinishWave();
+            Observable.Timer(TimeSpan.FromSeconds(2.0f))
+            .Subscribe(_ =>FinishWave())
+            .AddTo(this);
         }
     }
 
