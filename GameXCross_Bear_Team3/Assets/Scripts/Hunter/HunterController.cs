@@ -363,14 +363,8 @@ public class HunterController : MonoBehaviour
             if (bullet != null)
             {
                 SEmanager.Instance.Play("gun");
-                bullet.Launch(_targetBear.transform, bulletSpeed);
+                bullet.Launch(_targetBear.transform, bulletSpeed, damage, this);
             }
-        }
-
-        if (_targetBear != null)
-        {
-            Debug.Log($"ハンター({gameObject.name}) -> 熊({_targetBear.name}) : {damage} ダメージ");
-            _targetBear.TakeDamage(damage, this);
         }
 
         // 攻撃演出（反動）

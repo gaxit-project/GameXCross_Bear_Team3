@@ -4,11 +4,15 @@ public class HunterBullet : MonoBehaviour
 {
     private float _speed;
     private Transform _target;
+    private float _damage;
+    private HunterController _hunter;
 
-    public void Launch(Transform target, float speed)
+    public void Launch(Transform target, float speed, float damage, HunterController hunter)
     {
         _target = target;
         _speed = speed;
+        _damage = damage;
+        _hunter = hunter;
 
         // 当たらなければ一定時間後に削除
         Destroy(gameObject, 5f);
@@ -18,7 +22,7 @@ public class HunterBullet : MonoBehaviour
     {
         if(_target == null)
         {
-            transform.Translate(Vector3.forward * _speed * Time.deltaTime);
+            Destroy(gameObject);
             return;
         }
 
@@ -30,7 +34,17 @@ public class HunterBullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Bear") || other.CompareTag("Ground"))
+        if(other.CompareTag("Bear"))
+        {
+            var bear = other.GetComponent<BearController>();
+            if (bear != null)
+            {
+                bear.TakeDamage(_damage, _hunter);
+            }
+
+            Destroy(gameObject);
+        }
+        else if (!other.CompareTag("Ground") || other.CompareTag("House"))
         {
             Destroy(gameObject);
         }

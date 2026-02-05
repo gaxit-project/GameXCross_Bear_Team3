@@ -175,8 +175,8 @@ public class PointerController : MonoBehaviour
     {
         Debug.Log("pointerCancel呼び出し");
         SEmanager.Instance.Play("cancel");
-        ghost.SetActive(false);
-        pointer.SetActive(false);
+        if(ghost != null)ghost.SetActive(false);
+        if(pointer != null)pointer.SetActive(false);
 
         obj = null;
         ghost = null;
@@ -235,8 +235,8 @@ public class PointerController : MonoBehaviour
         ScrollUI.SetActive(false);
 
         // 配置しようとしていたポインターもキャンセル
-        ghost.SetActive(false);
-        pointer.SetActive(false);
+        if(ghost != null) ghost.SetActive(false);
+        if(pointer != null) pointer.SetActive(false);
         obj = null;
     }
 
@@ -246,8 +246,8 @@ public class PointerController : MonoBehaviour
         ScrollUI.SetActive(true);
 
         // ポインターやゴーストは初期状態オフ
-        ghost.SetActive(false);
-        pointer.SetActive(false); 
+        if(ghost != null) ghost.SetActive(false);
+        if(pointer != null) pointer.SetActive(false); 
     }
 
 }
