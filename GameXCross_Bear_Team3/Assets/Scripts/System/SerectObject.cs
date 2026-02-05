@@ -77,13 +77,15 @@ public class SerectObject : MonoBehaviour
 
     private void changeUI()
     {
-        ScrollUI.SetActive(false);
-        pointer.SetActive(true);
-        ghost.SetActive(true);
-        p.obj = obj;
-        p.cost = currentcost;//���̏�Ԃł͐ݒu���ɉ��i���ϓ������ۂɌ��莞�̉��i�Őݒu�ł��Ă��܂��D
-        p.ghost = ghost;
-        p.POchangevalue = POchangevalue;
-        p.necessaryPOvalue = necessaryPOvalue;
+        // ScrollUI.SetActive(false);
+        // pointer.SetActive(true);
+        // ghost.SetActive(true);
+        // p.obj = obj;
+        // p.cost = currentcost;//���̏�Ԃł͐ݒu���ɉ��i���ϓ������ۂɌ��莞�̉��i�Őݒu�ł��Ă��܂��D
+        // p.ghost = ghost;
+        // p.POchangevalue = POchangevalue;
+        // p.necessaryPOvalue = necessaryPOvalue;
+
+        p.StartPlacement(obj, ghost, currentcost, necessaryPOvalue, POchangevalue);
     }
 }

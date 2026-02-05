@@ -7,7 +7,8 @@ public class PointerController : MonoBehaviour
     [Header("移動速度")]
     [SerializeField] private float Speed = 1;
     [SerializeField] public GameObject ScrollUI;
-    [SerializeField] public GameObject pointer;
+    [Header("ポインターの見た目")] 
+    [SerializeField] public GameObject pointerVisual;
 
     [Header("現在選択している設置物")]
     [SerializeField] public GameObject obj;
@@ -26,6 +27,8 @@ public class PointerController : MonoBehaviour
 
     public bool canput;
     private Vector2 input;
+
+    private bool isPointerActive = false;
 
     // カメラの情報をキャッシュする変数
     private Camera _mainCamera;
@@ -70,6 +73,8 @@ public class PointerController : MonoBehaviour
 
     void Update()
     {
+        if (!isPointerActive) return;
+
         // 1. スティック入力を3Dベクトルに変換
         Vector3 inputDir = new Vector3(input.x, 0, input.y);
 
@@ -102,6 +107,24 @@ public class PointerController : MonoBehaviour
         }
     }
 
+    public void StartPlacement(GameObject targetObj, GameObject targetGhost, int targetCost, float necessaryPO, float poChange)
+    {
+        // 1. データを受け取る
+        this.obj = targetObj;
+        this.ghost = targetGhost;
+        this.cost = targetCost;
+        this.necessaryPOvalue = necessaryPO;
+        this.POchangevalue = poChange;
+
+        // 2. 必要なものを表示
+        if (pointerVisual != null) pointerVisual.SetActive(true);
+        if (this.ghost != null) this.ghost.SetActive(true);
+        if (ScrollUI != null) ScrollUI.SetActive(false);
+
+        // 3. フラグをONにする（これでUpdateが動き出す）
+        isPointerActive = true;
+    }
+
     public void OnPerformed(InputAction.CallbackContext context)
     {
         input = context.ReadValue<Vector2>();
@@ -123,15 +146,17 @@ public class PointerController : MonoBehaviour
         {
             Debug.Log("メニューを閉じます");
             SEmanager.Instance.Play("cancel");
-            ScrollUI.SetActive(false);
+            UIsetFalse();
         }
         // メニューを閉じているのでメニューを開く
         else
         {
             Debug.Log("メニューを開きます");
-            ScrollUI.SetActive(true);
+            UIsetTrue();
         }
     }
+
+
 
     public void OnCancel(InputAction.CallbackContext context)
     {
@@ -169,14 +194,14 @@ public class PointerController : MonoBehaviour
         Debug.Log("ルート3: 何も実行しませんでした（どちらも非表示、または条件不一致）");
     }
 
-
     // 配置をキャンセルしてメニューを表示
     private void pointerCancel()
     {
         Debug.Log("pointerCancel呼び出し");
         SEmanager.Instance.Play("cancel");
         if(ghost != null)ghost.SetActive(false);
-        if(pointer != null)pointer.SetActive(false);
+        if(pointerVisual != null)pointerVisual.SetActive(false);
+        isPointerActive = false;
 
         obj = null;
         ghost = null;
@@ -187,13 +212,15 @@ public class PointerController : MonoBehaviour
     public void OnPut(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
+        if (!isPointerActive) return;
+
         Debug.Log("OnPut呼び出し");
 
         if (context.performed)
         {
             if (money.Instance.moneycount >= cost && canput)
             {
-                Instantiate(obj, pointer.transform.position, pointer.transform.rotation);
+                Instantiate(obj, transform.position, transform.rotation);
                 money.Instance.moneycount -= cost;
                 PublicOpinionManager.Instance.POchanging(POchangevalue);
 
@@ -236,8 +263,8 @@ public class PointerController : MonoBehaviour
 
         // 配置しようとしていたポインターもキャンセル
         if(ghost != null) ghost.SetActive(false);
-        if(pointer != null) pointer.SetActive(false);
-        obj = null;
+        if(pointerVisual != null) pointerVisual.SetActive(false);
+        isPointerActive = false;
     }
 
     public void UIsetTrue()
@@ -247,7 +274,8 @@ public class PointerController : MonoBehaviour
 
         // ポインターやゴーストは初期状態オフ
         if(ghost != null) ghost.SetActive(false);
-        if(pointer != null) pointer.SetActive(false); 
+        if(pointerVisual != null) pointerVisual.SetActive(false);
+        isPointerActive = false;
     }
 
 }

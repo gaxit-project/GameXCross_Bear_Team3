@@ -442,13 +442,6 @@ public class HunterController : MonoBehaviour
             _agent.velocity = Vector3.zero;
         }
 
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
-
         if (!isDebugMode && animator)
         {
             animator.SetBool("IsWalking", false);
