@@ -13,6 +13,7 @@ public class PauseManager : MonoBehaviour
 
     [Header("コンポーネント")]
     [SerializeField] private CameraController cameraController;
+    [SerializeField] private PointerController pointerController;
     [SerializeField] private CanvasGroup canvasGroup;
 
     private CameraControls controles;
@@ -27,6 +28,14 @@ public class PauseManager : MonoBehaviour
         if (EventSystem.current == null)
         {
             Debug.LogWarning("EventSystem がシーンにありません。UI入力が動きません。");
+        }
+    }
+
+    private void Start()
+    {
+        if (pointerController == null)
+        {
+            pointerController = FindFirstObjectByType<PointerController>();
         }
     }
 
@@ -105,6 +114,11 @@ public class PauseManager : MonoBehaviour
 
         if (pausePanel != null) pausePanel.SetActive(true);
 
+        if (pointerController != null)
+        {
+            pointerController.SetPauseVisuals(true);
+        }
+
         // コントローラー選択先を設定
         if (EventSystem.current != null && firstSelectedOnPause != null)
         {
@@ -124,6 +138,11 @@ public class PauseManager : MonoBehaviour
         isPaused = false;
 
         if (pausePanel != null) pausePanel.SetActive(false);
+
+        if (pointerController != null)
+        {
+            pointerController.SetPauseVisuals(false);
+        }
 
         Time.timeScale = 1f;
 

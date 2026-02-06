@@ -37,6 +37,9 @@ public class PointerController : MonoBehaviour
     // カメラの情報をキャッシュする変数
     private Camera _mainCamera;
 
+    private bool wasMenuOpenBeforePause = false;
+    private bool wasGhostActiveBeforePause = false;
+
     [Header("設定")]
     [Tooltip("回転速度（度/秒）")]
     [SerializeField] private float rotationSpeed = 90f;
@@ -268,6 +271,38 @@ public class PointerController : MonoBehaviour
             GameManager.Instance.SkipSetupPhase();
         }
     }
+
+    public void SetPauseVisuals(bool isPaused)
+{
+    if (isPaused)
+    {
+        // ポーズ開始：現在の状態を記憶して非表示にする
+        wasMenuOpenBeforePause = ScrollUI != null && ScrollUI.activeSelf;
+        wasGhostActiveBeforePause = ghost != null && ghost.activeSelf;
+
+        // メニューを隠す
+        if (ScrollUI != null) ScrollUI.SetActive(false);
+
+        // 設置中のゴーストやポインターがあれば隠す（キャンセルはしない）
+        if (ghost != null) ghost.SetActive(false);
+        if (pointerVisual != null) pointerVisual.SetActive(false);
+    }
+    else
+    {
+        // ポーズ解除：記憶していた状態に戻す
+        if (wasMenuOpenBeforePause && ScrollUI != null)
+        {
+            ScrollUI.SetActive(true);
+        }
+
+        // 設置モード中だった場合、表示を復帰させる
+        if (wasGhostActiveBeforePause)
+        {
+            if (ghost != null) ghost.SetActive(true);
+            if (pointerVisual != null) pointerVisual.SetActive(true);
+        }
+    }
+}
 
     // オブジェクトが有効になったときに入力を有効化
     private void OnEnable()
