@@ -55,6 +55,7 @@ public class HouseHealth : MonoBehaviour
             GameManager.Instance.ReportHouseDestroyed(this);
         }
 
+        SEmanager.Instance.Play("collapse");
         // 被害件数（家の破壊数）をカウント
         KillCountManager.Instance?.DamageCounterplus();
 

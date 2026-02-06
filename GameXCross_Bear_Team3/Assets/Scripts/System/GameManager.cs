@@ -171,6 +171,7 @@ public class GameManager : MonoBehaviour
                 if (TimeRemaining.Value <= 0)
                 {
                     StartBattlePhase(); // 0秒になるとバトル開始
+                    SEmanager.Instance.Play("bear");
                 }
             })
             .AddTo(_disposables);

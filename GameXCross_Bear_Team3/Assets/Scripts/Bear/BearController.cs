@@ -1,6 +1,8 @@
 ﻿using DG.Tweening;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using UniRx;
 using UniRx.Triggers;
@@ -584,7 +586,7 @@ public class BearController : MonoBehaviour, TrapTarget
     private void Die()
     {
         if (_isDead) return; // 二重呼び出し防止
-        SEmanager.Instance.Play("bear");
+        StartCoroutine(BearCry());
         _isDead = true;
         _agent.enabled = false;
         StopAttacking();
@@ -618,5 +620,11 @@ public class BearController : MonoBehaviour, TrapTarget
         deathSequence.Join(transform.DOMoveY(transform.position.y - 0.5f, 0.5f).SetEase(Ease.InQuad));
         deathSequence.Append(transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InQuad));
         deathSequence.OnComplete(() => Destroy(gameObject));
+    }
+
+    private IEnumerator BearCry()
+    {
+        yield return new WaitForSeconds(0.3f);
+        SEmanager.Instance.Play("bear");
     }
 }
