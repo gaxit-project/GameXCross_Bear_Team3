@@ -139568,13 +139568,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 782122258}
     m_Modifications:
+    - target: {fileID: 1521600992938155276, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: aecf48c8bfc202547aca8ca525571570, type: 2}
+    - target: {fileID: 1521600992938155276, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0.019686673
+      objectReference: {fileID: 0}
+    - target: {fileID: 1521600992938155276, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0.2981131
+      objectReference: {fileID: 0}
+    - target: {fileID: 1521600992938155276, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.03675084
+      objectReference: {fileID: 0}
+    - target: {fileID: 1521600992938155276, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 5400077621361587827, guid: aecf48c8bfc202547aca8ca525571570, type: 2}
+    - target: {fileID: 1521600992938155276, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278537225
+      objectReference: {fileID: 0}
+    - target: {fileID: 1521600992938155276, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3601941489371328418, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
       propertyPath: m_Name
       value: Pause
       objectReference: {fileID: 0}
     - target: {fileID: 3601941489371328418, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3719730449187764792, guid: 570b692ec8cf5a44d9b06387d84f9982, type: 3}
       propertyPath: m_Pivot.x
