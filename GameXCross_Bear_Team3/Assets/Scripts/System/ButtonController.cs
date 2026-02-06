@@ -1,11 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UniRx;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UniRx;
 
 public class ButtonController : MonoBehaviour
 {
-    [SerializeField] private string clickSeKey = "SE_Click";
+    [SerializeField] private string clickSeKey = "deside";
+
+    private bool _ispressing = false;
 
     void Update()
     {
@@ -26,6 +29,9 @@ public class ButtonController : MonoBehaviour
 
     private void TransitionWithSE(string sceneName)
     {
+        // すでに終了処理中なら何もしない（連打防止）
+        if (_ispressing) return;
+        _ispressing = true;
         if (SoundManager.Instance == null)
         {
             SceneManager.LoadScene(sceneName);
@@ -33,8 +39,8 @@ public class ButtonController : MonoBehaviour
         }
 
         // SE再生を開始し、完了したらシーンをロードする
-        SoundManager.Instance.PlaySE(clickSeKey)
-            .First() // 1回のみ実行を保証
+        SEmanager.Instance.Play(clickSeKey);
+            Observable.Timer(TimeSpan.FromSeconds(0.5f), Scheduler.MainThreadIgnoreTimeScale)
             .Subscribe(_ =>
             {
                 SceneManager.LoadScene(sceneName);
@@ -42,12 +48,33 @@ public class ButtonController : MonoBehaviour
             .AddTo(this);
     }
 
-    public void QuitApplication()
+    public void DoQuit()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
+    }
+
+    public void QuitApplication()
+    {
+        // すでに終了処理中なら何もしない（連打防止）
+        if (_ispressing) return;
+        _ispressing = true;
+
+        Debug.Log("終了プロセス開始：音を再生します");
+
+
+        SEmanager.Instance.Play("deside");
+
+
+        Observable.Timer(TimeSpan.FromSeconds(0.5f))
+            .Subscribe(_ =>
+            {
+                // 3. 実際に終了する
+                DoQuit();
+            })
+            .AddTo(this);
     }
 }
