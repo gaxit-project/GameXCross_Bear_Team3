@@ -267,6 +267,8 @@ public class GameManager : MonoBehaviour
 
     private void FinishWave()
     {
+        if (CurrentState.Value != GameState.Battle) return;
+
         // ウェーブ終了時にデータを保存
         KillCountManager.Instance?.DataSet(CurrentWave.Value);
         KillCountManager.Instance?.CountReset();
@@ -303,7 +305,7 @@ public class GameManager : MonoBehaviour
         CurrentState.Value = GameState.Result;
 
         // リザルト画面遷移前に現在のウェーブのデータを保存
-        //KillCountManager.Instance?.DataSet(CurrentWave.Value);(一つ前の工程ですでに済ませてます．)
+        KillCountManager.Instance?.DataSet(CurrentWave.Value);
 
         KillCountManager.IsGameClear = isClear;
 
