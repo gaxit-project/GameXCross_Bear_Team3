@@ -8,8 +8,10 @@ public class PauseManager : MonoBehaviour
     [Header("UIコンポーネント")]
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject selectUI;
-    [SerializeField] private GameObject firstSelectedOnPause; // 追加: 最初に選択するUI
-    [SerializeField] private GameObject lastSelectedOnPause; // 追加: ポーズ前に選択していたUI
+    [SerializeField] private GameObject howToPlayPanel;
+    [SerializeField] private GameObject gameplayUIContainer;
+    [SerializeField] private GameObject firstSelectedOnPause; // 最初に選択するUI
+    [SerializeField] private GameObject lastSelectedOnPause; // ポーズ前に選択していたUI
 
     [Header("コンポーネント")]
     [SerializeField] private CameraController cameraController;
@@ -18,6 +20,7 @@ public class PauseManager : MonoBehaviour
 
     private CameraControls controles;
     private bool isPaused = false;
+    private bool isHowToPlayOpen = false;
 
     private void Awake()
     {
@@ -114,6 +117,8 @@ public class PauseManager : MonoBehaviour
 
         if (pausePanel != null) pausePanel.SetActive(true);
 
+        if (gameplayUIContainer != null) gameplayUIContainer.SetActive(false);
+
         if (pointerController != null)
         {
             pointerController.SetPauseVisuals(true);
@@ -138,6 +143,10 @@ public class PauseManager : MonoBehaviour
         isPaused = false;
 
         if (pausePanel != null) pausePanel.SetActive(false);
+        if (howToPlayPanel != null) howToPlayPanel.SetActive(false);
+        isHowToPlayOpen = false;
+
+        if (gameplayUIContainer != null) gameplayUIContainer.SetActive(true);
 
         if (pointerController != null)
         {
