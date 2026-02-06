@@ -25,6 +25,10 @@ public class PointerController : MonoBehaviour
     [Header("その設置物の設置時の変動世論値")]
     [SerializeField] public float POchangevalue;
 
+    [Header("バトル中の設置設定")]
+    private float buildDelay = 3.0f;
+    [SerializeField] private GameObject timerUIPrefab;
+
     public bool canput;
     private Vector2 input;
 
@@ -49,10 +53,11 @@ public class PointerController : MonoBehaviour
     {
         _mainCamera = Camera.main;
 
-        //UIsetFalse();
-
         if (GameManager.Instance != null)
         {
+            var data = GameManager.Instance.Balance;
+            this.buildDelay = data.buildDelay;
+
             GameManager.Instance.CurrentState
                 .Subscribe(state =>
                 {
@@ -109,19 +114,16 @@ public class PointerController : MonoBehaviour
 
     public void StartPlacement(GameObject targetObj, GameObject targetGhost, int targetCost, float necessaryPO, float poChange)
     {
-        // 1. データを受け取る
         this.obj = targetObj;
         this.ghost = targetGhost;
         this.cost = targetCost;
         this.necessaryPOvalue = necessaryPO;
         this.POchangevalue = poChange;
 
-        // 2. 必要なものを表示
         if (pointerVisual != null) pointerVisual.SetActive(true);
         if (this.ghost != null) this.ghost.SetActive(true);
         if (ScrollUI != null) ScrollUI.SetActive(false);
 
-        // 3. フラグをONにする（これでUpdateが動き出す）
         isPointerActive = true;
     }
 
@@ -218,9 +220,35 @@ public class PointerController : MonoBehaviour
 
         if (context.performed)
         {
+            if (obj == null)
+            {
+                Debug.LogError("設置対象(obj)がnullです");
+                pointerCancel();
+                return;
+            }
+
             if (money.Instance.moneycount >= cost && canput)
             {
-                Instantiate(obj, transform.position, transform.rotation);
+                bool isBattle = GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Battle;
+
+                if (isBattle)
+                {
+                    GameObject constructionSite = Instantiate(ghost, transform.position, transform.rotation);
+                    constructionSite.SetActive(true);
+
+                    var ghostScripts = constructionSite.GetComponentsInChildren<BuildingGhost>();
+                    
+                    foreach (var script in ghostScripts) script.SwitchToConstructionMode();
+
+                    // タイマーを取り付けて、本物のプレハブ(obj)を渡す
+                    ConstructionTimer timer = constructionSite.AddComponent<ConstructionTimer>();
+                    timer.Initialize(obj, buildDelay, timerUIPrefab);
+                }
+                else
+                {
+                    Instantiate(obj, transform.position, transform.rotation);
+                }
+
                 money.Instance.moneycount -= cost;
                 PublicOpinionManager.Instance.POchanging(POchangevalue);
 

@@ -30,12 +30,15 @@ public class GameBalanceData : ScriptableObject
     public float bearHunterAttackRange = 10.0f;
     public float bearDetectionRadius = 15.0f;
 
-    [Header("--- 環境 (家・設備) ---")]
+    [Header("--- 家---")]
     public float houseMaxHp = 100f;
 
-    [Header("--- ギミック (電気柵) ---")]
+    [Header("--- 電気柵 ---")]
     public float fenceDamage = 10f;
     public float fenceParalysisDuration = 3.0f;
+
+    [Header("--- 設置までの時間 ---")]
+    public float buildDelay = 5.0f;
 
     [Header("--- 金額設定 ---")]
     [Tooltip("初期所持金")]

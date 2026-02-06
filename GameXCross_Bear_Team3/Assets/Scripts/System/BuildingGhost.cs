@@ -4,13 +4,14 @@ using System.Collections.Generic;
 [RequireComponent(typeof(BoxCollider))]
 public class BuildingGhost : MonoBehaviour
 {
-    [Header("İ’è")]
+    [Header("ï¿½İ’ï¿½")]
     [SerializeField] private string groundTag = "Ground";
     [SerializeField] private Material validMaterial;
     [SerializeField] private Material invalidMaterial;
-    [SerializeField] private PointerController p; // ƒRƒ“ƒgƒ[ƒ‰[‚Ì–¼‘O‚Í‚»‚Ì‚Ü‚Ü‚É‚µ‚Ä‚¢‚Ü‚·
+    [SerializeField] private Material constructionMaterial;
+    [SerializeField] private PointerController p; // ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[ï¿½Ì–ï¿½ï¿½Oï¿½Í‚ï¿½ï¿½Ì‚Ü‚Ü‚É‚ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½
 
-    [Header("”»’è’²®")]
+    [Header("ï¿½ï¿½ï¿½è’²ï¿½ï¿½")]
     [SerializeField] private float sizeScale = 0.9f;
 
     private BoxCollider boxCollider;
@@ -32,36 +33,62 @@ public class BuildingGhost : MonoBehaviour
         UpdateVisual();
     }
 
+    public void SwitchToConstructionMode()
+    {
+        // ãƒãƒ†ãƒªã‚¢ãƒ«ãŒè¨­å®šã•ã‚Œã¦ã„ãªã‘ã‚Œã°ã€æ©Ÿèƒ½ã ã‘æ­¢ã‚ã¦çµ‚äº†ï¼ˆãƒ—ãƒ¬ãƒãƒ–æœ¬æ¥ã®è‰²ã«ãªã‚‹ï¼‰
+        if (constructionMaterial == null)
+        {
+            this.enabled = false; 
+            return;
+        }
+
+        // å…¨ã¦ã®ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã‚’ã€Œå»ºè¨­ä¸­ãƒãƒ†ãƒªã‚¢ãƒ«ã€ã«å¡—ã‚Šæ›¿ãˆã‚‹
+        foreach (var renderer in meshRenderers)
+        {
+            if (renderer == null) continue;
+
+            Material[] newMats = new Material[renderer.sharedMaterials.Length];
+            for (int i = 0; i < newMats.Length; i++)
+            {
+                newMats[i] = constructionMaterial;
+            }
+            renderer.sharedMaterials = newMats;
+        }
+
+        // æœ€å¾Œã«ã“ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’åœæ­¢ï¼ˆUpdateã§ç·‘/èµ¤ã«æˆ»ã•ã‚Œã‚‹ã®ã‚’é˜²ãï¼‰
+        this.enabled = false; 
+    }
+
     private void CheckOverlap()
     {
-        // yC³1z’†S“_‚ÌŒvZ
-        // boxCollider.center‚Íƒ[ƒJƒ‹À•W‚È‚Ì‚ÅATransformPoint‚Åƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·‚µ‚Ü‚·B
-        // ‚±‚ê‚É‚æ‚èAƒIƒuƒWƒFƒNƒg‚ª‰ñ“]‚µ‚Ä‚¢‚Ä‚à³‚µ‚¢’†SˆÊ’u‚ªŒvZ‚³‚ê‚Ü‚·B
+        // ï¿½yï¿½Cï¿½ï¿½1ï¿½zï¿½ï¿½ï¿½Sï¿½_ï¿½ÌŒvï¿½Z
+        // boxCollider.centerï¿½Íƒï¿½ï¿½[ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½È‚Ì‚ÅATransformPointï¿½Åƒï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Wï¿½É•ÏŠï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+        // ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½Aï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½]ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½Ê’uï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
         Vector3 center = transform.TransformPoint(boxCollider.center);
 
-        // yC³2zƒTƒCƒY‚ÌŒvZ
-        // boxCollider.size‚ÍŒ³‚ÌƒTƒCƒY‚È‚Ì‚ÅAƒIƒuƒWƒFƒNƒg‚ÌƒXƒP[ƒ‹(lossyScale)‚ğŠ|‚¯‡‚í‚¹‚Ü‚·B
-        // ‚±‚ê‚ÅƒIƒuƒWƒFƒNƒg‚ğŠg‘åk¬‚µ‚Ä‚¢‚Ä‚à”»’èƒ{ƒbƒNƒX‚ª’Ç]‚µ‚Ü‚·B
+        // ï¿½yï¿½Cï¿½ï¿½2ï¿½zï¿½Tï¿½Cï¿½Yï¿½ÌŒvï¿½Z
+        // boxCollider.sizeï¿½ÍŒï¿½ï¿½ÌƒTï¿½Cï¿½Yï¿½È‚Ì‚ÅAï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ÌƒXï¿½Pï¿½[ï¿½ï¿½(lossyScale)ï¿½ï¿½ï¿½|ï¿½ï¿½ï¿½ï¿½ï¿½í‚¹ï¿½Ü‚ï¿½ï¿½B
+        // ï¿½ï¿½ï¿½ï¿½ÅƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½gï¿½ï¿½kï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½{ï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ç]ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
         Vector3 worldSize = Vector3.Scale(boxCollider.size, transform.lossyScale);
         Vector3 halfExtents = (worldSize * 0.5f) * sizeScale;
 
         Quaternion orientation = transform.rotation;
 
-        // w’è”ÍˆÍ“à‚Ì‚·‚×‚Ä‚ÌƒRƒ‰ƒCƒ_[‚ğæ“¾
+        // ï¿½wï¿½ï¿½ÍˆÍ“ï¿½ï¿½Ì‚ï¿½ï¿½×‚Ä‚ÌƒRï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½ï¿½ï¿½æ“¾
         Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, orientation);
 
         bool overlapFound = false;
 
         foreach (var hit in hitColliders)
         {
-            // ©•ªA‚Ü‚½‚Í©•ª‚Ìq—v‘f‚È‚ç–³‹
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Ü‚ï¿½ï¿½Íï¿½ï¿½ï¿½ï¿½Ìqï¿½vï¿½fï¿½È‚ç–³ï¿½ï¿½
             if (hit.transform.IsChildOf(transform)) continue;
 
-            // ’n–Êƒ^ƒO‚Í–³‹
+            // ï¿½nï¿½Êƒ^ï¿½Oï¿½Í–ï¿½ï¿½ï¿½
             if (hit.CompareTag(groundTag)) continue;
 
             overlapFound = true;
-            // Debug.Log($"Õ“Ë: {hit.name}"); 
+            // Debug.Log($"ï¿½Õ“ï¿½: {hit.name}"); 
             break;
         }
 
@@ -74,7 +101,7 @@ public class BuildingGhost : MonoBehaviour
 
         Material targetMaterial = isPlaceable ? validMaterial : invalidMaterial;
 
-        // p‚ªƒAƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Ìnullƒ`ƒFƒbƒN‚ğ’Ç‰Á‚µ‚Ä‚¨‚­‚ÆˆÀ‘S‚Å‚·
+        // pï¿½ï¿½ï¿½Aï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½nullï¿½`ï¿½Fï¿½bï¿½Nï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½Æˆï¿½ï¿½Sï¿½Å‚ï¿½
         if (p != null) p.canput = isPlaceable;
 
         foreach (var renderer in meshRenderers)
@@ -100,25 +127,25 @@ public class BuildingGhost : MonoBehaviour
         }
     }
 
-    // yC³3zGizmos‚àŒvZ®‚ğ‡‚í‚¹‚é
-    // Physics.OverlapBox‚Æ‘S‚­“¯‚¶ŒvZ‚Å•`‰æ‚µ‚È‚¢‚ÆAŒ©‚½–Ú‚Æ”»’è‚ªƒYƒŒ‚ÄŒ´ˆö‚ª‚í‚©‚ç‚È‚­‚È‚è‚Ü‚·
+    // ï¿½yï¿½Cï¿½ï¿½3ï¿½zGizmosï¿½ï¿½ï¿½vï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½í‚¹ï¿½ï¿½
+    // Physics.OverlapBoxï¿½Æ‘Sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½Å•`ï¿½æ‚µï¿½È‚ï¿½ï¿½ÆAï¿½ï¿½ï¿½ï¿½ï¿½Ú‚Æ”ï¿½ï¿½è‚ªï¿½Yï¿½ï¿½ï¿½ÄŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½í‚©ï¿½ï¿½È‚ï¿½ï¿½È‚ï¿½Ü‚ï¿½
     private void OnDrawGizmos()
     {
         if (boxCollider == null) return;
 
         Gizmos.color = isPlaceable ? Color.green : Color.red;
 
-        // Physics‚ÌŒvZ‚Æ“¯‚¶ƒƒWƒbƒN‚ğ—pˆÓ
+        // Physicsï¿½ÌŒvï¿½Zï¿½Æ“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½bï¿½Nï¿½ï¿½pï¿½ï¿½
         Vector3 center = transform.TransformPoint(boxCollider.center);
         Vector3 worldSize = Vector3.Scale(boxCollider.size, transform.lossyScale);
         Vector3 size = worldSize * sizeScale;
 
-        // ‰ñ“]‚³‚¹‚½ó‘Ô‚ÅƒLƒ…[ƒu‚ğ•`‰æ
+        // ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ÅƒLï¿½ï¿½ï¿½[ï¿½uï¿½ï¿½`ï¿½ï¿½
         Matrix4x4 rotationMatrix = Matrix4x4.TRS(center, transform.rotation, size);
         Gizmos.matrix = rotationMatrix;
 
-        // Matrix‚Å‚·‚Å‚ÉˆÊ’uE‰ñ“]EƒTƒCƒY‚ğ“K—p‚µ‚Ä‚¢‚é‚Ì‚ÅA
-        // DrawWireCube‚É‚ÍŒ´“_’†SEƒTƒCƒY1‚Ì—§•û‘Ì‚ğ“n‚¹‚ÎOK
+        // Matrixï¿½Å‚ï¿½ï¿½Å‚ÉˆÊ’uï¿½Eï¿½ï¿½]ï¿½Eï¿½Tï¿½Cï¿½Yï¿½ï¿½Kï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ÅA
+        // DrawWireCubeï¿½É‚ÍŒï¿½ï¿½_ï¿½ï¿½ï¿½Sï¿½Eï¿½Tï¿½Cï¿½Y1ï¿½Ì—ï¿½ï¿½ï¿½ï¿½Ì‚ï¿½nï¿½ï¿½ï¿½ï¿½OK
         Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
     }
 }
