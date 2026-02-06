@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using TMPro;
 using UniRx;
+using DG.Tweening;
 
 public class PhaseInfoUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI phaseText;
     [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private TextMeshProUGUI flashText;
+
+    private Tween flashBlinkTween;
 
     void Start()
     {
@@ -25,14 +29,26 @@ public class PhaseInfoUI : MonoBehaviour
         GameManager.Instance.CurrentState
             .Subscribe(state =>
             {
-                if (phaseText == null) return;
+                flashBlinkTween?.Kill();
+                if (flashBlinkTween != null) flashText.alpha = 1f;
                 
                 switch (state)
                 {
                     case GameState.Setup:
-                        phaseText.text = "準備フェーズ";
-                        phaseText.color = Color.white; // 白くする
-                        if (timerText != null) timerText.gameObject.SetActive(true);
+                        if (phaseText != null)
+                        {
+                            phaseText.text = "準備フェーズ";
+                            phaseText.color = Color.white; // 白くする
+                            if (timerText != null) timerText.gameObject.SetActive(true);
+                        }
+
+                        if (flashText != null)
+                            {
+                                flashText.text = "Yでスキップ";
+                                flashBlinkTween = flashText.DOFade(0.0f, 0.8f)
+                                    .SetLoops(-1, LoopType.Yoyo)
+                                    .SetEase(Ease.InOutSine);
+                            }
                         break;
                     case GameState.Battle:
                         phaseText.text = "襲撃開始！！";
