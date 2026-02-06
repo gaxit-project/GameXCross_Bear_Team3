@@ -49,16 +49,17 @@ public class HouseHealth : MonoBehaviour
 
     private void Collapse()
     {
-        // GameManagerに家の破壊を報告（ターゲットから除外）
+        SEmanager.Instance.Play("collapse");
+        
+        //①　先にカウントを増やす
+        KillCountManager.Instance?.DamageCounterplus();
+        
+        //② GameManagerに家の破壊を報告（ターゲットから除外）
         if (GameManager.Instance != null)
         {
             GameManager.Instance.ReportHouseDestroyed(this);
         }
-
-        SEmanager.Instance.Play("collapse");
-        // 被害件数（家の破壊数）をカウント
-        KillCountManager.Instance?.DamageCounterplus();
-
+        
         transform.DOKill();
         transform.SetParent(null);
 
