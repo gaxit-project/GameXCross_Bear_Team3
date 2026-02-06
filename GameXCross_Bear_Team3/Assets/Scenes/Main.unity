@@ -11626,6 +11626,7 @@ MonoBehaviour:
   firstSelectedOnPause: {fileID: 626345239}
   lastSelectedOnPause: {fileID: 0}
   cameraController: {fileID: 67419635}
+  pointerController: {fileID: 0}
   canvasGroup: {fileID: 7249335416971573201}
 --- !u!114 &165155368
 MonoBehaviour:
@@ -66246,7 +66247,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 95fa78c994676244a96e7c7540ae2670, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 390f7d0a3108b474ba4b90ec0a470d43, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -139733,7 +139734,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 62343f61b43e10a4da9c9f44e2376957, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 80a5e9f226d26f444a3e3eaaee38c968, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -140414,7 +140415,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2791579256587556017}
   m_HandleRect: {fileID: 235148221738259894}
   m_Direction: 0
-  m_Value: -0.00000076293946
+  m_Value: 0.0000022888185
   m_Size: 0.96
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -140475,7 +140476,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0a63affbd340c5a469a5d8ba788b327b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 86a3680a9d3650946aea458d222614c7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -141153,7 +141154,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1c5bdbe927b284544975a7e374327eaf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 01c5d861374e57c42949b7129f5a1912, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
