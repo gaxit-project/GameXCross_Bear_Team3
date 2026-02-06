@@ -21,7 +21,7 @@ public class SettingsSceneUI : MonoBehaviour
     [SerializeField] private string returnSceneName = "Title";
 
     [Header("SE設定")]
-    [SerializeField] private string clickSeKey = "SE_Click";
+    [SerializeField] private string clickSeKey = "deside";
 
     private void Start()
     {
@@ -81,6 +81,22 @@ public class SettingsSceneUI : MonoBehaviour
     private void OnSEVolumeChanged(float value)
     {
         VolumeSettings.SEVolume = value;
+        
+        // スライダー変更時にテスト音を再生（音量確認用）
+        if (SEmanager.Instance != null)
+        {
+            Debug.Log($"SEmanager.Instance.Play({clickSeKey}) を実行");
+            SEmanager.Instance.Play(clickSeKey);
+        }
+        else if (SoundManager.Instance != null)
+        {
+            Debug.Log($"SoundManager.Instance.Play({clickSeKey}) を実行");
+            SoundManager.Instance.Play(clickSeKey);
+        }
+        else
+        {
+            Debug.LogWarning("SEmanagerとSoundManagerの両方のInstanceがnullです。テスト音を再生できません。");
+        }
     }
 
     /// <summary>

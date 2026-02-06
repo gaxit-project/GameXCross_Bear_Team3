@@ -305,7 +305,7 @@ MonoBehaviour:
   seSlider: {fileID: 1836257811}
   firstSelected: {fileID: 0}
   returnSceneName: Title
-  clickSeKey: SE_Click
+  clickSeKey: deside
 --- !u!114 &219363635
 MonoBehaviour:
   m_ObjectHideFlags: 0
