@@ -30729,7 +30729,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -225, y: 0}
+  m_AnchoredPosition: {x: -230.7, y: 0}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &516058776
@@ -30754,8 +30754,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uFFE5"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 07b5d8b40e16c6e44b89c5a1603c11a7, type: 2}
-  m_sharedMaterial: {fileID: -8524994030885212809, guid: 07b5d8b40e16c6e44b89c5a1603c11a7, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a286d7d2742a2ad4c940320222fd7248, type: 2}
+  m_sharedMaterial: {fileID: 116312086796069171, guid: a286d7d2742a2ad4c940320222fd7248, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
