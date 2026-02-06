@@ -45,7 +45,7 @@ public class UICursor_title : MonoBehaviour
 
         // ç¿ïWà⁄ìÆ (newPos.y ÇèCê≥)
         Vector3 newPos = cursor.transform.position;
-        newPos.y = Mathf.Lerp(newPos.y, selected.transform.position.y, Time.deltaTime * scrollSpeed);
+        newPos.y = Mathf.Lerp(newPos.y, selected.transform.position.y, Time.unscaledDeltaTime * scrollSpeed);
         cursor.transform.position = newPos;
     }
 }
