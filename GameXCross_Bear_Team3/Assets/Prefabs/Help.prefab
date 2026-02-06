@@ -86,6 +86,7 @@ GameObject:
   - component: {fileID: 5198336258421804056}
   - component: {fileID: 8769234484954407112}
   - component: {fileID: 1299256099697905629}
+  - component: {fileID: 2482869421593706134}
   m_Layer: 5
   m_Name: Help
   m_TagString: Untagged
@@ -152,6 +153,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2482869421593706134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6402840113633270632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa8a451404e0df14bb5d16bbf18d8f72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  page1: {fileID: 1962792859682834555}
+  page2: {fileID: 8510187338758891055}
 --- !u!1 &8510187338758891055
 GameObject:
   m_ObjectHideFlags: 0

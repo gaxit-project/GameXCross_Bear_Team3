@@ -7,8 +7,14 @@ using UnityEngine.SceneManagement;
 public class ButtonController : MonoBehaviour
 {
     [SerializeField] private string clickSeKey = "deside";
+    [SerializeField] private GameObject howToPlayPanel;
 
     private bool _ispressing = false;
+
+    void Start()
+    {
+        howToPlayPanel?.SetActive(false);
+    }
 
     void Update()
     {
@@ -16,6 +22,16 @@ public class ButtonController : MonoBehaviour
         {
             TransitionWithSE("Title");
         }
+
+        var gamepad = Gamepad.current;
+        if (gamepad != null && gamepad.bButton.wasPressedThisFrame)
+        {
+            if (howToPlayPanel != null && howToPlayPanel.activeSelf)
+            {
+                howToPlayPanel.SetActive(false);
+                SEmanager.Instance.Play("cancel");
+            }
+            }
     }
 
     public void SwithToTitle()
@@ -26,6 +42,19 @@ public class ButtonController : MonoBehaviour
     }
     public void SwithToMain() => TransitionWithSE("Main");
     public void SwithToSetting() => TransitionWithSE("Setting");
+
+    public void ShowHowToPlay()
+    {
+        if (howToPlayPanel != null)
+        {
+            howToPlayPanel.SetActive(true);
+            
+            if (SEmanager.Instance != null)
+            {
+                SEmanager.Instance.Play("deside");
+            }
+        }
+    }
 
     private void TransitionWithSE(string sceneName)
     {
