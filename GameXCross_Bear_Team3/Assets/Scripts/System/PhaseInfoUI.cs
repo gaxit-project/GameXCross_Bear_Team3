@@ -51,6 +51,7 @@ public class PhaseInfoUI : MonoBehaviour
                             }
                         break;
                     case GameState.Battle:
+                    flashText.text = "";
                         phaseText.text = "襲撃開始！！";
                         phaseText.color = Color.red; // 赤くする
                         if (timerText != null) timerText.gameObject.SetActive(false); // タイマーを消す
