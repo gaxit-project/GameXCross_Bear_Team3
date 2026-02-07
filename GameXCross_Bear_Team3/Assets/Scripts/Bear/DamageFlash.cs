@@ -49,10 +49,15 @@ public class DamageFlash : MonoBehaviour
 
     IEnumerator FlashRoutine()
     {
-        // 全てのマテリアルを赤くする
         foreach (var data in _materialDataList)
         {
-            data.material.color = flashColor;
+            if (data.material == null) continue;
+
+            // URP用とStandard用、両方のプロパティ名を試す
+            if (data.material.HasProperty("_BaseColor"))
+                data.material.SetColor("_BaseColor", flashColor);
+            else if (data.material.HasProperty("_Color"))
+                data.material.SetColor("_Color", flashColor);
         }
 
         yield return new WaitForSeconds(flashDuration);
@@ -63,13 +68,14 @@ public class DamageFlash : MonoBehaviour
 
     private void ResetColor()
     {
-        // 全てのマテリアルを元の色に戻す
         foreach (var data in _materialDataList)
         {
-            // 敵が破壊された後に呼ばれるエラーを防ぐチェック
             if (data.material != null)
             {
-                data.material.color = data.originalColor;
+                if (data.material.HasProperty("_BaseColor"))
+                    data.material.SetColor("_BaseColor", data.originalColor);
+                else if (data.material.HasProperty("_Color"))
+                    data.material.SetColor("_Color", data.originalColor);
             }
         }
     }

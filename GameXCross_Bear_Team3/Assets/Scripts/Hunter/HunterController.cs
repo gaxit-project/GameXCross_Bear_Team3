@@ -50,6 +50,8 @@ public class HunterController : MonoBehaviour
     [Header("デバッグ")]
     [SerializeField] private bool isDebugMode = false; // アニメーションなしのデバッグモード
 
+    [SerializeField] private DamageFlash DamageFlash;
+
     private NavMeshAgent _agent;
     private Vector3 _spawnPosition;
     private BearController _targetBear;
@@ -470,6 +472,8 @@ public class HunterController : MonoBehaviour
     public void TakeDamage(float damage)
     {
         if (_isDead) return;
+
+        DamageFlash.Flash();
 
         _currentHealth -= damage;
         transform.DOShakeScale(0.2f, 0.1f); // ダメージ演出

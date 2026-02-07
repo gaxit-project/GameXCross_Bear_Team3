@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7213956903722494490}
   - component: {fileID: 2322665070287667389}
   - component: {fileID: 4780886880854271714}
+  - component: {fileID: 2823544772433238616}
   m_Layer: 0
   m_Name: Hunter_v3
   m_TagString: Hunter
@@ -138,6 +139,21 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   isDebugMode: 0
+  DamageFlash: {fileID: 2823544772433238616}
+--- !u!114 &2823544772433238616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104643566454902700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ccd6222d950fe140984a59310cc92cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.1
 --- !u!1 &9084381913124514767
 GameObject:
   m_ObjectHideFlags: 0
