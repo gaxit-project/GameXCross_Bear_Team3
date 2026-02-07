@@ -21,7 +21,7 @@ MonoBehaviour:
   hunterAttackRange: 100
   hunterAttackInterval: 1
   hunterDetectionRadius: 300
-  bulletSpeed: 2000
+  bulletSpeed: 500
   bearMaxHealth: 100
   bearMoveSpeed: 10
   bearAttackDamage: 20
@@ -32,6 +32,7 @@ MonoBehaviour:
   houseMaxHp: 200
   fenceDamage: 10
   fenceParalysisDuration: 3
+  buildDelay: 5
   initialMoney: 1000000
   bearDefeatReward: 300000
   bearCaptureReward: 450000
