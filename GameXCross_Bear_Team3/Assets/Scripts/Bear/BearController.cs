@@ -559,6 +559,8 @@ public class BearController : MonoBehaviour, TrapTarget
     // 実行中の攻撃ループの停止・リソースの解放
     private void StopAttacking()
     {
+        _agent.updateRotation = true;
+        
         if (_attackStream != null)
         {
             _attackStream.Dispose();
