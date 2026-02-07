@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   setupTime: 30
   maxWaves: 3
-  enemiesPerWave: 010000000200000004000000
+  enemiesPerWave: 02000000050000000a000000
   hunterMaxHealth: 50
   hunterMoveSpeed: 10
   hunterAttackDamage: 10
   hunterAttackRange: 100
-  hunterAttackInterval: 1
+  hunterAttackInterval: 2
   hunterDetectionRadius: 300
   bulletSpeed: 500
   bearMaxHealth: 100
-  bearMoveSpeed: 10
+  bearMoveSpeed: 15
   bearAttackDamage: 20
   bearAttackInterval: 3
   bearHouseAttackRange: 5

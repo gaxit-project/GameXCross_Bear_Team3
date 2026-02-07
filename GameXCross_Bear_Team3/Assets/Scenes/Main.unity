@@ -11659,7 +11659,7 @@ MonoBehaviour:
   - {fileID: 546411800}
   - {fileID: 1703210406}
   moveSpeed: 5
-  enemiesPerWave: 010000000200000004000000
+  enemiesPerWave: 02000000050000000a000000
   markerPositions:
   - {fileID: 1989726384}
   - {fileID: 400200531}
@@ -140385,7 +140385,7 @@ MonoBehaviour:
   pointer: {fileID: 848974977}
   ghost: {fileID: 1124478299}
   obj: {fileID: 4426026038796339423, guid: 655fec90e19f1804990216b291e5988b, type: 3}
-  cost: 100000
+  cost: 500000
   necessaryPOvalue: -1
   POchangevalue: -0.1
   p: {fileID: 848974984}
@@ -140919,8 +140919,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2791579256587556017}
   m_HandleRect: {fileID: 235148221738259894}
   m_Direction: 0
-  m_Value: 0.000003051753
-  m_Size: 0.9599999
+  m_Value: 0.00000076293946
+  m_Size: 0.96
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
