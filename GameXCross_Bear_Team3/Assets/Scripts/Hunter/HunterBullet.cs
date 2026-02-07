@@ -44,7 +44,7 @@ public class HunterBullet : MonoBehaviour
 
             Destroy(gameObject);
         }
-        else if (!other.CompareTag("Ground") || other.CompareTag("House"))
+        else if (!other.CompareTag("Hunter") && (other.CompareTag("Ground") || other.CompareTag("House")))
         {
             Destroy(gameObject);
         }
