@@ -38,9 +38,9 @@ public class FieldManager : MonoBehaviour
         if(gameManager.CurrentState.Value == GameState.Battle )
         {
             timer += Time.deltaTime;
-            if(timer > interval)
+            if(timer > interval/5)
             {
-                money.moneycount += value[level];
+                money.moneycount += value[level]/5;
                 timer = 0;
             }
         }
