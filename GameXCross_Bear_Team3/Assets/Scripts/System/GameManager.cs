@@ -231,6 +231,7 @@ public class GameManager : MonoBehaviour
 
         if(_isWaveSpawningComplete && activeEnemies <= 0)
         {
+            KillCountManager.Instance?.DataSet(CurrentWave.Value);
             Debug.Log("すべての熊を撃退または捕獲しました！");
             Observable.Timer(TimeSpan.FromSeconds(2.0f))
             .Subscribe(_ =>FinishWave())
@@ -271,10 +272,10 @@ public class GameManager : MonoBehaviour
 
         // ウェーブ終了時にデータを保存
         KillCountManager.Instance?.DataSet(CurrentWave.Value);
-        KillCountManager.Instance?.CountReset();
 
         if (CurrentWave.Value < MaxWaves)
         {
+            KillCountManager.Instance?.CountReset();
             CurrentState.Value = GameState.Result;
             PhaseResult.Instance.Result();
             CurrentWave.Value++;
@@ -306,6 +307,7 @@ public class GameManager : MonoBehaviour
 
         // リザルト画面遷移前に現在のウェーブのデータを保存
         KillCountManager.Instance?.DataSet(CurrentWave.Value);
+        KillCountManager.Instance?.CountReset();
 
         KillCountManager.IsGameClear = isClear;
 
