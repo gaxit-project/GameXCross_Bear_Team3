@@ -8,6 +8,7 @@ public class PhaseResult : MonoBehaviour
     [SerializeField] private GameObject phaseResult;
     [SerializeField] private GameObject button;
     [SerializeField] private GameObject selectUIbutton;
+    [SerializeField] private GameObject UI;
 
     [Header("表示")]
     [SerializeField] private TextMeshProUGUI day;
@@ -50,12 +51,15 @@ public class PhaseResult : MonoBehaviour
 
     public void Result()
     {
+        UI.SetActive(false);
         if (phaseResult == null)
         {
             Debug.LogWarning("PhaseResult: phaseResultパネルが設定されていません");
             return;
         }
-        
+
+        Time.timeScale = 0f;
+
         // 結果表示前に現在の日のデータを保存
         int daycount = CurrentDay;
         //if (KillCountManager.Instance != null)
@@ -85,6 +89,7 @@ public class PhaseResult : MonoBehaviour
 
     public void NextDay()
     {
+        UI.SetActive(true);
         if (phaseResult != null)
         {
             phaseResult.SetActive(false);
@@ -94,5 +99,6 @@ public class PhaseResult : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(selectUIbutton);
         }
+        Time.timeScale = 1f;
     }
 }

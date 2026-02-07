@@ -41,7 +41,7 @@ public class SerectObject : MonoBehaviour
 
     private void Update()
     {
-        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue)&&money.Instance.moneycount >= currentcost)
+        if(money.Instance.moneycount >= currentcost)
             Image.color = canpush;
         else
             Image.color = cantpush;
@@ -51,7 +51,7 @@ public class SerectObject : MonoBehaviour
 
     public void Onclick()
     {
-        if(PublicOpinionManager.Instance.JudgePO(necessaryPOvalue) && money.Instance.moneycount >= currentcost)
+        if(money.Instance.moneycount >= currentcost)
         {
             Debug.Log("Onclickが実行されました");
             StartCoroutine(ChangeUIAfterWait());
