@@ -33,6 +33,6 @@ MonoBehaviour:
   fenceDamage: 30
   fenceParalysisDuration: 5
   buildDelay: 5
-  initialMoney: 1500000
-  bearDefeatReward: 300000
-  bearCaptureReward: 450000
+  initialMoney: 1000000
+  bearDefeatReward: 100000
+  bearCaptureReward: 150000
