@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   setupTime: 30
   maxWaves: 3
-  enemiesPerWave: 02000000050000000a000000
+  enemiesPerWave: 02000000040000000a000000
   hunterMaxHealth: 50
   hunterMoveSpeed: 10
   hunterAttackDamage: 20
@@ -33,6 +33,6 @@ MonoBehaviour:
   fenceDamage: 30
   fenceParalysisDuration: 5
   buildDelay: 5
-  initialMoney: 1000000
+  initialMoney: 2000000
   bearDefeatReward: 300000
   bearCaptureReward: 450000
