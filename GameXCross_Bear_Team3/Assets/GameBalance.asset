@@ -23,7 +23,7 @@ MonoBehaviour:
   hunterDetectionRadius: 300
   bulletSpeed: 500
   bearMaxHealth: 100
-  bearMoveSpeed: 20
+  bearMoveSpeed: 15
   bearAttackDamage: 20
   bearAttackInterval: 3
   bearHouseAttackRange: 5
