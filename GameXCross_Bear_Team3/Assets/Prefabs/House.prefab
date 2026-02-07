@@ -1083,6 +1083,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 100
+  ruinsPrefab: {fileID: 0}
+  shakeIntensity: 0.3
+  shakeDuration: 1.5
+  ruinsYPosition: 3
+  DustStorm: {fileID: 1404517911851685851, guid: 36afd4b31ea4be548818c7c0caf5e05d, type: 3}
 --- !u!1 &7023805215729610886
 GameObject:
   m_ObjectHideFlags: 0
