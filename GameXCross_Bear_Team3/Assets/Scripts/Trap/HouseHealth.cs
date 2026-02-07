@@ -10,7 +10,8 @@ public class HouseHealth : MonoBehaviour
     [SerializeField] private float shakeIntensity = 0.3f; // 揺れの強さ
     [SerializeField] private float shakeDuration = 1.5f; // 揺れの時間
     [SerializeField] private float ruinsYPosition = 3f; // 廃墟を配置するY座標
-    
+
+    [SerializeField] private GameObject DustStorm;
     public FloatReactiveProperty CurrentHealth { get; private set; }
 
     public bool IsDestroyed => CurrentHealth.Value <= 0f;
@@ -50,7 +51,10 @@ public class HouseHealth : MonoBehaviour
     private void Collapse()
     {
         SEmanager.Instance.Play("collapse");
-        
+
+        GameObject Dust = Instantiate(DustStorm, transform.position, transform.rotation);
+        Dust.SetActive(true);
+
         //①　先にカウントを増やす
         KillCountManager.Instance?.DamageCounterplus();
         
@@ -94,7 +98,8 @@ public class HouseHealth : MonoBehaviour
                 // 廃墟にはHouseHealthコンポーネントを付けない（熊が狙わない）
                 ruins.tag = "Untagged";
             }
-            
+            Dust.SetActive(false);
+            Destroy(Dust);
             Destroy(gameObject);
         });
     }
