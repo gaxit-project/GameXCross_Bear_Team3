@@ -30,8 +30,8 @@ MonoBehaviour:
   bearHunterAttackRange: 15
   bearDetectionRadius: 200
   houseMaxHp: 200
-  fenceDamage: 60
-  fenceParalysisDuration: 5
+  fenceDamage: 40
+  fenceParalysisDuration: 4
   buildDelay: 5
   initialMoney: 1000000
   bearDefeatReward: 200000
