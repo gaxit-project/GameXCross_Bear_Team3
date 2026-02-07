@@ -11890,6 +11890,7 @@ MonoBehaviour:
   phaseResult: {fileID: 1476353518}
   button: {fileID: 1892270908}
   selectUIbutton: {fileID: 1151966722664835900}
+  UI: {fileID: 1324053392}
   day: {fileID: 1145374150}
   kill: {fileID: 1179822887}
   capture: {fileID: 1839692717}
@@ -140386,8 +140387,8 @@ MonoBehaviour:
   ghost: {fileID: 1124478299}
   obj: {fileID: 4426026038796339423, guid: 655fec90e19f1804990216b291e5988b, type: 3}
   cost: 500000
-  necessaryPOvalue: -1
-  POchangevalue: -0.1
+  necessaryPOvalue: -2
+  POchangevalue: -0.02
   p: {fileID: 848974984}
   PriceMoveManager: {fileID: 165155375}
   currentcost: 0
@@ -140842,7 +140843,7 @@ MonoBehaviour:
   ghost: {fileID: 1683152857}
   obj: {fileID: 4104643566454902700, guid: 2c10bddce2d5f7e4e9979c602092bf44, type: 3}
   cost: 300000
-  necessaryPOvalue: -0.5
+  necessaryPOvalue: -100
   POchangevalue: 0
   p: {fileID: 848974984}
   PriceMoveManager: {fileID: 165155375}
@@ -141767,7 +141768,7 @@ MonoBehaviour:
   obj: {fileID: 5175117341105439888, guid: 880cfbcfb85b5b042babba3ff714589b, type: 3}
   cost: 50000
   necessaryPOvalue: -1
-  POchangevalue: -0.1
+  POchangevalue: -0.02
   p: {fileID: 848974984}
   PriceMoveManager: {fileID: 165155375}
   currentcost: 0

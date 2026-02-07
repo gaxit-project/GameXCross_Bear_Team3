@@ -58,6 +58,12 @@ public class PublicOpinionManager : MonoBehaviour
 
         PublicOpinion = Mathf.Lerp(PublicOpinion,POvalue,POchangeSpeed * Time.deltaTime);
         //faceImage.rectTransform.anchoredPosition = new Vector3(pos.x,pos.y + PublicOpinion * 100,pos.z);
+
+        if (Mathf.Abs(PublicOpinion - POvalue) < 0.01f)
+        {
+            PublicOpinion = POvalue;
+        }
+
         faceColor();
         faceSplite();
         Text();
