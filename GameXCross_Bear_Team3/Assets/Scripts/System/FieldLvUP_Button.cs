@@ -48,8 +48,13 @@ public class FieldLvUP_Button : MonoBehaviour
     {
         if (money.Instance.moneycount >= fieldManager.currentCost() && fieldManager.currentLv() < 9)
         {
+            SEmanager.Instance.Play("deside");
             fieldManager.LvUp();
             money.Instance.moneycount -= fieldManager.currentCost();
+        }
+        else
+        {
+            SEmanager.Instance.Play("unable");
         }
     }
 
