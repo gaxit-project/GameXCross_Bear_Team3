@@ -15,7 +15,7 @@ MonoBehaviour:
   setupTime: 30
   maxWaves: 3
   enemiesPerWave: 02000000050000000a000000
-  hunterMaxHealth: 50
+  hunterMaxHealth: 80
   hunterMoveSpeed: 10
   hunterAttackDamage: 20
   hunterAttackRange: 100
