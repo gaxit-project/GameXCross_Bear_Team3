@@ -80,11 +80,11 @@ public class PhaseResult : MonoBehaviour
         
         // 結果表示
         if (day != null) day.text = daycount + "日目の報告";
-        if (kill != null) kill.text = "駆除数：" + killcount + "体";
-        if (capture != null) capture.text = "捕獲数：" + capturecount + "体";
-        if (damage != null) damage.text = "被害件数：" + damagecount + "件";
-        if (PO != null) PO.text = "支持率：" + POcount + "％";
-        if (money != null) money.text = "資金：" + m.moneycount.ToString("N0") + "円";
+        if (kill != null) kill.text = killcount + "体";
+        if (capture != null) capture.text = capturecount + "体";
+        if (damage != null) damage.text = damagecount + "件";
+        if (PO != null) PO.text = POcount + "％";
+        if (money != null) money.text = m.moneycount.ToString("N0") + "円";
     }
 
     public void NextDay()
