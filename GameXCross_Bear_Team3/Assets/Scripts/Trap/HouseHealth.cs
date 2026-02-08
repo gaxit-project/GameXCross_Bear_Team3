@@ -52,8 +52,9 @@ public class HouseHealth : MonoBehaviour
     {
         SEmanager.Instance.Play("collapse");
 
-        GameObject Dust = Instantiate(DustStorm, transform.position, transform.rotation);
+        GameObject Dust = Instantiate(DustStorm, transform.position, transform.rotation * Quaternion.Euler(-90, 0, 0));
         Dust.SetActive(true);
+        var ps = Dust.GetComponent<ParticleSystem>();
 
         //①　先にカウントを増やす
         KillCountManager.Instance?.DamageCounterplus();
@@ -98,8 +99,7 @@ public class HouseHealth : MonoBehaviour
                 // 廃墟にはHouseHealthコンポーネントを付けない（熊が狙わない）
                 ruins.tag = "Untagged";
             }
-            Dust.SetActive(false);
-            Destroy(Dust);
+            ps.Stop();
             Destroy(gameObject);
         });
     }

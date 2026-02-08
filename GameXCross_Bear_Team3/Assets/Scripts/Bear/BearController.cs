@@ -28,6 +28,7 @@ public class BearController : MonoBehaviour, TrapTarget
     [SerializeField] private bool enableAnimation = true;
     [SerializeField] private Animator animator;
     [SerializeField] private DamageFlash DamageFlash;
+    [SerializeField] private GameObject efectPrefab;
 
     private NavMeshAgent _agent;
     private Rigidbody _rb;
@@ -112,6 +113,7 @@ public class BearController : MonoBehaviour, TrapTarget
     public void TakeDamage(float damage, HunterController attacker)
     {
         DamageFlash.Flash();
+        StartCoroutine(DamageEfect());
         if (_isDead || _isTrapped) return;
 
         _currentHealth -= damage;
@@ -590,6 +592,7 @@ public class BearController : MonoBehaviour, TrapTarget
     {
         if (_isDead) return; // 二重呼び出し防止
         StartCoroutine(BearCry());
+
         _isDead = true;
         _agent.enabled = false;
         StopAttacking();
@@ -629,5 +632,14 @@ public class BearController : MonoBehaviour, TrapTarget
     {
         yield return new WaitForSeconds(0.3f);
         SEmanager.Instance.Play("bear");
+    }
+
+    private IEnumerator DamageEfect()
+    {
+        GameObject efect = Instantiate(efectPrefab, transform.position + new Vector3(0,10,0), transform.rotation * Quaternion.Euler(-90, 0, 0));
+        efect.SetActive(true);
+        var ps = efect.GetComponent<ParticleSystem>();
+        yield return new WaitForSeconds(0.5f);
+        ps.Stop();
     }
 }

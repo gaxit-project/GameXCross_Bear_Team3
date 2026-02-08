@@ -67,10 +67,9 @@ public class FieldManager : MonoBehaviour
     {
         GameObject efect = Instantiate(efectprefab, efectpsition.transform.position + new Vector3(0, 0, 70), Quaternion.Euler(-90, 0, 0));
         efect.SetActive(true);
-
-        yield return new WaitForSeconds(0.2f);
-        efect.SetActive(false);
-        Destroy(efect);
+        var ps = efect.GetComponent<ParticleSystem>();
+        yield return new WaitForSeconds(0.4f);
+        ps.Stop();
     }
 
     public int currentLv() { return level; }
