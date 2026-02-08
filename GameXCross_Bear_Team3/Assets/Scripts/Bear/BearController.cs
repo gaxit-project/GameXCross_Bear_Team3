@@ -86,7 +86,8 @@ public class BearController : MonoBehaviour, TrapTarget
         _agent.speed = balance.bearMoveSpeed;
         _agent.stoppingDistance = 0f;                 // 攻撃対象へ食い込む
         _agent.autoBraking = false;                   // 手前で減速しない
-        _agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance; // 回避を弱める
+        _agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        _agent.avoidancePriority = UnityEngine.Random.Range(30, 70);
 
         _currentHealth = maxHealth; // 初期化
 
