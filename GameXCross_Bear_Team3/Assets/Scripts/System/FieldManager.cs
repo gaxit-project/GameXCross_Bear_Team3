@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 public class FieldManager : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class FieldManager : MonoBehaviour
     [SerializeField] private int level = 0;
     [Header("ç≈ëÂÉåÉxÉãè„å¿")]
     [SerializeField] private int MAXlevel = 9;
+
+    [SerializeField] private GameObject efectprefab;
+    [SerializeField] private GameObject efectpsition;
 
     private float timer;
 
@@ -50,12 +54,23 @@ public class FieldManager : MonoBehaviour
     {
         level++;
         ChangeAppearance();
+        StartCoroutine(Efect());
     }
 
     private void ChangeAppearance()
     {
         ob[level - 1].SetActive(false);
         ob[level].SetActive(true);
+    }
+
+    private IEnumerator Efect()
+    {
+        GameObject efect = Instantiate(efectprefab, efectpsition.transform.position + new Vector3(0, 0, 70), Quaternion.Euler(-90, 0, 0));
+        efect.SetActive(true);
+
+        yield return new WaitForSeconds(0.2f);
+        efect.SetActive(false);
+        Destroy(efect);
     }
 
     public int currentLv() { return level; }
