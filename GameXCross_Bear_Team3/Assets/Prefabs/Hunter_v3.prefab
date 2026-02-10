@@ -133,6 +133,10 @@ MonoBehaviour:
   bulletSpeed: 20
   patrolRadius: 20
   waitTimeAtPatrolPoint: 3
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  raycastOffset: 2
   animator: {fileID: 6185555935974562449}
   muzzleFlash: {fileID: 0}
   bearLayer:

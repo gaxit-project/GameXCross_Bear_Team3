@@ -42,6 +42,10 @@ public class HunterController : MonoBehaviour
     [SerializeField] private float patrolRadius = 20f;
     [SerializeField] private float waitTimeAtPatrolPoint = 3.0f; // パトロール地点での待機時間
 
+    [Header("レイキャスト設定")]
+    [SerializeField] private LayerMask obstacleLayer; // 家などの遮蔽物レイヤー
+    [SerializeField] private float raycastOffset = 1.0f; // クマの中心を狙うための高さオフセット
+
     [Header("コンポーネント")]
     [SerializeField] private Animator animator;
     [SerializeField] private ParticleSystem muzzleFlash;
@@ -249,7 +253,7 @@ public class HunterController : MonoBehaviour
                     float dist = Vector3.Distance(transform.position, _targetBear.transform.position);
 
                     // 攻撃範囲内なら攻撃（構え＋停止）
-                    if (dist <= attackRange)
+                    if (dist <= attackRange && IsPathClear())
                     {
                         StopMovement();
                         transform.LookAt(new Vector3(_targetBear.transform.position.x, transform.position.y, _targetBear.transform.position.z));
@@ -301,6 +305,9 @@ public class HunterController : MonoBehaviour
                 }
                 else
                 {
+                    // _agent.isStopped = false;
+                    // _agent.SetDestination(_targetBear.transform.position);
+
                     // ターゲットなし：アイドル
                     if (!isDebugMode && animator)
                     {
@@ -354,6 +361,14 @@ public class HunterController : MonoBehaviour
 
     private void Shoot()
     {
+        // 1. 射線のチェック
+        if (!IsPathClear())
+        {
+            // 障害物がある場合は射撃せず、ログを出してリターン
+            if (isDebugMode) Debug.Log("ハンター: 障害物（家など）が邪魔で撃てません。");
+            return;
+        }
+
         if (!isDebugMode && animator) animator.SetTrigger("Fire");
         if (muzzleFlash) muzzleFlash.Play();
 
@@ -372,6 +387,35 @@ public class HunterController : MonoBehaviour
         // 攻撃演出（反動）
         transform.DOPunchRotation(new Vector3(-2f, 0, 0), 0.1f);
     }
+
+    /// <summary>
+/// ターゲットとの間に障害物がないか確認する
+/// </summary>
+private bool IsPathClear()
+{
+    if (_targetBear == null) return false;
+
+    // 銃口からクマの少し上（胴体付近）への方向を計算
+    Vector3 targetPosition = _targetBear.transform.position + Vector3.up * raycastOffset;
+    Vector3 origin = firePoint.position;
+    Vector3 direction = targetPosition - origin;
+    float distance = Vector3.Distance(origin, targetPosition);
+
+    // 障害物レイヤーとクマレイヤーの両方を検知対象にする
+    int combinedLayerMask = obstacleLayer | bearLayer;
+
+    RaycastHit hit;
+    if (Physics.Raycast(origin, direction, out hit, distance, combinedLayerMask))
+    {
+        // ヒットしたものが bearLayer でない場合は、障害物に遮られていると判断
+        if (((1 << hit.collider.gameObject.layer) & bearLayer) == 0)
+        {
+            return false; // 障害物に当たった
+        }
+    }
+
+    return true; // 遮蔽物なし、またはクマに直接当たった
+}
 
     private void StopShooting()
     {
