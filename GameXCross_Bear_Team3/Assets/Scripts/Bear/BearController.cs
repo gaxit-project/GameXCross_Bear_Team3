@@ -304,9 +304,27 @@ public class BearController : MonoBehaviour, TrapTarget
             {
                 if (other.TryGetComponent<Fence>(out var fence))
                 {
-                    Debug.Log("フェンスを破壊しました");
-                    fence.FenceBreak();
-                    transform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+                    _agent.isStopped = true;
+                    _agent.velocity = Vector3.zero;
+                    animator.SetBool("IsMoving", false);
+                    
+                    animator.SetTrigger("Attack");
+
+                    Observable.Timer(TimeSpan.FromSeconds(0.8f))
+                        .Subscribe(_ =>
+                        {
+                            if (this == null || _isDead) return; // 待機中に自分が消えた場合の安全策
+
+                            // 柵の破壊を実行
+                            Debug.Log("フェンスを破壊しました");
+                            fence.FenceBreak();
+                            transform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+
+                            // 移動を再開
+                            _agent.isStopped = false;
+                            animator.SetBool("IsMoving", true);
+                        })
+                        .AddTo(this);
                 }
             })
             .AddTo(this);
