@@ -658,6 +658,9 @@ public class BearController : MonoBehaviour, TrapTarget
         efect.SetActive(true);
         var ps = efect.GetComponent<ParticleSystem>();
         yield return new WaitForSeconds(0.5f);
-        ps.Stop();
+        if (efect != null)
+        {
+            ps.Stop(); // まだ生きていれば、止まれと命令
+        }
     }
 }

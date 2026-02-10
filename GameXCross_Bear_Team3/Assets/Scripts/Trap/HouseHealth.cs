@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using NUnit.Framework.Internal;
 using UniRx;
-using DG.Tweening;
+using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
 public class HouseHealth : MonoBehaviour
@@ -99,7 +100,10 @@ public class HouseHealth : MonoBehaviour
                 // 廃墟にはHouseHealthコンポーネントを付けない（熊が狙わない）
                 ruins.tag = "Untagged";
             }
-            ps.Stop();
+            if (Dust != null)
+            {
+                ps.Stop(); // まだ生きていれば、止まれと命令
+            }
             Destroy(gameObject);
         });
     }

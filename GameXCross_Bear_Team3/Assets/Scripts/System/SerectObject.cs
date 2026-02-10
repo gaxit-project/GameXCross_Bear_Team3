@@ -7,17 +7,17 @@ public class SerectObject : MonoBehaviour
 {
     [SerializeField] public GameObject ScrollUI;
     [SerializeField] public GameObject pointer;
-    [SerializeField, Header("�������S�[�X�g")]
+    [SerializeField, Header("設置用ゴースト")]
     public GameObject ghost;
-    [SerializeField,Header("�ݒ肷��ݒu��")]
+    [SerializeField,Header("設置するオブジェクト")]
     public GameObject obj;
-    [SerializeField, Header("���̃R�X�g")]
+    [SerializeField, Header("基本コスト")]
     public int cost;
-    [SerializeField, Header("�K�v�Ȑ��_�l")]
+    [SerializeField, Header("必要なPO値")]
     public float necessaryPOvalue;
-    [SerializeField, Header("�u�����Ƃ��̐��_�l�̕ω���")]
+    [SerializeField, Header("設置時のPO値の変化量")]
     public float POchangevalue;
-    [SerializeField, Header("�|�C���^�[")]
+    [SerializeField, Header("ポインターコントローラー")]
     public PointerController p;
 
     [SerializeField, Header("PriceMoveManager")]

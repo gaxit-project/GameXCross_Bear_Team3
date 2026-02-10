@@ -69,7 +69,10 @@ public class FieldManager : MonoBehaviour
         efect.SetActive(true);
         var ps = efect.GetComponent<ParticleSystem>();
         yield return new WaitForSeconds(0.4f);
-        ps.Stop();
+        if (efect != null)
+        {
+            ps.Stop(); // ‚Ü‚¾¶‚«‚Ä‚¢‚ê‚ÎA~‚Ü‚ê‚Æ–½—ß
+        }
     }
 
     public int currentLv() { return level; }
