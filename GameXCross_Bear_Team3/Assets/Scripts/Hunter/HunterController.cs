@@ -233,7 +233,7 @@ public class HunterController : MonoBehaviour
 
         // 定期的に周囲を探索（ターゲットが見つかるまで）
         Observable.Interval(TimeSpan.FromSeconds(0.5f))
-            .Where(_ => !_isDead && _targetBear == null)
+            .Where(_ => !_isDead)
             .Where(_ => GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Battle)
             .Subscribe(_ =>
             {

@@ -20,14 +20,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string resultSceneName = "Result";
     [SerializeField] private float sceneTransitionDelay = 2.0f;
 
-    // [Header("ゲームバランス")]
     public int SetupTime => Balance != null ? Balance.setupTime : 20;
     public int MaxWaves => Balance != null ? Balance.maxWaves : 3;
 
     [Header("参照")]
+    [SerializeField] private BGMManager bgmManager;
     private money moneyScript;
     private PointerController pointerController;
-    [SerializeField] private BGMManager bgmManager;
 
     [Header("バランスデータ参照")]
     [SerializeField] private GameBalanceData balanceData;
@@ -116,6 +115,18 @@ public class GameManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+
+        HandleDebugInput();
+    }
+
+    private void HandleDebugInput()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Debug.Log("リザルトへ遷移");
+            KillCountManager.IsGameClear = true;
+            SceneManager.LoadScene(resultSceneName);
         }
     }
 

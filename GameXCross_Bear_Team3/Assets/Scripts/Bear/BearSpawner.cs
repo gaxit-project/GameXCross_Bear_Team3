@@ -21,8 +21,13 @@ public class BearSpawner : MonoBehaviour
     [SerializeField] private float markerDepth = 3.0f;   // 長方形の奥行き（Z軸）
     [SerializeField] private float markerHeight = 0.1f;  // 長方形の高さ（Y軸）
 
+    [Header("デバッグ設定")]
+    // インスペクターから初期値を変更可能にする
+    [SerializeField] private bool _isEntertainmentSpawn = false;
+
     private List<GameObject> _spawnMarkers = new List<GameObject>();
     private List<int> _plannedSpawnPointIndices = new List<int>();
+
 
     private void Start()
     {
@@ -90,10 +95,21 @@ public class BearSpawner : MonoBehaviour
                 }
             }
 
-            // ランダムに選択して削除
-            int randomListIndex = Random.Range(0, availableSpawnPoints.Count);
-            int spawnPointIndex = availableSpawnPoints[randomListIndex];
-            availableSpawnPoints.RemoveAt(randomListIndex);
+            int spawnPointIndex;
+            if (_isEntertainmentSpawn)
+            {
+                spawnPointIndex = availableSpawnPoints[0];
+                availableSpawnPoints.RemoveAt(0);
+                Debug.Log("固定モード");
+            }
+            else
+            {
+                // ランダムに選択して削除
+                int randomListIndex = Random.Range(0, availableSpawnPoints.Count);
+                spawnPointIndex = availableSpawnPoints[randomListIndex];
+                availableSpawnPoints.RemoveAt(randomListIndex);
+            }
+
 
             _plannedSpawnPointIndices.Add(spawnPointIndex);
             Debug.Log($"[Marker] 敵{i + 1}: spawnPoint[{spawnPointIndex}]を選択（残り{availableSpawnPoints.Count}箇所）");
