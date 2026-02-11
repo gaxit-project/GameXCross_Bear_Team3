@@ -28,8 +28,12 @@ public class SerectObject : MonoBehaviour
     public Image Image;
     private Color canpush;
     private Color cantpush;
+    public Color highPrice;
+    public Color lowPrice;
 
     [SerializeField] TextMeshProUGUI Text;
+    [SerializeField] TextMeshProUGUI current_Text;
+    [SerializeField] GameObject Panel;
 
     private void Start()
     {
@@ -37,6 +41,7 @@ public class SerectObject : MonoBehaviour
         Image = GetComponent<Image>();
         canpush = Image.color;
         cantpush = Color.gray;
+        SetStrikethrough(false);
     }
 
     private void Update()
@@ -46,7 +51,26 @@ public class SerectObject : MonoBehaviour
         else
             Image.color = cantpush;
         currentcost = PriceMoveManager.PriceMove(cost);
-        Text.text = currentcost.ToString("N0");
+        if(currentcost != cost)
+        {
+            current_Text.text = currentcost.ToString("N0");
+            SetStrikethrough(true);
+
+            if (currentcost > cost)
+            {
+                current_Text.color = highPrice;
+            }
+            else
+            {
+                current_Text.color= lowPrice;
+            }
+        }
+        else
+        {
+            SetStrikethrough(false);
+            current_Text.text = "";
+        }
+        
     }
 
     public void Onclick()
@@ -87,5 +111,15 @@ public class SerectObject : MonoBehaviour
         // p.necessaryPOvalue = necessaryPOvalue;
 
         p.StartPlacement(obj, ghost, currentcost, necessaryPOvalue, POchangevalue);
+    }
+
+    /// <summary>
+    /// 取り消し線の ON / OFF を切り替える関数
+    /// </summary>
+    public void SetStrikethrough(bool isActive)
+    {
+        if (Text == null) return;
+
+        Panel.SetActive(isActive);
     }
 }
