@@ -1,0 +1,197 @@
+fileFormatVersion: 2
+guid: 3dacb7218d091de4f9b5558f7e3882a2
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: "\u6ABB(Clone)"
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Cube.008
+      parentName: "\u6ABB(Clone)"
+      position: {x: 2.8884964, y: -0.0012754169, z: -1.1354864}
+      rotation: {x: 0.5, y: -0.49999997, z: -0.5, w: -0.5}
+      scale: {x: 1.1170677, y: 0.053217396, z: 0.058138322}
+    - name: Cube.013
+      parentName: "\u6ABB(Clone)"
+      position: {x: -0.005107492, y: -0.0012754169, z: -1.1354864}
+      rotation: {x: 0.5, y: -0.49999997, z: -0.5, w: -0.5}
+      scale: {x: 1.1170677, y: 0.053217396, z: 0.058138322}
+    - name: Cube.016
+      parentName: "\u6ABB(Clone)"
+      position: {x: -2.9850235, y: 3.056977, z: -2.233066}
+      rotation: {x: 0.70725256, y: -0.706961, z: 0.00000018445219, w: -0.00000009092464}
+      scale: {x: 1.0560956, y: 0.053217396, z: 0.058138322}
+    - name: "\u7ACB\u65B9\u4F53"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 2.7607057, y: 1.017584, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 0.020092184, y: 0.020092184, z: 1}
+    - name: "\u7ACB\u65B9\u4F53.003"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 2.7607057, y: 0.0025997162, z: -1.1330049}
+      rotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
+      scale: {x: 0.020092184, y: 0.020092184, z: 1.1067715}
+    - name: "\u7ACB\u65B9\u4F53.004"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 0.002116084, y: 1.5342631, z: 0.001953736}
+      rotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.49999997}
+      scale: {x: 0.019287968, y: 0.019287968, z: 2.852495}
+    - name: "\u7ACB\u65B9\u4F53.006"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 0.002116084, y: 1.0108087, z: 0.001953736}
+      rotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.49999997}
+      scale: {x: 0.019287968, y: 0.019287968, z: 2.852495}
+    - name: "\u7ACB\u65B9\u4F53.007"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 0.002116084, y: 0.5324796, z: 0.001953736}
+      rotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.49999997}
+      scale: {x: 0.019287968, y: 0.019287968, z: 2.852495}
+    - name: "\u7ACB\u65B9\u4F53.008"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 0.002116084, y: 0.5324796, z: -2.231753}
+      rotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.49999997}
+      scale: {x: 0.019287968, y: 0.019287968, z: 2.852495}
+    - name: "\u7ACB\u65B9\u4F53.009"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 0.002116084, y: 1.0108087, z: -2.231753}
+      rotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.49999997}
+      scale: {x: 0.019287968, y: 0.019287968, z: 2.852495}
+    - name: "\u7ACB\u65B9\u4F53.010"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 0.002116084, y: 1.5342631, z: -2.231753}
+      rotation: {x: 0.5, y: 0.5, z: -0.5, w: -0.49999997}
+      scale: {x: 0.019287968, y: 0.019287968, z: 2.852495}
+    - name: "\u7ACB\u65B9\u4F53.011"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 2.8914442, y: 1.5295757, z: -1.1013426}
+      rotation: {x: 0.000000015454312, y: 0.000000015454313, z: 0.7071068, w: 0.7071067}
+      scale: {x: 0.019287968, y: 0.019287968, z: 1.1298337}
+    - name: "\u7ACB\u65B9\u4F53.017"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 2.892921, y: 1.021591, z: -2.1027224}
+      rotation: {x: -0.50000006, y: -0.4999999, z: -0.5, w: 0.5}
+      scale: {x: 0.01994655, y: 0.01994655, z: 1}
+    - name: "\u7ACB\u65B9\u4F53.018"
+      parentName: "\u6ABB(Clone)"
+      position: {x: 0.009445891, y: 2.0460868, z: -1.6278067}
+      rotation: {x: -0.0007991729, y: -0.70710635, z: 0.0007991729, w: 0.7071063}
+      scale: {x: 0.019287966, y: 0.019287966, z: 2.852495}
+    - name: "\u7ACB\u65B9\u4F53.019"
+      parentName: "\u6ABB(Clone)"
+      position: {x: -2.9798238, y: 3.0314739, z: -2.1027224}
+      rotation: {x: -0.4998969, y: -0.50010306, z: -0.49989685, w: 0.5001031}
+      scale: {x: 0.01994655, y: 0.01994655, z: 1}
+    - name: "\u7ACB\u65B9\u4F53.020"
+      parentName: "\u6ABB(Clone)"
+      position: {x: -2.9815102, y: 3.5394583, z: -1.1013426}
+      rotation: {x: 0.000000015451121, y: 0.000000015457497, z: 0.7072526, w: 0.7069609}
+      scale: {x: 0.019287968, y: 0.019287968, z: 1.1298337}
+    - name: "\u7ACB\u65B9\u4F53.022"
+      parentName: "\u6ABB(Clone)"
+      position: {x: -2.9421828, y: 2.0216224, z: -2.3327997}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 0.12505777, y: 0.050607365, z: 2.0869963}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

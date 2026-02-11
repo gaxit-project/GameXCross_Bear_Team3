@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c424d5e7729791468ac89794c57174f, type: 3}
+  m_Name: GameBalanceData
+  m_EditorClassIdentifier: 
+  setupTime: 10
+  maxWaves: 3
+  enemiesPerWave: 010000000200000004000000
+  hunterMaxHealth: 50
+  hunterMoveSpeed: 10
+  hunterAttackDamage: 20
+  hunterAttackRange: 100
+  hunterAttackInterval: 1.5
+  hunterDetectionRadius: 300
+  bearMaxHealth: 100
+  bearMoveSpeed: 10
+  bearAttackDamage: 20
+  bearAttackInterval: 2
+  bearAttackRange: 10
+  bearDetectionRadius: 200
+  houseMaxHp: 100
+  fenceDamage: 10
+  fenceParalysisDuration: 3
+  initialMoney: 1000000
+  bearDefeatReward: 30000
+  bearCaptureReward: 45000

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 70ffc50ab7893d34ea846b5c093ae781
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - faceImage: {instanceID: 0}
+  - face: {instanceID: 0}
+  - sadSprite: {fileID: 21300000, guid: b16ca6aea788a044fa770c37028161a6, type: 3}
+  - normalSprite: {fileID: 21300000, guid: d155de53fea345240a5f0e4093787e0b, type: 3}
+  - smileSprite: {fileID: 21300000, guid: fa2686c75ff2ce947b008fcfd1da90c8, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
