@@ -11641,7 +11641,7 @@ MonoBehaviour:
   markerWidth: 200
   markerDepth: 5
   markerHeight: 0.1
-  _isEntertainmentSpawn: 1
+  _isEntertainmentSpawn: 0
 --- !u!4 &165155366
 Transform:
   m_ObjectHideFlags: 0
@@ -67424,7 +67424,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -20, y: -30}
+  m_AnchoredPosition: {x: -20, y: -50}
   m_SizeDelta: {x: 1919.9999, y: 1080.1409}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1068088355
@@ -141310,7 +141310,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2791579256587556017}
   m_HandleRect: {fileID: 235148221738259894}
   m_Direction: 0
-  m_Value: 0.000003051753
+  m_Value: 0.0000022888148
   m_Size: 0.9599999
   m_NumberOfSteps: 0
   m_OnValueChanged:
