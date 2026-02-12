@@ -174,12 +174,8 @@ public class GameGuideController : MonoBehaviour
             SEmanager.Instance.Play(skipSE);
         }
 
-        // ガイドを閉じてMainシーンへ遷移
-        if (guidePanel != null)
-        {
-            guidePanel.SetActive(false);
-        }
-
+        // ガイドパネルは表示したままMainシーンへ遷移
+        // （非表示にするとタイトル背景が一瞬見えてしまうため）
         if (buttonController != null)
         {
             buttonController.SwithToMain();

@@ -11641,7 +11641,7 @@ MonoBehaviour:
   markerWidth: 200
   markerDepth: 5
   markerHeight: 0.1
-  _isEntertainmentSpawn: 0
+  _isEntertainmentSpawn: 1
 --- !u!4 &165155366
 Transform:
   m_ObjectHideFlags: 0
@@ -141310,7 +141310,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2791579256587556017}
   m_HandleRect: {fileID: 235148221738259894}
   m_Direction: 0
-  m_Value: 0.0000015258765
+  m_Value: 0.000003051753
   m_Size: 0.9599999
   m_NumberOfSteps: 0
   m_OnValueChanged:
