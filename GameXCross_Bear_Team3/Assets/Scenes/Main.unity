@@ -11883,7 +11883,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fa162faa73b06488394668c7b451ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  value: 1
+  value: 0.5
 --- !u!114 &165155376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140767,7 +140767,7 @@ MonoBehaviour:
   obj: {fileID: 4426026038796339423, guid: 655fec90e19f1804990216b291e5988b, type: 3}
   cost: 500000
   necessaryPOvalue: -2
-  POchangevalue: -0.02
+  POchangevalue: -0.04
   p: {fileID: 848974984}
   PriceMoveManager: {fileID: 165155375}
   currentcost: 0
@@ -141310,8 +141310,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2791579256587556017}
   m_HandleRect: {fileID: 235148221738259894}
   m_Direction: 0
-  m_Value: 0.0000022888148
-  m_Size: 0.9599999
+  m_Value: 0.0000015258789
+  m_Size: 0.96
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -142160,7 +142160,7 @@ MonoBehaviour:
   obj: {fileID: 5175117341105439888, guid: 880cfbcfb85b5b042babba3ff714589b, type: 3}
   cost: 50000
   necessaryPOvalue: -1
-  POchangevalue: -0.02
+  POchangevalue: -0.04
   p: {fileID: 848974984}
   PriceMoveManager: {fileID: 165155375}
   currentcost: 0

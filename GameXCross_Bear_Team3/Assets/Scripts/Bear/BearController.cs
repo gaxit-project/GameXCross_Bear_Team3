@@ -242,7 +242,7 @@ public class BearController : MonoBehaviour, TrapTarget
         }
 
         Debug.Log("熊を捕獲しました！");
-        PublicOpinionManager.Instance.POchanging(0.05f);//世論値をプラス0.05する
+        PublicOpinionManager.Instance.POchanging(0.10f);//世論値をプラス0.1する
 
     }
 
@@ -633,7 +633,7 @@ public class BearController : MonoBehaviour, TrapTarget
             Debug.Log($"熊を討伐！ {defeatReward}円 獲得");
         }
 
-        PublicOpinionManager.Instance.POchanging(0.02f);//世論値を0.2上昇させる
+        PublicOpinionManager.Instance.POchanging(0.04f);//世論値を0.04上昇させる
 
         // アニメーション処理
         Vector3 currentRotation = transform.eulerAngles;

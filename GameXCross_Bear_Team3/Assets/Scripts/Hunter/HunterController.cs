@@ -544,7 +544,7 @@ private bool IsPathClear()
         StopShooting();
         StopPatrol();
 
-        PublicOpinionManager.Instance.POchanging(-0.05f);
+        PublicOpinionManager.Instance.POchanging(-0.10f);
 
         Debug.Log("ハンター: 死亡しました。");
 
