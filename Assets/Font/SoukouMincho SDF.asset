@@ -329,6 +329,26 @@ MonoBehaviour:
       m_LigatureGlyphID: 8032
     - m_ComponentGlyphIDs: 220000002e000000
       m_LigatureGlyphID: 11846
+    - m_ComponentGlyphIDs: 2c00000023000000
+      m_LigatureGlyphID: 8031
+    - m_ComponentGlyphIDs: 2c0000002c000000
+      m_LigatureGlyphID: 7611
+    - m_ComponentGlyphIDs: 270000002200000039000000
+      m_LigatureGlyphID: 8307
+    - m_ComponentGlyphIDs: 4c00000044000000420000004d000000
+      m_LigatureGlyphID: 8193
+    - m_ComponentGlyphIDs: 4c0000004e00000013000000
+      m_LigatureGlyphID: 8021
+    - m_ComponentGlyphIDs: 4c0000004e00000014000000
+      m_LigatureGlyphID: 8188
+    - m_ComponentGlyphIDs: 4c00000048000000
+      m_LigatureGlyphID: 7605
+    - m_ComponentGlyphIDs: 4c0000004d000000
+      m_LigatureGlyphID: 8026
+    - m_ComponentGlyphIDs: 4c0000004e000000
+      m_LigatureGlyphID: 7603
+    - m_ComponentGlyphIDs: 5e03000061030000
+      m_LigatureGlyphID: 11871
     m_GlyphPairAdjustmentRecords:
     - m_FirstAdjustmentRecord:
         m_GlyphIndex: 64
@@ -378,7 +398,8 @@ MonoBehaviour:
     m_MarkToBaseAdjustmentRecords: []
     m_MarkToMarkAdjustmentRecords: []
   m_ShouldReimportFontFeatures: 0
-  m_FallbackFontAssetTable: []
+  m_FallbackFontAssetTable:
+  - {fileID: 11400000, guid: 623d76e59248fa442b64c1789a81a407, type: 2}
   m_FontWeightTable:
   - regularTypeface: {fileID: 0}
     italicTypeface: {fileID: 0}
