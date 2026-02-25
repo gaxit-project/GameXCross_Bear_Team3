@@ -18,9 +18,12 @@ public class ButtonController : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.tabKey.wasPressedThisFrame)
+        if (GameManager.Instance != null && GameManager.Instance.DebugMode)
         {
-            TransitionWithSE("Title");
+            if (Keyboard.current.tabKey.wasPressedThisFrame)
+            {
+                TransitionWithSE("Title");
+            }
         }
 
         var gamepad = Gamepad.current;

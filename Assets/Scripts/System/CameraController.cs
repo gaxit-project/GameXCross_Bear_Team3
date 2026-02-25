@@ -69,6 +69,14 @@ public class CameraController : MonoBehaviour
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
         if (isLocked) return;
+
+        // キーボード入力かつデバッグモードオフなら無視
+        if (context.control.device is Keyboard && (GameManager.Instance == null || !GameManager.Instance.DebugMode))
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+
         moveInput = context.ReadValue<Vector2>();
     }
 
@@ -87,6 +95,13 @@ public class CameraController : MonoBehaviour
 
         if (enableRotation)
         {
+            // マウス入力かつデバッグモードオフなら無視
+            if (context.control.device is Mouse && (GameManager.Instance == null || !GameManager.Instance.DebugMode))
+            {
+                lookInput = Vector2.zero;
+                return;
+            }
+
             lookInput = context.ReadValue<Vector2>();
         }
         else
@@ -103,6 +118,14 @@ public class CameraController : MonoBehaviour
     private void OnElevatePerformed(InputAction.CallbackContext context)
     {
         if (isLocked) return;
+
+        // キーボード入力かつデバッグモードオフなら無視
+        if (context.control.device is Keyboard && (GameManager.Instance == null || !GameManager.Instance.DebugMode))
+        {
+            elevateInput = 0.0f;
+            return;
+        }
+
         elevateInput = context.ReadValue<float>();
     }
 

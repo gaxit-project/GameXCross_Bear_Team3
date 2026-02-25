@@ -24,27 +24,38 @@ public class HunterShooting : MonoBehaviour
     void Update()
     {
         // ■ 1. キーボードの「1」「2」で武器モード切替
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (GameManager.Instance != null && GameManager.Instance.DebugMode)
         {
-            currentWeaponType = 0; // リボルバーに切り替え
-            anim.SetBool("IsRifle", false);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            currentWeaponType = 1; // ライフルに切り替え
-            anim.SetBool("IsRifle", true);
-        }
-
-        // ■ 2. クリックで発砲
-        // ※歩いていない（武器が出ている）時だけ撃てるようにするとより自然です
-        if (Input.GetMouseButtonDown(0))
-        {
-            anim.SetTrigger("Fire");
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                currentWeaponType = 0; // リボルバーに切り替え
+                anim.SetBool("IsRifle", false);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                currentWeaponType = 1; // ライフルに切り替え
+                anim.SetBool("IsRifle", true);
+            }
         }
 
-        // ■ 3. 移動入力の判定
-        float h = Input.GetAxis("Horizontal"); // A, D キー
-        float v = Input.GetAxis("Vertical");   // W, S キー
+        // ■ 2. クリックで発砲（デバッグ用）
+        if (GameManager.Instance != null && GameManager.Instance.DebugMode)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                anim.SetTrigger("Fire");
+            }
+        }
+
+        // ■ 3. 移動入力の判定（デバッグ用：既存のコントローラー操作がないため、キーボード移動を制限）
+        float h = 0;
+        float v = 0;
+
+        if (GameManager.Instance != null && GameManager.Instance.DebugMode)
+        {
+            h = Input.GetAxis("Horizontal"); // A, D キー
+            v = Input.GetAxis("Vertical");   // W, S キー
+        }
 
         // キー入力が少しでもあれば「歩いている(true)」と判定
         bool isMoving = Mathf.Abs(h) > 0.1f || Mathf.Abs(v) > 0.1f;

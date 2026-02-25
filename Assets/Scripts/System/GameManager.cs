@@ -50,6 +50,10 @@ public class GameManager : MonoBehaviour
     private bool _isWaveSpawningComplete = false;
     private CompositeDisposable _disposables = new CompositeDisposable();
 
+    [Header("デバッグ設定")]
+    [SerializeField] private bool debugMode = false;
+    public bool DebugMode => debugMode;
+
     private void Awake()
     {
         if (Instance != null) Destroy(gameObject);
@@ -117,7 +121,10 @@ public class GameManager : MonoBehaviour
             Cursor.visible = false;
         }
 
-        HandleDebugInput();
+        if (debugMode)
+        {
+            HandleDebugInput();
+        }
     }
 
     private void HandleDebugInput()
