@@ -52,6 +52,7 @@ public class PointerController : MonoBehaviour
     public InputActionProperty rotationrightInput;
     public InputActionProperty rotationleftInput;
 
+    [SerializeField] private ButtonTutorial ButtonTutorial;
     void Start()
     {
         _mainCamera = Camera.main;
@@ -127,6 +128,8 @@ public class PointerController : MonoBehaviour
         if (this.ghost != null) this.ghost.SetActive(true);
         if (ScrollUI != null) ScrollUI.SetActive(false);
 
+        ButtonTutorial.Set_installation();
+
         isPointerActive = true;
     }
 
@@ -199,6 +202,7 @@ public class PointerController : MonoBehaviour
         {
             Debug.Log("ルート2: メニューを閉じます");
             ScrollUI.SetActive(false);
+            ButtonTutorial.Set_noUI();
             SEmanager.Instance.Play("cancel");
             return;
         }
@@ -217,6 +221,8 @@ public class PointerController : MonoBehaviour
 
         obj = null;
         ghost = null;
+
+        ButtonTutorial.Set_select();
 
         ScrollUI.SetActive(true);
     }
@@ -335,6 +341,8 @@ public class PointerController : MonoBehaviour
         if(ghost != null) ghost.SetActive(false);
         if(pointerVisual != null) pointerVisual.SetActive(false);
         isPointerActive = false;
+
+        ButtonTutorial.Set_noUI();
     }
 
     public void UIsetTrue()
@@ -346,6 +354,8 @@ public class PointerController : MonoBehaviour
         if(ghost != null) ghost.SetActive(false);
         if(pointerVisual != null) pointerVisual.SetActive(false);
         isPointerActive = false;
+
+        ButtonTutorial.Set_select();
     }
 
 }
