@@ -36,16 +36,21 @@ public class CameraSwitcher : MonoBehaviour
 
     private void CheckInput()
     {
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
 
-        for (int i = 0; i < switchKeys.Length; i++)
+        if (GameManager.Instance != null && GameManager.Instance.DebugMode)
         {
-            if (i >= cameras.Length) break;
-
-            if (keyboard[switchKeys[i]].wasPressedThisFrame)
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
             {
-                SwitchCamera(i);
+                for (int i = 0; i < switchKeys.Length; i++)
+                {
+                    if (i >= cameras.Length) break;
+
+                    if (keyboard[switchKeys[i]].wasPressedThisFrame)
+                    {
+                        SwitchCamera(i);
+                    }
+                }
             }
         }
 

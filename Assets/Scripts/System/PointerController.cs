@@ -132,6 +132,13 @@ public class PointerController : MonoBehaviour
 
     public void OnPerformed(InputAction.CallbackContext context)
     {
+        // キーボード入力かつデバッグモードオフなら無視
+        if (context.control.device is Keyboard && (GameManager.Instance == null || !GameManager.Instance.DebugMode))
+        {
+            input = Vector2.zero;
+            return;
+        }
+
         input = context.ReadValue<Vector2>();
     }
 
