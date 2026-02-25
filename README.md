@@ -4,7 +4,7 @@
 
 ## ゲーム概要
 
-プレイヤーは熊緊急対策室として、与えられた資金の中で、罠やハンターを配置し、襲来する熊から村を守ります。
+プレイヤーは熊緊急対策室として、与えられた資金の中で、罠やハンターを配置し、襲来する熊から村を守ります。\
 単純に熊を倒すだけでなく、世論を考慮した立ち回りが求められるゲームです。
 
 ## ゲームの流れ
@@ -47,11 +47,16 @@
   - **DOTween**: アニメーション、演出。
 
 ## クレジット
-### BGM・効果音素材
+### 使用素材（BGM・SE）
+各素材の著作権は、以下の制作者様に帰属します。
   - [DOVA-SYNDROME/マニーラ様](https://dova-s.jp/_contents/author/profile427.html)
   - [DOVA-SYNDROME/Heitaro Ashibe様](https://dova-s.jp/_contents/author/profile457.html)
   - [DOVA-SYNDROME/のる様](https://dova-s.jp/bgm/play21913.html)
   - [DOVA-SYNDROME/MAKOOTO様](https://dova-s.jp/_contents/author/profile263.html)
 
 ### 著作権
+このプロジェクトは「MITライセンス」の下で公開されています。
+詳細は [LICENSE](./LICENSE) ファイルをご覧ください。\
+※ ただし、外部サイトよりお借りした素材（BGM等）については、各配布元の利用規約が優先されます。
+
 (C) 2026 くま_チーム3/Game Create Project. All Rights Reserved.
