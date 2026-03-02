@@ -9,6 +9,8 @@ public class ButtonController : MonoBehaviour
     [SerializeField] private string clickSeKey = "deside";
     [SerializeField] private GameObject howToPlayPanel;
 
+    [Header("help時に選択できなくするボタン群")]
+    [SerializeField] private CanvasGroup CanvasGroup;
     private bool _ispressing = false;
 
     void Start()
@@ -34,7 +36,12 @@ public class ButtonController : MonoBehaviour
                 howToPlayPanel.SetActive(false);
                 SEmanager.Instance.Play("cancel");
             }
-            }
+        }
+
+        if(howToPlayPanel.activeSelf == true)
+            CanvasGroup.interactable = false;
+        else if(howToPlayPanel.activeSelf == false)
+            CanvasGroup.interactable = true;
     }
 
     public void SwithToTitle()

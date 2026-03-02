@@ -39723,6 +39723,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clickSeKey: SE_Click
   howToPlayPanel: {fileID: 1396179877}
+  CanvasGroup: {fileID: 7249335416971573201}
 --- !u!4 &629653270
 Transform:
   m_ObjectHideFlags: 0

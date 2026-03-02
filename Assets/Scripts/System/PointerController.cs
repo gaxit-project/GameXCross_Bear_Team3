@@ -279,7 +279,7 @@ public class PointerController : MonoBehaviour
         if (!context.performed) return;
         Debug.Log("OnSkip呼び出し");
 
-        if (GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Setup)
+        if (GameManager.Instance != null && GameManager.Instance.CurrentState.Value == GameState.Setup && Time.timeScale!=0)
         {
             GameManager.Instance.SkipSetupPhase();
         }
@@ -360,5 +360,4 @@ public class PointerController : MonoBehaviour
 
         ButtonTutorial.Set_select();
     }
-
 }
