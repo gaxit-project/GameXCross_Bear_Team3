@@ -13,12 +13,15 @@ public class HouseHealth : MonoBehaviour
     [SerializeField] private float ruinsYPosition = 3f; // 廃墟を配置するY座標
 
     [SerializeField] private GameObject DustStorm;
+    [SerializeField] private GameObject HealthGauge;//参照元
+    private HouseHealth_Gauge HouseHealth_Gauge_this;
+    private GameObject HealthGauge_this;
+    private int DamageCount=0;
     public FloatReactiveProperty CurrentHealth { get; private set; }
 
     public bool IsDestroyed => CurrentHealth.Value <= 0f;
 
     public Collider HouseCollider { get; private set; }
-
     private void Awake()
     {
         HouseCollider = GetComponent<Collider>();
@@ -40,6 +43,18 @@ public class HouseHealth : MonoBehaviour
         if(IsDestroyed) return;
 
         CurrentHealth.Value -= amount;
+
+        if (DamageCount == 0)
+        {
+            HealthGauge_this = Instantiate(HealthGauge, this.transform.position, this.transform.rotation);//ゲージを生み出す
+            HealthGauge_this.SetActive(true);
+            HouseHealth_Gauge_this = HealthGauge_this.GetComponent<HouseHealth_Gauge>();//生み出したゲージからゲージについてのスクリプトを取得
+            HouseHealth_Gauge_this.health_Max = maxHp;
+            HouseHealth_Gauge_this.target = this.transform;
+        }
+        HouseHealth_Gauge_this.health = CurrentHealth.Value;//ゲージに今の体力を渡す。
+
+        DamageCount++;//もう一度生成しないための制御
 
         transform.DOShakePosition(0.2f, 2.0f).SetDelay(0.8f);
 
