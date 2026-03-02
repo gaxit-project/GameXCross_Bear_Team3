@@ -337,6 +337,7 @@ public class PointerController : MonoBehaviour
         // メニューを隠す
         ScrollUI.SetActive(false);
 
+
         // 配置しようとしていたポインターもキャンセル
         if(ghost != null) ghost.SetActive(false);
         if(pointerVisual != null) pointerVisual.SetActive(false);
@@ -350,8 +351,10 @@ public class PointerController : MonoBehaviour
         // メニューを表示
         ScrollUI.SetActive(true);
 
+        SEmanager.Instance.Play("deside");
+
         // ポインターやゴーストは初期状態オフ
-        if(ghost != null) ghost.SetActive(false);
+        if (ghost != null) ghost.SetActive(false);
         if(pointerVisual != null) pointerVisual.SetActive(false);
         isPointerActive = false;
 

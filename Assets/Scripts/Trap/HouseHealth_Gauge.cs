@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class HouseHealth_Gauge : MonoBehaviour
 {
+    [SerializeField] private GameObject thisObject;
     [SerializeField] private float gaugevalue=1;
     [SerializeField] private float gaugespeed;
     [SerializeField] private Image image;
@@ -29,7 +30,7 @@ public class HouseHealth_Gauge : MonoBehaviour
         image.fillAmount = gaugevalue;
         if(image.fillAmount <= 0.01)
         {
-            Destroy(this);
+            Destroy(thisObject);
         }
     }
     void LateUpdate()

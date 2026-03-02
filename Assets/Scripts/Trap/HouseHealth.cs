@@ -1,5 +1,6 @@
 ﻿using DG.Tweening;
 using NUnit.Framework.Internal;
+using System.Collections;
 using UniRx;
 using UnityEngine;
 
@@ -50,18 +51,34 @@ public class HouseHealth : MonoBehaviour
             HealthGauge_this.SetActive(true);
             HouseHealth_Gauge_this = HealthGauge_this.GetComponent<HouseHealth_Gauge>();//生み出したゲージからゲージについてのスクリプトを取得
             HouseHealth_Gauge_this.health_Max = maxHp;
+            HouseHealth_Gauge_this.health = maxHp;//ゲージが開始時からすぐに減らないように制御。
             HouseHealth_Gauge_this.target = this.transform;
         }
-        HouseHealth_Gauge_this.health = CurrentHealth.Value;//ゲージに今の体力を渡す。
 
         DamageCount++;//もう一度生成しないための制御
 
         transform.DOShakePosition(0.2f, 2.0f).SetDelay(0.8f);
 
+        StartCoroutine(Gauge());
+
+
+
         if (IsDestroyed)
         {
-            Collapse();
+            StartCoroutine(StartCollapse());
         }
+    }
+
+    private IEnumerator Gauge()
+    {
+        yield return new WaitForSeconds(0.8f);
+        HouseHealth_Gauge_this.health = CurrentHealth.Value;//ゲージに今の体力を渡す。
+    }
+
+    private IEnumerator StartCollapse()
+    {
+        yield return new WaitForSeconds(0.8f);
+        Collapse();
     }
 
     private void Collapse()
