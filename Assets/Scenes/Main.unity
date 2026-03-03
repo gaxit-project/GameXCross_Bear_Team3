@@ -11728,10 +11728,11 @@ MonoBehaviour:
   - {fileID: 1548917807}
   - {fileID: 114595684}
   photoCamera: {fileID: 311853009}
-  isPhotoMode: 1
+  isPhotoMode: 0
   photoMoveSpeed: 30
   photoVerticalSpeed: 20
   photoRotateSpeed: 0.1
+  photoToggleKey: 30
   photoCanvas: {fileID: 782122257}
   switchKeys: 290000002a0000002b0000002c000000
 --- !u!114 &165155371

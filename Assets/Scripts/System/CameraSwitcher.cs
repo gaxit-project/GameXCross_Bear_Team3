@@ -14,6 +14,7 @@ public class CameraSwitcher : MonoBehaviour
     [SerializeField] private float photoMoveSpeed = 10f;
     [SerializeField] private float photoVerticalSpeed = 5f;
     [SerializeField] private float photoRotateSpeed = 0.1f; // 回転感度
+    [SerializeField] private Key photoToggleKey = Key.P; // フォトモード切替キー
     [SerializeField] private Canvas photoCanvas; // 非表示にするUI
     private bool isCapturing = false; // 時間停止・UI非表示中か
     private float photoYaw = 0f;
@@ -101,6 +102,12 @@ public class CameraSwitcher : MonoBehaviour
 
     private void CheckPhotoModeToggle()
     {
+        var keyboard = Keyboard.current;
+        if (keyboard != null && keyboard[photoToggleKey].wasPressedThisFrame)
+        {
+            isPhotoMode = !isPhotoMode;
+        }
+
         if (isPhotoMode != lastIsPhotoMode)
         {
             ApplyCameraPriorities();
