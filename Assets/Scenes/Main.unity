@@ -11641,7 +11641,7 @@ MonoBehaviour:
   markerWidth: 200
   markerDepth: 5
   markerHeight: 0.1
-  _isEntertainmentSpawn: 0
+  _isEntertainmentSpawn: 1
 --- !u!4 &165155366
 Transform:
   m_ObjectHideFlags: 0
@@ -33897,7 +33897,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u9078\u629E\n\n\u6C7A\u5B9A\n\n\u623B\u308B\n\n\u30B9\u30AD\u30C3\u30D7(\u8972\u6483\u4E2D)\n\n\u30DD\u30FC\u30BA\u30E1\u30CB\u30E5\u30FC"
+  m_text: "\u9078\u629E\n\n\u6C7A\u5B9A\n\n\u623B\u308B\n\n\u30B9\u30AD\u30C3\u30D7(\u6E96\u5099\u4E2D)\n\n\u30DD\u30FC\u30BA\u30E1\u30CB\u30E5\u30FC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a286d7d2742a2ad4c940320222fd7248, type: 2}
   m_sharedMaterial: {fileID: 116312086796069171, guid: a286d7d2742a2ad4c940320222fd7248, type: 2}
@@ -82796,7 +82796,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u8868\u793A\n\n\u30B9\u30AD\u30C3\u30D7(\u8972\u6483\u4E2D)\n\n\u30DD\u30FC\u30BA\u30E1\u30CB\u30E5\u30FC"
+  m_text: "\u8868\u793A\n\n\u30B9\u30AD\u30C3\u30D7(\u6E96\u5099\u4E2D)\n\n\u30DD\u30FC\u30BA\u30E1\u30CB\u30E5\u30FC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a286d7d2742a2ad4c940320222fd7248, type: 2}
   m_sharedMaterial: {fileID: 116312086796069171, guid: a286d7d2742a2ad4c940320222fd7248, type: 2}
@@ -100511,7 +100511,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u79FB\u52D5\n\n\u8A2D\u7F6E\n\n\u623B\u308B\n\n\u5DE6\u56DE\u8EE2\n\n\u53F3\u56DE\u8EE2\n\n\u30B9\u30AD\u30C3\u30D7(\u8972\u6483\u4E2D)\n\n\u30DD\u30FC\u30BA\u30E1\u30CB\u30E5\u30FC"
+  m_text: "\u79FB\u52D5\n\n\u8A2D\u7F6E\n\n\u623B\u308B\n\n\u5DE6\u56DE\u8EE2\n\n\u53F3\u56DE\u8EE2\n\n\u30B9\u30AD\u30C3\u30D7(\u6E96\u5099\u4E2D)\n\n\u30DD\u30FC\u30BA\u30E1\u30CB\u30E5\u30FC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a286d7d2742a2ad4c940320222fd7248, type: 2}
   m_sharedMaterial: {fileID: 116312086796069171, guid: a286d7d2742a2ad4c940320222fd7248, type: 2}
