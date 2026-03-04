@@ -11641,7 +11641,7 @@ MonoBehaviour:
   markerWidth: 200
   markerDepth: 5
   markerHeight: 0.1
-  _isEntertainmentSpawn: 1
+  _isEntertainmentSpawn: 0
 --- !u!4 &165155366
 Transform:
   m_ObjectHideFlags: 0
